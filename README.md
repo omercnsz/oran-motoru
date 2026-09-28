@@ -33,7 +33,7 @@ npm run build:data                       # apps/pipeline/public/ altına JSON ü
 npm run serve -w @oran/pipeline          # bu JSON'ları 8090 portunda sunar (uygulama geliştirmede buradan okur)
 ```
 
-Yayında uygulama veriyi `EXPO_PUBLIC_DATA_BASE_URL` adresinden (GitHub Pages) okur. Kullanıcının kuponları ve kumbarası telefondaki SQLite veritabanında durur (`apps/mobile/src/db`); şema değişince `npx drizzle-kit generate` ile yeni göç dosyası üretilir.
+Uygulama veriyi `apps/mobile/.env` içindeki `EXPO_PUBLIC_DATA_BASE_URL` adresinden (GitHub Pages: https://omercnsz.github.io/oran-motoru) okur. Yerel veri sunucusuyla denemek için `.env.local` dosyasında bu değeri değiştirin. Kullanıcının kuponları ve kumbarası telefondaki SQLite veritabanında durur (`apps/mobile/src/db`); şema değişince `npx drizzle-kit generate` ile yeni göç dosyası üretilir.
 
 ## Veri akışı
 
