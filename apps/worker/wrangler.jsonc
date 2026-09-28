@@ -10,7 +10,7 @@
   ],
   "vars": {
     // GitHub Pages adresiniz (sonunda / olmadan)
-    "DATA_BASE_URL": "https://KULLANICI.github.io/oran-motoru",
+    "DATA_BASE_URL": "https://omercnsz.github.io/oran-motoru",
     // API-Football ücretsiz paket: günde 100 istek. Ücretli pakete geçince yükseltin.
     "DAILY_LIMIT": "100",
     "LIVE_INTERVAL_SEC": "60",
