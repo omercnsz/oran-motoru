@@ -1,0 +1,140 @@
+import type { UpcomingMatch } from '@oran/contracts';
+import { Link } from 'expo-router';
+import { useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+
+import { LiveList } from '@/components/live-list';
+import { OddsButton } from '@/components/odds-button';
+import { Screen } from '@/components/screen';
+import { SlipBar } from '@/components/slip-bar';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { Spacing } from '@/constants/theme';
+import { useLeagueIndex, useOdds } from '@/data/api';
+import { useNow } from '@/hooks/use-now';
+import { useTheme } from '@/hooks/use-theme';
+import { dayKey, formatTime } from '@/lib/format';
+import { toSelection } from '@/lib/selection';
+import { isSelected, useSlip } from '@/state/slip';
+
+const ONE_X_TWO = [['1', '1'], ['X', 'X'], ['2', '2']] as const;
+
+export default function MaclarScreen() {
+  const index = useLeagueIndex();
+  const leagues = useMemo(() => (index.data?.leagues ?? []).filter((l) => l.upcoming > 0), [index.data]);
+  const [picked, setPicked] = useState<string>();
+  const [mode, setMode] = useState<'pre' | 'live'>('pre');
+  const leagueNames = useMemo(() => Object.fromEntries((index.data?.leagues ?? []).map((l) => [l.code, l.name])), [index.data]);
+  const league = picked ?? (leagues.find((l) => l.code === 'T1') ?? leagues[0])?.code;
+  const odds = useOdds(league);
+  const now = useNow();
+
+  // Türkiye saatine göre günlere ayır; başlamış maçlar listelenmez
+  const days = useMemo(() => {
+    const groups = new Map<string, UpcomingMatch[]>();
+    for (const m of odds.data?.matches ?? []) {
+      if (Date.parse(m.kickoff) <= now) continue;
+      const k = dayKey(m.kickoff);
+      groups.set(k, [...(groups.get(k) ?? []), m]);
+    }
+    return [...groups.entries()];
+  }, [odds.data, now]);
+
+  return (
+    <View style={styles.fill}>
+      <Screen title="Maçlar" subtitle="Gerçek maçlar, gerçek oranlar. Para sanal.">
+        <View style={styles.segment}>
+          <Chip label="Maç öncesi" active={mode === 'pre'} onPress={() => setMode('pre')} />
+          <Chip label="Canlı" active={mode === 'live'} onPress={() => setMode('live')} />
+        </View>
+
+        {index.isPending ? <ActivityIndicator /> : null}
+        {index.error ? <ErrorCard message={index.error.message} /> : null}
+
+        {mode === 'live' ? <LiveList now={now} leagueNames={leagueNames} /> : null}
+
+        {mode === 'pre' ? <>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          {leagues.map((l) => (
+            <Chip key={l.code} label={l.name} active={l.code === league} onPress={() => setPicked(l.code)} />
+          ))}
+        </ScrollView>
+
+        {odds.isPending && league ? <ActivityIndicator /> : null}
+        {odds.data && days.length === 0 ? (
+          <ThemedText themeColor="textSecondary">Bu ligde önümüzdeki 14 günde maç yok.</ThemedText>
+        ) : null}
+
+        {days.map(([day, matches]) => (
+          <View key={day} style={styles.day}>
+            <ThemedText type="smallBold" themeColor="textSecondary">{day}</ThemedText>
+            {matches.map((m) => <MatchRow key={m.id} league={league!} match={m} />)}
+          </View>
+        ))}
+        </> : null}
+      </Screen>
+      <SlipBar />
+    </View>
+  );
+}
+
+function MatchRow({ league, match }: { league: string; match: UpcomingMatch }) {
+  const slip = useSlip((s) => s.selections);
+  const toggle = useSlip((s) => s.toggle);
+  return (
+    <ThemedView type="backgroundElement" style={styles.card}>
+      <Link href={{ pathname: '/mac/[id]', params: { id: match.id, league } }} asChild>
+        <Pressable accessibilityRole="link" style={styles.matchHeader}>
+          <ThemedText type="small" themeColor="textSecondary">{formatTime(match.kickoff)}</ThemedText>
+          <ThemedText type="smallBold" style={styles.teams}>{match.home} – {match.away}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">Tüm bahisler ›</ThemedText>
+        </Pressable>
+      </Link>
+      <View style={styles.oddsRow}>
+        {ONE_X_TWO.map(([key, label]) => (
+          <OddsButton
+            key={key}
+            label={label}
+            odds={match.markets['1X2']?.[key] ?? null}
+            selected={isSelected(slip, match.id, '1X2', key)}
+            onPress={() => { const s = toSelection(league, match, '1X2', key); if (s) toggle(s); }}
+          />
+        ))}
+      </View>
+    </ThemedView>
+  );
+}
+
+function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+  const theme = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="tab"
+      accessibilityState={{ selected: active }}
+      onPress={onPress}
+      style={[styles.chip, { backgroundColor: active ? theme.text : theme.backgroundElement }]}>
+      <ThemedText type="small" style={{ color: active ? theme.background : theme.text }}>{label}</ThemedText>
+    </Pressable>
+  );
+}
+
+export function ErrorCard({ message }: { message: string }) {
+  return (
+    <ThemedView type="backgroundElement" style={styles.card}>
+      <ThemedText type="smallBold">Veri alınamadı</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary">{message}</ThemedText>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  fill: { flex: 1 },
+  segment: { flexDirection: 'row', gap: Spacing.two },
+  chips: { gap: Spacing.two, paddingVertical: Spacing.one },
+  chip: { paddingVertical: Spacing.two, paddingHorizontal: Spacing.three, borderRadius: Spacing.four },
+  day: { gap: Spacing.two },
+  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
+  matchHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  teams: { flex: 1 },
+  oddsRow: { flexDirection: 'row', gap: Spacing.two },
+});

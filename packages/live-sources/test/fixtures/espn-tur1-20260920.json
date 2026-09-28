@@ -1,0 +1,517 @@
+{
+ "events": [
+  {
+   "id": "401888287",
+   "date": "2026-09-20T14:00Z",
+   "name": "Eyupspor at Fenerbahce",
+   "status": {
+    "clock": 5400,
+    "displayClock": "90'+4'",
+    "period": 2,
+    "type": {
+     "name": "STATUS_FULL_TIME",
+     "state": "post",
+     "completed": true
+    }
+   },
+   "competitions": [
+    {
+     "competitors": [
+      {
+       "homeAway": "home",
+       "score": "8",
+       "team": {
+        "id": "436",
+        "displayName": "Fenerbahce"
+       }
+      },
+      {
+       "homeAway": "away",
+       "score": "0",
+       "team": {
+        "id": "20729",
+        "displayName": "Eyupspor"
+       }
+      }
+     ],
+     "details": [
+      {
+       "type": {
+        "text": "Penalty - Scored"
+       },
+       "clock": {
+        "value": 240,
+        "displayValue": "4'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 411,
+        "displayValue": "7'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 1215,
+        "displayValue": "21'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 2269,
+        "displayValue": "38'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 2700,
+        "displayValue": "45'+1'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 2777,
+        "displayValue": "47'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 3282,
+        "displayValue": "55'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 4755,
+        "displayValue": "80'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 5304,
+        "displayValue": "89'"
+       },
+       "team": {
+        "id": "436"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 5307,
+        "displayValue": "89'"
+       },
+       "team": {
+        "id": "20729"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401888382",
+   "date": "2026-09-20T17:00Z",
+   "name": "Besiktas at Amed SFK",
+   "status": {
+    "clock": 5400,
+    "displayClock": "90'+12'",
+    "period": 2,
+    "type": {
+     "name": "STATUS_FULL_TIME",
+     "state": "post",
+     "completed": true
+    }
+   },
+   "competitions": [
+    {
+     "competitors": [
+      {
+       "homeAway": "home",
+       "score": "3",
+       "team": {
+        "id": "132335",
+        "displayName": "Amed SFK"
+       }
+      },
+      {
+       "homeAway": "away",
+       "score": "2",
+       "team": {
+        "id": "1895",
+        "displayName": "Besiktas"
+       }
+      }
+     ],
+     "details": [
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 742,
+        "displayValue": "13'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 1273,
+        "displayValue": "22'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 1540,
+        "displayValue": "26'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 1940,
+        "displayValue": "33'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 2278,
+        "displayValue": "38'"
+       },
+       "team": {
+        "id": "1895"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 2700,
+        "displayValue": "45'+1'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 2734,
+        "displayValue": "46'"
+       },
+       "team": {
+        "id": "1895"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 3269,
+        "displayValue": "55'"
+       },
+       "team": {
+        "id": "1895"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 3430,
+        "displayValue": "58'"
+       },
+       "team": {
+        "id": "1895"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Goal"
+       },
+       "clock": {
+        "value": 3503,
+        "displayValue": "59'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 3817,
+        "displayValue": "64'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 4680,
+        "displayValue": "78'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Red Card"
+       },
+       "clock": {
+        "value": 5017,
+        "displayValue": "84'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": true,
+       "yellowCard": false,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 5400,
+        "displayValue": "90'+2'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Penalty - Scored"
+       },
+       "clock": {
+        "value": 5400,
+        "displayValue": "90'+8'"
+       },
+       "team": {
+        "id": "1895"
+       },
+       "redCard": false,
+       "yellowCard": false,
+       "scoringPlay": true
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 5400,
+        "displayValue": "90'+8'"
+       },
+       "team": {
+        "id": "1895"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 5400,
+        "displayValue": "90'+8'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 5400,
+        "displayValue": "90'+8'"
+       },
+       "team": {
+        "id": "1895"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      },
+      {
+       "type": {
+        "text": "Yellow Card"
+       },
+       "clock": {
+        "value": 5400,
+        "displayValue": "90'+10'"
+       },
+       "team": {
+        "id": "132335"
+       },
+       "redCard": false,
+       "yellowCard": true,
+       "scoringPlay": false
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

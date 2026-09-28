@@ -1,0 +1,47 @@
+# Saatte bir: veriyi indir, oranları üret, GitHub Pages'e yayınla.
+# Uygulama JSON'ları https://<kullanıcı>.github.io/<repo>/odds/T1.json gibi adreslerden okur.
+name: Oranları güncelle
+
+on:
+  schedule:
+    - cron: '17 * * * *' # saatte bir; GitHub zamanlanmış işleri birkaç dakika gecikmeli çalıştırabilir
+  workflow_dispatch: # elle çalıştırma düğmesi
+  push:
+    branches: [main]
+    paths: ['packages/**', 'apps/pipeline/**']
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test -w @oran/odds-engine
+      - run: npm run build:data
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/pipeline/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

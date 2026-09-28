@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.base.json",
+  // Worker çalışma ortamı tipleri "npm run types" ile üretilen worker-configuration.d.ts'den gelir
+  "include": ["src", "worker-configuration.d.ts"]
+}

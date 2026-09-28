@@ -1,0 +1,21 @@
+{
+  "name": "@oran/pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "GitHub Actions'ta çalışır: maç verisini indirir, takım güçlerini ve oranları üretip public/ klasörüne yazar",
+  "scripts": {
+    "build": "node src/build.ts",
+    "demo": "node src/demo.ts",
+    "backtest": "node src/backtest.ts",
+    "typecheck": "tsc -p .",
+    "serve": "node src/serve.ts"
+  },
+  "dependencies": {
+    "@oran/contracts": "*",
+    "@oran/odds-engine": "*",
+    "@oran/betting": "*",
+    "@oran/teams": "*",
+    "@oran/live-sources": "*"
+  }
+}

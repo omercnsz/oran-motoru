@@ -1,0 +1,10 @@
+{
+  "name": "@oran/live-sources",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Canlı skor kaynakları (ESPN). Telefon, veri hattı ve Worker aynı kodu kullanır.",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "test": "node --test \"test/*.test.ts\"", "typecheck": "tsc -p ." },
+  "dependencies": { "@oran/contracts": "*" }
+}

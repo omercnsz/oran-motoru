@@ -1,0 +1,25 @@
+{
+  "name": "oran",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "check": "npm run typecheck && npm run lint -w @oran/mobile && npm test",
+    "demo": "npm run demo -w @oran/pipeline --",
+    "backtest": "npm run backtest -w @oran/pipeline",
+    "build:data": "npm run build -w @oran/pipeline",
+    "mobile": "npm run start -w @oran/mobile"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "~6.0.3"
+  }
+}

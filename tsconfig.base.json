@@ -1,0 +1,18 @@
+{
+  // Ortak ayarlar. Kod hem Node'da (tip silme ile, derlemeden), hem Worker'da, hem Metro'da çalışır;
+  // bu yüzden sadece silinebilir TypeScript sözdizimi (enum, namespace yok) ve .ts uzantılı importlar.
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2024"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "strict": true,
+    "noUncheckedSideEffectImports": true,
+    "skipLibCheck": true,
+    "types": []
+  }
+}
