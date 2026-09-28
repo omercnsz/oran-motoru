@@ -1,6 +1,6 @@
 import { totalOdds } from '@oran/betting';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet } from 'react-native';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -15,13 +15,16 @@ export function SlipBar({ aboveTabs = true }: { aboveTabs?: boolean }) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   if (selections.length === 0) return null;
+  // iOS'ta sekme çubuğu içeriğin üstünde yüzer, altında pay gerekir; Android'de içerik sekme çubuğunun üstünde biter.
+  const tabOffset = aboveTabs && Platform.OS === 'ios' ? insets.bottom + BottomTabInset : 0;
+  const bottom = (aboveTabs ? tabOffset : insets.bottom) + Spacing.three;
   return (
     <Pressable
       accessibilityRole="button"
       onPress={() => router.push('/kupon')}
       style={({ pressed }) => [
         styles.bar,
-        { backgroundColor: theme.accent, bottom: insets.bottom + (aboveTabs ? BottomTabInset : 0) + Spacing.three, opacity: pressed ? 0.85 : 1 },
+        { backgroundColor: theme.accent, bottom, opacity: pressed ? 0.85 : 1 },
       ]}>
       <ThemedText type="smallBold" style={{ color: theme.accentText }}>
         Kupon · {selections.length} maç

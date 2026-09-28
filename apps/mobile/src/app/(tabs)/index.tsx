@@ -11,9 +11,10 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useLeagueIndex, useOdds } from '@/data/api';
+import { useSchedule } from '@/data/live';
 import { useNow } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
-import { dayKey, formatTime } from '@/lib/format';
+import { dayKey, formatDay, formatTime } from '@/lib/format';
 import { toSelection } from '@/lib/selection';
 import { isSelected, useSlip } from '@/state/slip';
 
@@ -28,6 +29,16 @@ export default function MaclarScreen() {
   const league = picked ?? (leagues.find((l) => l.code === 'T1') ?? leagues[0])?.code;
   const odds = useOdds(league);
   const now = useNow();
+  const schedule = useSchedule();
+  // Önümüzdeki 36 saatte maçı olan ligler (maç sayısıyla), en yakın maça göre sıralı
+  const soonLeagues = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const m of schedule.data?.matches ?? []) {
+      const t = Date.parse(m.kickoff);
+      if (t > now && t <= now + 36 * 3_600_000) counts.set(m.league, (counts.get(m.league) ?? 0) + 1);
+    }
+    return [...counts.entries()];
+  }, [schedule.data, now]);
 
   // Türkiye saatine göre günlere ayır; başlamış maçlar listelenmez
   const days = useMemo(() => {
@@ -63,6 +74,24 @@ export default function MaclarScreen() {
         {odds.isPending && league ? <ActivityIndicator /> : null}
         {odds.data && days.length === 0 ? (
           <ThemedText themeColor="textSecondary">Bu ligde önümüzdeki 14 günde maç yok.</ThemedText>
+        ) : null}
+
+        {league && days.length > 0 && !soonLeagues.some(([l]) => l === league) ? (
+          <ThemedView type="backgroundElement" style={styles.card}>
+            <ThemedText type="smallBold">
+              {leagueNames[league] ?? league} bugün ve yarın oynanmıyor; sıradaki maçlar {formatDay(days[0][1][0].kickoff)}.
+            </ThemedText>
+            {soonLeagues.length > 0 ? (
+              <>
+                <ThemedText type="small" themeColor="textSecondary">Bugün ve yarın maç olan ligler:</ThemedText>
+                <View style={styles.soon}>
+                  {soonLeagues.map(([l, n]) => (
+                    <Chip key={l} label={`${leagueNames[l] ?? l} (${n}) ›`} active={false} onCard onPress={() => setPicked(l)} />
+                  ))}
+                </View>
+              </>
+            ) : null}
+          </ThemedView>
         ) : null}
 
         {days.map(([day, matches]) => (
@@ -105,14 +134,15 @@ function MatchRow({ league, match }: { league: string; match: UpcomingMatch }) {
   );
 }
 
-function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+/** onCard: kart içinde (kartla aynı renkte kaybolmasın) */
+function Chip({ label, active, onCard, onPress }: { label: string; active: boolean; onCard?: boolean; onPress: () => void }) {
   const theme = useTheme();
   return (
     <Pressable
       accessibilityRole="tab"
       accessibilityState={{ selected: active }}
       onPress={onPress}
-      style={[styles.chip, { backgroundColor: active ? theme.text : theme.backgroundElement }]}>
+      style={[styles.chip, { backgroundColor: active ? theme.text : onCard ? theme.backgroundSelected : theme.backgroundElement }]}>
       <ThemedText type="small" style={{ color: active ? theme.background : theme.text }}>{label}</ThemedText>
     </Pressable>
   );
@@ -130,6 +160,7 @@ export function ErrorCard({ message }: { message: string }) {
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   segment: { flexDirection: 'row', gap: Spacing.two },
+  soon: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
   chips: { gap: Spacing.two, paddingVertical: Spacing.one },
   chip: { paddingVertical: Spacing.two, paddingHorizontal: Spacing.three, borderRadius: Spacing.four },
   day: { gap: Spacing.two },
