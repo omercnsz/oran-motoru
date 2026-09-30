@@ -75,3 +75,22 @@ Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm
 - Varsayılanlar cihazdan gelir, kullanıcı Ayarlar'dan değiştirir: dil, para birimi (her para birimi kendi kuruş basamağıyla), oran biçimi (ondalık / İngiliz kesirli / Amerikan), saat dilimi, ilk açılan lig, yardım hattı.
 - Arapça için sağdan sola düzen `app.json`'daki `expo-localization` eklentisiyle açılır; Expo Go bunu uygulamaz, kendi derlemede (EAS) çalışır.
 - Yardım hatları `apps/mobile/src/i18n/index.ts` içindedir; yayından önce her numara doğrulanmalı.
+
+## Uygulamanın kendi derlemesi (EAS)
+
+Expo projesi: https://expo.dev/accounts/eco1453/projects/oran · paket kimliği `com.omercnsz.oran` (mağazaya ilk yüklemeden sonra değiştirilemez).
+
+| Profil | Ne için |
+|---|---|
+| `development` | Geliştirme derlemesi, iOS simülatörü |
+| `development-device` | Geliştirme derlemesi, gerçek cihaz (Apple geliştirici hesabı gerekir) |
+| `preview` | Test için dağıtım; Android'de doğrudan kurulabilen APK |
+| `production` | Mağaza sürümü |
+
+```bash
+cd apps/mobile
+npx expo run:ios                                            # simülatör için bu bilgisayarda derle
+npx eas-cli@latest build --profile preview --platform android   # bulutta Android APK
+```
+
+`ios/` ve `android/` klasörleri derleme sırasında `app.json`'dan üretilir; elle düzenlenmez ve git'e girmez.
