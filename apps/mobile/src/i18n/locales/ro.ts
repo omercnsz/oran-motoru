@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const ro: Messages = {
+  tabs: { matches: 'Meciuri', coupons: 'Bilete', games: 'Jocuri', savings: 'Pușculiță' },
+  nav: { match: 'Meci', live: 'Live', coupon: 'Bilet', settings: 'Setări', back: 'Meciuri' },
+  common: { dataError: 'Datele nu au putut fi încărcate', dbError: 'Baza de date nu a putut fi pregătită: %{message}', comingSoon: 'Etapa %{n}' },
+  matches: {
+    title: 'Meciuri', subtitle: 'Meciuri reale, cote reale. Bani de joacă.', preMatch: 'Înainte de meci', live: 'Live',
+    none14: 'Nu există meciuri în această competiție în următoarele 14 zile.',
+    notSoon: '%{league} nu are meciuri azi sau mâine; următoarele meciuri: %{date}.',
+    soonLeagues: 'Competiții cu meciuri azi și mâine:', allBets: 'Toate pariurile ›', notFound: 'Meciul nu a fost găsit',
+  },
+  live: {
+    noneNow: 'Nu se joacă niciun meci acum.', next: 'Următorul: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Rezultatele live nu au putut fi încărcate: %{message}', inPlay: 'În desfășurare', soon: 'Începe curând', finished: 'Încheiat',
+    sourceCache: 'Sursa: ESPN (cache)', sourceDirect: 'Sursa: ESPN', updated: 'actualizat la %{time}', allLiveBets: 'Toate pariurile live ›',
+    redCards: 'Cartonașe roșii: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Se calculează cotele live…',
+    onlyInPlay: 'Pariurile live sunt deschise doar în timpul meciului.', notInList: 'Acest meci nu este în lista live',
+    notStarted: 'Nu a început', finishedScore: 'Încheiat · %{score}', halfTime: 'Pauză', fullTime: 'Final',
+  },
+  slip: {
+    title: 'Biletul tău', subtitle: 'Nu pariezi cu adevărat acești bani. Suma merge în pușculița ta.',
+    empty: 'Biletul este gol. Alege cote din Meciuri.', bar: 'Bilet · meciuri: %{count}', barOdds: 'Cota %{odds}',
+    remove: 'Scoate de pe bilet', live: 'Live', stake: 'Miză', totalOdds: 'Cota totală', potential: 'Câștig posibil',
+    create: 'Creează biletul · %{amount} în pușculiță',
+    errors: {
+      invalidAmount: 'Introdu o sumă validă (de ex. %{example})', empty: 'Adaugă cel puțin un meci pe bilet',
+      tooMany: 'Un bilet poate avea cel mult %{max} meciuri', sameMatch: 'Nu poți adăuga două selecții din același meci',
+      unknownBet: 'Pariu necunoscut', closed: 'Pariurile pentru %{match} sunt închise',
+      started: '%{match} a început; pariurile înainte de meci sunt închise', postponed: '%{match} a fost amânat sau anulat',
+      minStake: 'Miza minimă este %{min}', staleLive: 'Cota live pentru %{match} are mai mult de un minut; scoate-o și alege din nou',
+    },
+  },
+  coupons: {
+    title: 'Bilete', subtitle: 'Biletele tale din umbră: meciuri reale, bani de joacă.', none: 'Încă nu ai bilete. Începe prin a alege cote din Meciuri.',
+    open: 'Deschis', won: 'Câștigat', lost: 'Pierdut', stakeOdds: 'Miză %{stake} · Cota %{odds}', potential: 'Posibil %{amount}',
+  },
+  savings: {
+    title: 'Pușculiță', subtitle: 'Fiecare bănuț pe care nu l-ai pariat este aici.', inBank: 'În pușculița ta',
+    notToBookie: 'Acești bani nu au ajuns la o casă de pariuri. Dacă chiar i-ai pus deoparte, sunt ai tăi.',
+    allTime: 'De la început', coupons: 'Bilete', couponsValue: '%{count} (%{open} deschise)', staked: 'Ai fi pariat',
+    wonLost: 'Câștigate / pierdute', ifReal: 'Dacă ai fi jucat cu bani reali',
+    noSettled: 'Când un bilet va fi decontat, vei vedea aici ce s-ar fi întâmplat cu bani reali.',
+    houseEdge: 'Cotele includ o marjă, ca la casele de pariuri reale: pe termen lung câștigă casa.',
+    houseEdgeYours: 'Aceste cifre arată asta pe biletele tale.', help: 'Vrei să vorbești cu cineva? %{name}: %{contact}',
+    otherCurrencies: 'Biletele în alte monede nu sunt incluse.',
+  },
+  games: { title: 'Jocuri', subtitle: 'Doar jetoane de joacă. Fără cumpărături, fără retrageri.', crash: 'Crash', roulette: 'Ruletă', slot: 'Păcănele' },
+  settings: {
+    title: 'Setări', language: 'Limbă', deviceLanguage: 'Limba dispozitivului', currency: 'Monedă', automatic: 'Automat (%{value})',
+    oddsFormat: 'Formatul cotelor', decimal: 'Zecimal', fractional: 'Fracționar', american: 'American',
+    restartForRtl: 'Repornește aplicația pentru a schimba direcția textului.',
+    translationNote: 'Traducerile, în afară de engleză și turcă, au fost făcute cu ajutorul traducerii automate și așteaptă verificarea vorbitorilor nativi.',
+  },
+  markets: { '1X2': 'Rezultat final', DC: 'Șansă dublă', OU: 'Peste/Sub %{line}', BTTS: 'Ambele echipe marchează', TG: 'Total goluri', HC: 'Handicap (%{hc})', CS: 'Scor exact' },
+  outcomes: { under: 'Sub', over: 'Peste', yes: 'Da', no: 'Nu', other: 'Altul' },
+};
+export default ro;

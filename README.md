@@ -7,7 +7,8 @@ Kumar bağımlılığında zarar azaltma uygulaması: gerçek maçlara ve casino
 ```
 packages/
 ├── odds-engine   Oran motoru: takım güçleri, Poisson + Dixon-Coles, marketler, kasa payı, sonuçlandırma
-├── teams         Farklı kaynaklardaki takım adlarını eşleştirme
+├── leagues       Turnuvaların tek listesi (63 turnuva: ligler, kupalar, kıta kupaları)
+├── teams         Farklı kaynaklardaki takım adlarını eşleştirme (geriye dönük testte kullanılır)
 ├── betting       Gölge kupon kuralları: doğrulama, sonuçlandırma, kumbara raporu
 ├── live-sources  ESPN skor tablosu: canlı skor, kırmızı kart, biten maç sonuçları
 └── contracts     Sunucu ile uygulama arasındaki JSON biçimleri (tipler)
@@ -28,7 +29,7 @@ npm install
 npm run check                            # tip kontrolü + lint + tüm testler
 npm run mobile                           # Expo geliştirme sunucusu
 npm run demo -- Galatasaray Fenerbahce   # bir maçın maç öncesi ve canlı oranları
-npm run backtest                         # oran motorunu geçmiş maçlarda piyasayla karşılaştırır
+npm run backtest                         # global model, lig bazlı model ve bahis piyasasını geçmiş maçlarda karşılaştırır
 npm run build:data                       # apps/pipeline/public/ altına JSON üretir
 npm run serve -w @oran/pipeline          # bu JSON'ları 8090 portunda sunar (uygulama geliştirmede buradan okur)
 ```
@@ -39,10 +40,10 @@ Uygulama veriyi `apps/mobile/.env` içindeki `EXPO_PUBLIC_DATA_BASE_URL` adresin
 
 | Veri | Kaynak | Nerede üretilir | Sıklık |
 |---|---|---|---|
-| Geçmiş sonuçlar → takım güçleri | football-data.co.uk | `apps/pipeline` → GitHub Pages | saatte bir |
-| Önümüzdeki 14 günün maçları + maç öncesi oranlar | ESPN (açık, anahtarsız) + oran motoru | `apps/pipeline` → GitHub Pages | saatte bir |
+| Son 400 günün sonuçları → tek global takım güç modeli | ESPN (açık, anahtarsız) | `apps/pipeline` → GitHub Pages | saatte bir |
+| Önümüzdeki 14 günün maçları + maç öncesi oranlar | ESPN + oran motoru | `apps/pipeline` → GitHub Pages | saatte bir |
 | Canlı skor | ESPN, Cloudflare önbelleği üzerinden (ulaşılamazsa doğrudan) | `apps/worker`, `packages/live-sources` | Canlı ekrandayken 30 sn |
-| Kupon sonuçları | ESPN (maç biter bitmez) + football-data.co.uk (kesin) | Telefonda | Ekran açıldıkça |
+| Kupon sonuçları | ESPN (maç biter bitmez) + sonuç dosyaları | Telefonda | Ekran açıldıkça |
 | Canlı oranlar | — | Telefonda, `odds-engine` ile | Anlık |
 
 GitHub Pages çıktısı: `index.json`, `schedule.json`, `odds/<lig>.json`, `ratings/<lig>.json`, `results/<lig>.json` (biçimler `packages/contracts` içinde).
@@ -64,3 +65,13 @@ Telefonlar ESPN'e doğrudan değil Worker'a sorar: `GET /espn/<lig>/<YYYYMMDD | 
 Uygulama adresi `apps/mobile/.env` içindeki `EXPO_PUBLIC_LIVE_URL` değerinden okur; Worker'a ulaşılamazsa ESPN'e doğrudan bağlanır.
 
 Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm run deploy`. Canlı istek günlüğü: `npx wrangler tail oran-canli`.
+
+## Diller ve yerelleştirme
+
+27 dil: en, tr, es, pt, ar, ru, de, fr, it, nl, pl, ro, el, sr, hr, bs, sq, bg, mk, sl, zh, ja, ko, id, vi, th, hi (`apps/mobile/src/i18n/locales`).
+
+- İngilizce ana dildir (`en.ts`). Diğer diller `Messages` tipine uymak zorunda: eksik ya da fazla anahtar derleme hatası verir. `apps/mobile/test/i18n.test.ts` her dilde yer tutucuların (`%{...}`) İngilizceyle aynı olduğunu denetler.
+- **İngilizce ve Türkçe dışındaki çeviriler makine desteklidir; yayından önce ana dili konuşan biri kontrol etmeli.**
+- Varsayılanlar cihazdan gelir, kullanıcı Ayarlar'dan değiştirir: dil, para birimi (her para birimi kendi kuruş basamağıyla), oran biçimi (ondalık / İngiliz kesirli / Amerikan), saat dilimi, ilk açılan lig, yardım hattı.
+- Arapça için sağdan sola düzen `app.json`'daki `expo-localization` eklentisiyle açılır; Expo Go bunu uygulamaz, kendi derlemede (EAS) çalışır.
+- Yardım hatları `apps/mobile/src/i18n/index.ts` içindedir; yayından önce her numara doğrulanmalı.

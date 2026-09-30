@@ -10,11 +10,32 @@ import { I18nManager } from 'react-native';
 import { create } from 'zustand';
 
 import ar from './locales/ar';
+import bg from './locales/bg';
+import bs from './locales/bs';
+import de from './locales/de';
+import el from './locales/el';
 import en from './locales/en';
 import es from './locales/es';
+import fr from './locales/fr';
+import hi from './locales/hi';
+import hr from './locales/hr';
+import idn from './locales/id';
+import it from './locales/it';
+import ja from './locales/ja';
+import ko from './locales/ko';
+import mk from './locales/mk';
+import nl from './locales/nl';
+import pl from './locales/pl';
 import pt from './locales/pt';
+import ro from './locales/ro';
 import ru from './locales/ru';
+import sl from './locales/sl';
+import sq from './locales/sq';
+import sr from './locales/sr';
+import th from './locales/th';
 import tr from './locales/tr';
+import vi from './locales/vi';
+import zh from './locales/zh';
 
 export const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -23,6 +44,27 @@ export const LANGUAGES = [
   { code: 'pt', name: 'Português' },
   { code: 'ar', name: 'العربية', rtl: true },
   { code: 'ru', name: 'Русский' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'fr', name: 'Français' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'nl', name: 'Nederlands' },
+  { code: 'pl', name: 'Polski' },
+  { code: 'ro', name: 'Română' },
+  { code: 'el', name: 'Ελληνικά' },
+  { code: 'sr', name: 'Srpski' },
+  { code: 'hr', name: 'Hrvatski' },
+  { code: 'bs', name: 'Bosanski' },
+  { code: 'sq', name: 'Shqip' },
+  { code: 'bg', name: 'Български' },
+  { code: 'mk', name: 'Македонски' },
+  { code: 'sl', name: 'Slovenščina' },
+  { code: 'zh', name: '简体中文' },
+  { code: 'ja', name: '日本語' },
+  { code: 'ko', name: '한국어' },
+  { code: 'id', name: 'Bahasa Indonesia' },
+  { code: 'vi', name: 'Tiếng Việt' },
+  { code: 'th', name: 'ไทย' },
+  { code: 'hi', name: 'हिन्दी' },
 ] as const;
 
 /** Ayarlar'da gösterilen para birimleri (cihazınki listede yoksa o da eklenir) */
@@ -31,7 +73,7 @@ export const CURRENCIES = [
   'JPY', 'CNY', 'KRW', 'INR', 'IDR', 'AUD', 'CAD', 'CHF', 'PLN', 'RSD', 'ZAR', 'NGN',
 ];
 
-const i18n = new I18n({ en, tr, es, pt, ar, ru });
+const i18n = new I18n({ en, tr, es, pt, ar, ru, de, fr, it, nl, pl, ro, el, sr, hr, bs, sq, bg, mk, sl, zh, ja, ko, id: idn, vi, th, hi });
 i18n.defaultLocale = 'en';
 i18n.enableFallback = true;
 

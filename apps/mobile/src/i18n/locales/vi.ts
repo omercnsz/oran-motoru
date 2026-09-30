@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const vi: Messages = {
+  tabs: { matches: 'Trận đấu', coupons: 'Phiếu cược', games: 'Trò chơi', savings: 'Heo đất' },
+  nav: { match: 'Trận đấu', live: 'Trực tiếp', coupon: 'Phiếu cược', settings: 'Cài đặt', back: 'Trận đấu' },
+  common: { dataError: 'Không thể tải dữ liệu', dbError: 'Không thể chuẩn bị cơ sở dữ liệu: %{message}', comingSoon: 'Giai đoạn %{n}' },
+  matches: {
+    title: 'Trận đấu', subtitle: 'Trận đấu thật, tỷ lệ thật. Tiền ảo.', preMatch: 'Trước trận', live: 'Trực tiếp',
+    none14: 'Giải đấu này không có trận nào trong 14 ngày tới.',
+    notSoon: '%{league} không có trận hôm nay và ngày mai; các trận tiếp theo vào %{date}.',
+    soonLeagues: 'Giải đấu có trận hôm nay và ngày mai:', allBets: 'Tất cả kèo ›', notFound: 'Không tìm thấy trận đấu',
+  },
+  live: {
+    noneNow: 'Hiện không có trận nào đang diễn ra.', next: 'Tiếp theo: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Không thể tải tỷ số trực tiếp: %{message}', inPlay: 'Đang diễn ra', soon: 'Sắp bắt đầu', finished: 'Đã kết thúc',
+    sourceCache: 'Nguồn: ESPN (bộ nhớ đệm)', sourceDirect: 'Nguồn: ESPN', updated: 'cập nhật lúc %{time}', allLiveBets: 'Tất cả kèo trực tiếp ›',
+    redCards: 'Thẻ đỏ: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Đang tính tỷ lệ trực tiếp…',
+    onlyInPlay: 'Cược trực tiếp chỉ mở khi trận đấu đang diễn ra.', notInList: 'Trận này không có trong danh sách trực tiếp',
+    notStarted: 'Chưa bắt đầu', finishedScore: 'Đã kết thúc · %{score}', halfTime: 'Nghỉ giữa hiệp', fullTime: 'Hết giờ',
+  },
+  slip: {
+    title: 'Phiếu cược của bạn', subtitle: 'Bạn không thật sự đặt số tiền này. Số tiền sẽ vào heo đất của bạn.',
+    empty: 'Phiếu cược trống. Hãy chọn tỷ lệ ở mục Trận đấu.', bar: 'Phiếu cược · %{count} trận', barOdds: 'Tỷ lệ %{odds}',
+    remove: 'Xóa khỏi phiếu', live: 'Trực tiếp', stake: 'Số tiền', totalOdds: 'Tổng tỷ lệ', potential: 'Có thể nhận',
+    create: 'Tạo phiếu · %{amount} vào heo đất',
+    errors: {
+      invalidAmount: 'Nhập số tiền hợp lệ (ví dụ %{example})', empty: 'Thêm ít nhất một trận vào phiếu',
+      tooMany: 'Một phiếu có tối đa %{max} trận', sameMatch: 'Không thể thêm hai lựa chọn của cùng một trận',
+      unknownBet: 'Kèo không xác định', closed: 'Đã đóng cược cho %{match}',
+      started: '%{match} đã bắt đầu; cược trước trận đã đóng', postponed: '%{match} đã bị hoãn hoặc hủy',
+      minStake: 'Số tiền tối thiểu là %{min}', staleLive: 'Tỷ lệ trực tiếp của %{match} đã quá một phút; hãy xóa và chọn lại',
+    },
+  },
+  coupons: {
+    title: 'Phiếu cược', subtitle: 'Phiếu cược "bóng": trận đấu thật, tiền ảo.', none: 'Chưa có phiếu cược nào. Hãy bắt đầu bằng cách chọn tỷ lệ ở mục Trận đấu.',
+    open: 'Đang mở', won: 'Thắng', lost: 'Thua', stakeOdds: 'Số tiền %{stake} · Tỷ lệ %{odds}', potential: 'Có thể %{amount}',
+  },
+  savings: {
+    title: 'Heo đất', subtitle: 'Mỗi đồng bạn không đặt cược đều ở đây.', inBank: 'Trong heo đất',
+    notToBookie: 'Số tiền này không đến tay nhà cái. Nếu bạn thật sự để dành nó, nó là của bạn.',
+    allTime: 'Từ trước đến nay', coupons: 'Phiếu cược', couponsValue: '%{count} (%{open} đang mở)', staked: 'Số tiền lẽ ra đã cược',
+    wonLost: 'Thắng / thua', ifReal: 'Nếu bạn chơi bằng tiền thật',
+    noSettled: 'Khi phiếu được thanh toán, bạn sẽ thấy ở đây điều gì sẽ xảy ra với tiền thật.',
+    houseEdge: 'Tỷ lệ có tính phần lợi của nhà cái, giống các trang cá cược thật: về lâu dài nhà cái luôn thắng.',
+    houseEdgeYours: 'Những con số này cho thấy điều đó bằng chính phiếu cược của bạn.', help: 'Bạn muốn nói chuyện với ai đó? %{name}: %{contact}',
+    otherCurrencies: 'Không bao gồm phiếu cược bằng tiền tệ khác.',
+  },
+  games: { title: 'Trò chơi', subtitle: 'Chỉ dùng chip ảo. Không mua, không rút tiền.', crash: 'Crash', roulette: 'Roulette', slot: 'Máy đánh bạc' },
+  settings: {
+    title: 'Cài đặt', language: 'Ngôn ngữ', deviceLanguage: 'Ngôn ngữ của thiết bị', currency: 'Tiền tệ', automatic: 'Tự động (%{value})',
+    oddsFormat: 'Định dạng tỷ lệ', decimal: 'Thập phân', fractional: 'Phân số', american: 'Kiểu Mỹ',
+    restartForRtl: 'Khởi động lại ứng dụng để đổi hướng chữ.',
+    translationNote: 'Các bản dịch ngoài tiếng Anh và tiếng Thổ Nhĩ Kỳ được thực hiện với sự hỗ trợ của dịch máy và đang chờ người bản ngữ kiểm tra.',
+  },
+  markets: { '1X2': 'Kết quả trận đấu', DC: 'Cơ hội kép', OU: 'Tài/Xỉu %{line}', BTTS: 'Hai đội ghi bàn', TG: 'Tổng số bàn', HC: 'Chấp (%{hc})', CS: 'Tỷ số chính xác' },
+  outcomes: { under: 'Xỉu', over: 'Tài', yes: 'Có', no: 'Không', other: 'Khác' },
+};
+export default vi;

@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const de: Messages = {
+  tabs: { matches: 'Spiele', coupons: 'Wettscheine', games: 'Casinospiele', savings: 'Sparschwein' },
+  nav: { match: 'Spiel', live: 'Live', coupon: 'Wettschein', settings: 'Einstellungen', back: 'Spiele' },
+  common: { dataError: 'Daten konnten nicht geladen werden', dbError: 'Die Datenbank konnte nicht vorbereitet werden: %{message}', comingSoon: 'Phase %{n}' },
+  matches: {
+    title: 'Spiele', subtitle: 'Echte Spiele, echte Quoten. Spielgeld.', preMatch: 'Vor dem Spiel', live: 'Live',
+    none14: 'In diesem Wettbewerb gibt es in den nächsten 14 Tagen keine Spiele.',
+    notSoon: '%{league} hat heute und morgen keine Spiele; die nächsten Spiele sind am %{date}.',
+    soonLeagues: 'Wettbewerbe mit Spielen heute und morgen:', allBets: 'Alle Wetten ›', notFound: 'Spiel nicht gefunden',
+  },
+  live: {
+    noneNow: 'Gerade läuft kein Spiel.', next: 'Nächstes: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Live-Ergebnisse konnten nicht geladen werden: %{message}', inPlay: 'Läuft', soon: 'Beginnt bald', finished: 'Beendet',
+    sourceCache: 'Quelle: ESPN (Cache)', sourceDirect: 'Quelle: ESPN', updated: 'aktualisiert um %{time}', allLiveBets: 'Alle Live-Wetten ›',
+    redCards: 'Rote Karten: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Live-Quoten werden berechnet…',
+    onlyInPlay: 'Live-Wetten sind nur während des Spiels möglich.', notInList: 'Dieses Spiel ist nicht in der Live-Liste',
+    notStarted: 'Noch nicht begonnen', finishedScore: 'Beendet · %{score}', halfTime: 'HZ', fullTime: 'Ende',
+  },
+  slip: {
+    title: 'Dein Wettschein', subtitle: 'Du setzt dieses Geld nicht wirklich. Der Betrag kommt in dein Sparschwein.',
+    empty: 'Dein Wettschein ist leer. Wähle Quoten unter Spiele.', bar: 'Wettschein · Spiele: %{count}', barOdds: 'Quote %{odds}',
+    remove: 'Vom Wettschein entfernen', live: 'Live', stake: 'Einsatz', totalOdds: 'Gesamtquote', potential: 'Möglicher Gewinn',
+    create: 'Wettschein erstellen · %{amount} ins Sparschwein',
+    errors: {
+      invalidAmount: 'Gib einen gültigen Betrag ein (z. B. %{example})', empty: 'Füge mindestens ein Spiel hinzu',
+      tooMany: 'Ein Wettschein darf höchstens %{max} Spiele enthalten', sameMatch: 'Du kannst nicht zwei Tipps aus demselben Spiel hinzufügen',
+      unknownBet: 'Unbekannte Wette', closed: 'Wetten auf %{match} sind geschlossen',
+      started: '%{match} hat begonnen; Wetten vor dem Spiel sind geschlossen', postponed: '%{match} wurde verschoben oder abgesagt',
+      minStake: 'Der Mindesteinsatz ist %{min}', staleLive: 'Die Live-Quote für %{match} ist älter als eine Minute; entferne sie und wähle neu',
+    },
+  },
+  coupons: {
+    title: 'Wettscheine', subtitle: 'Deine Schattenwetten: echte Spiele, Spielgeld.', none: 'Noch keine Wettscheine. Wähle zuerst Quoten unter Spiele.',
+    open: 'Offen', won: 'Gewonnen', lost: 'Verloren', stakeOdds: 'Einsatz %{stake} · Quote %{odds}', potential: 'Möglich %{amount}',
+  },
+  savings: {
+    title: 'Sparschwein', subtitle: 'Jede Münze, die du nicht gesetzt hast, ist hier.', inBank: 'In deinem Sparschwein',
+    notToBookie: 'Dieses Geld ging nicht an einen Buchmacher. Wenn du es wirklich zurückgelegt hast, gehört es dir.',
+    allTime: 'Insgesamt', coupons: 'Wettscheine', couponsValue: '%{count} (%{open} offen)', staked: 'Hättest du gesetzt',
+    wonLost: 'Gewonnen / verloren', ifReal: 'Hättest du mit echtem Geld gespielt',
+    noSettled: 'Sobald ein Wettschein abgerechnet ist, siehst du hier, was mit echtem Geld passiert wäre.',
+    houseEdge: 'Die Quoten enthalten eine Buchmachermarge wie bei echten Wettanbietern: Langfristig gewinnt der Anbieter.',
+    houseEdgeYours: 'Diese Zahlen zeigen es an deinen eigenen Wettscheinen.', help: 'Möchtest du mit jemandem reden? %{name}: %{contact}',
+    otherCurrencies: 'Wettscheine in anderen Währungen sind nicht enthalten.',
+  },
+  games: { title: 'Casinospiele', subtitle: 'Nur Spielchips. Keine Käufe, keine Auszahlung.', crash: 'Crash', roulette: 'Roulette', slot: 'Spielautomaten' },
+  settings: {
+    title: 'Einstellungen', language: 'Sprache', deviceLanguage: 'Gerätesprache', currency: 'Währung', automatic: 'Automatisch (%{value})',
+    oddsFormat: 'Quotenformat', decimal: 'Dezimal', fractional: 'Bruch', american: 'Amerikanisch',
+    restartForRtl: 'Starte die App neu, um die Schreibrichtung zu ändern.',
+    translationNote: 'Übersetzungen außer Englisch und Türkisch wurden maschinell unterstützt erstellt und warten auf Prüfung durch Muttersprachler.',
+  },
+  markets: { '1X2': 'Spielergebnis', DC: 'Doppelte Chance', OU: 'Über/Unter %{line}', BTTS: 'Beide Teams treffen', TG: 'Anzahl Tore', HC: 'Handicap (%{hc})', CS: 'Genaues Ergebnis' },
+  outcomes: { under: 'Unter', over: 'Über', yes: 'Ja', no: 'Nein', other: 'Andere' },
+};
+export default de;

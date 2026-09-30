@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const id: Messages = {
+  tabs: { matches: 'Pertandingan', coupons: 'Kupon', games: 'Permainan', savings: 'Celengan' },
+  nav: { match: 'Pertandingan', live: 'Live', coupon: 'Kupon', settings: 'Pengaturan', back: 'Pertandingan' },
+  common: { dataError: 'Data tidak dapat dimuat', dbError: 'Basis data tidak dapat disiapkan: %{message}', comingSoon: 'Tahap %{n}' },
+  matches: {
+    title: 'Pertandingan', subtitle: 'Pertandingan nyata, odds nyata. Uangnya virtual.', preMatch: 'Sebelum laga', live: 'Live',
+    none14: 'Tidak ada pertandingan di kompetisi ini dalam 14 hari ke depan.',
+    notSoon: '%{league} tidak ada pertandingan hari ini dan besok; pertandingan berikutnya %{date}.',
+    soonLeagues: 'Kompetisi dengan pertandingan hari ini dan besok:', allBets: 'Semua taruhan ›', notFound: 'Pertandingan tidak ditemukan',
+  },
+  live: {
+    noneNow: 'Saat ini tidak ada pertandingan yang berlangsung.', next: 'Berikutnya: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Skor langsung tidak dapat dimuat: %{message}', inPlay: 'Berlangsung', soon: 'Segera dimulai', finished: 'Selesai',
+    sourceCache: 'Sumber: ESPN (cache)', sourceDirect: 'Sumber: ESPN', updated: 'diperbarui %{time}', allLiveBets: 'Semua taruhan live ›',
+    redCards: 'Kartu merah: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Menghitung odds live…',
+    onlyInPlay: 'Taruhan live hanya dibuka selama pertandingan berlangsung.', notInList: 'Pertandingan ini tidak ada di daftar live',
+    notStarted: 'Belum dimulai', finishedScore: 'Selesai · %{score}', halfTime: 'Jeda', fullTime: 'Akhir',
+  },
+  slip: {
+    title: 'Kuponmu', subtitle: 'Kamu tidak benar-benar memasang uang ini. Jumlahnya masuk ke celenganmu.',
+    empty: 'Kuponmu kosong. Pilih odds di Pertandingan.', bar: 'Kupon · %{count} pertandingan', barOdds: 'Odds %{odds}',
+    remove: 'Hapus dari kupon', live: 'Live', stake: 'Jumlah', totalOdds: 'Total odds', potential: 'Potensi hasil',
+    create: 'Buat kupon · %{amount} ke celengan',
+    errors: {
+      invalidAmount: 'Masukkan jumlah yang valid (mis. %{example})', empty: 'Tambahkan setidaknya satu pertandingan',
+      tooMany: 'Satu kupon maksimal berisi %{max} pertandingan', sameMatch: 'Tidak bisa menambahkan dua pilihan dari pertandingan yang sama',
+      unknownBet: 'Taruhan tidak dikenal', closed: 'Taruhan untuk %{match} sudah ditutup',
+      started: '%{match} sudah dimulai; taruhan sebelum laga ditutup', postponed: '%{match} ditunda atau dibatalkan',
+      minStake: 'Jumlah minimum adalah %{min}', staleLive: 'Odds live untuk %{match} sudah lebih dari satu menit; hapus lalu pilih lagi',
+    },
+  },
+  coupons: {
+    title: 'Kupon', subtitle: 'Kupon bayanganmu: pertandingan nyata, uang virtual.', none: 'Belum ada kupon. Mulailah dengan memilih odds di Pertandingan.',
+    open: 'Terbuka', won: 'Menang', lost: 'Kalah', stakeOdds: 'Jumlah %{stake} · Odds %{odds}', potential: 'Potensi %{amount}',
+  },
+  savings: {
+    title: 'Celengan', subtitle: 'Setiap koin yang tidak kamu pasang ada di sini.', inBank: 'Di celenganmu',
+    notToBookie: 'Uang ini tidak pergi ke bandar taruhan. Kalau benar-benar kamu sisihkan, itu milikmu.',
+    allTime: 'Sejak awal', coupons: 'Kupon', couponsValue: '%{count} (%{open} terbuka)', staked: 'Yang akan kamu pasang',
+    wonLost: 'Menang / kalah', ifReal: 'Jika kamu bermain dengan uang sungguhan',
+    noSettled: 'Setelah kupon diselesaikan, di sini kamu akan melihat apa yang terjadi dengan uang sungguhan.',
+    houseEdge: 'Odds sudah termasuk margin bandar, seperti di situs taruhan sungguhan: dalam jangka panjang bandar yang menang.',
+    houseEdgeYours: 'Angka-angka ini membuktikannya dengan kuponmu sendiri.', help: 'Ingin bicara dengan seseorang? %{name}: %{contact}',
+    otherCurrencies: 'Kupon dalam mata uang lain tidak termasuk.',
+  },
+  games: { title: 'Permainan', subtitle: 'Hanya chip virtual. Tanpa pembelian, tanpa penarikan uang.', crash: 'Crash', roulette: 'Rolet', slot: 'Slot' },
+  settings: {
+    title: 'Pengaturan', language: 'Bahasa', deviceLanguage: 'Bahasa perangkat', currency: 'Mata uang', automatic: 'Otomatis (%{value})',
+    oddsFormat: 'Format odds', decimal: 'Desimal', fractional: 'Pecahan', american: 'Amerika',
+    restartForRtl: 'Mulai ulang aplikasi untuk mengubah arah teks.',
+    translationNote: 'Terjemahan selain bahasa Inggris dan Turki dibuat dengan bantuan terjemahan mesin dan menunggu pemeriksaan penutur asli.',
+  },
+  markets: { '1X2': 'Hasil akhir', DC: 'Peluang ganda', OU: 'Over/Under %{line}', BTTS: 'Kedua tim mencetak gol', TG: 'Total gol', HC: 'Handicap (%{hc})', CS: 'Skor tepat' },
+  outcomes: { under: 'Under', over: 'Over', yes: 'Ya', no: 'Tidak', other: 'Lainnya' },
+};
+export default id;

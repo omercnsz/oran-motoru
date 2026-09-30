@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+// 简体中文
+const zh: Messages = {
+  tabs: { matches: '比赛', coupons: '投注单', games: '游戏', savings: '存钱罐' },
+  nav: { match: '比赛', live: '滚球', coupon: '投注单', settings: '设置', back: '比赛' },
+  common: { dataError: '无法加载数据', dbError: '无法准备数据库：%{message}', comingSoon: '第 %{n} 阶段' },
+  matches: {
+    title: '比赛', subtitle: '真实的比赛，真实的赔率。虚拟的钱。', preMatch: '赛前', live: '滚球',
+    none14: '该赛事未来 14 天内没有比赛。', notSoon: '%{league} 今明两天没有比赛；下一场在 %{date}。',
+    soonLeagues: '今明两天有比赛的赛事：', allBets: '全部投注 ›', notFound: '找不到这场比赛',
+  },
+  live: {
+    noneNow: '目前没有正在进行的比赛。', next: '下一场：%{home} – %{away}，%{time}（%{league}）。',
+    error: '无法加载实时比分：%{message}', inPlay: '进行中', soon: '即将开始', finished: '已结束',
+    sourceCache: '来源：ESPN（缓存）', sourceDirect: '来源：ESPN', updated: '%{time} 更新', allLiveBets: '全部滚球投注 ›',
+    redCards: '红牌：%{home} %{homeCount}，%{away} %{awayCount}', computing: '正在计算实时赔率…',
+    onlyInPlay: '滚球投注仅在比赛进行中开放。', notInList: '这场比赛不在实时列表中',
+    notStarted: '未开始', finishedScore: '已结束 · %{score}', halfTime: '中场', fullTime: '完场',
+  },
+  slip: {
+    title: '你的投注单', subtitle: '你并没有真的下注这笔钱。金额会存进你的存钱罐。',
+    empty: '投注单是空的。去“比赛”里选择赔率。', bar: '投注单 · %{count} 场', barOdds: '赔率 %{odds}',
+    remove: '从投注单移除', live: '滚球', stake: '金额', totalOdds: '总赔率', potential: '可能返还',
+    create: '创建投注单 · %{amount} 存入存钱罐',
+    errors: {
+      invalidAmount: '请输入有效金额（例如 %{example}）', empty: '请至少添加一场比赛',
+      tooMany: '一张投注单最多 %{max} 场比赛', sameMatch: '不能添加同一场比赛的两个选项',
+      unknownBet: '未知的投注', closed: '%{match} 的投注已关闭',
+      started: '%{match} 已开赛；赛前投注已关闭', postponed: '%{match} 已延期或取消',
+      minStake: '最低金额为 %{min}', staleLive: '%{match} 的滚球赔率已超过一分钟；请移除后重新选择',
+    },
+  },
+  coupons: {
+    title: '投注单', subtitle: '你的影子投注单：真实的比赛，虚拟的钱。', none: '还没有投注单。先去“比赛”里选择赔率吧。',
+    open: '未结算', won: '赢', lost: '输', stakeOdds: '金额 %{stake} · 赔率 %{odds}', potential: '可能 %{amount}',
+  },
+  savings: {
+    title: '存钱罐', subtitle: '你没有下注的每一分钱都在这里。', inBank: '存钱罐里有',
+    notToBookie: '这笔钱没有流向博彩公司。如果你真的把它存了起来，它就是你的。',
+    allTime: '全部', coupons: '投注单', couponsValue: '%{count}（未结算 %{open}）', staked: '本来会下注',
+    wonLost: '赢 / 输', ifReal: '如果你用真钱投注',
+    noSettled: '投注单结算后，你会在这里看到用真钱会发生什么。',
+    houseEdge: '赔率和真实博彩网站一样包含抽水：从长远看，庄家总是赢。',
+    houseEdgeYours: '这些数字用你自己的投注单证明了这一点。', help: '想找人聊聊吗？%{name}：%{contact}',
+    otherCurrencies: '不包括其他货币的投注单。',
+  },
+  games: { title: '游戏', subtitle: '只有虚拟筹码。不能购买，也不能提现。', crash: 'Crash', roulette: '轮盘', slot: '老虎机' },
+  settings: {
+    title: '设置', language: '语言', deviceLanguage: '设备语言', currency: '货币', automatic: '自动（%{value}）',
+    oddsFormat: '赔率格式', decimal: '小数', fractional: '分数', american: '美式',
+    restartForRtl: '重新启动应用以更改文字方向。',
+    translationNote: '除英语和土耳其语外的翻译借助了机器翻译，正在等待母语人士审校。',
+  },
+  markets: { '1X2': '全场赛果', DC: '双重机会', OU: '大小球 %{line}', BTTS: '双方都进球', TG: '总进球数', HC: '让球（%{hc}）', CS: '正确比分' },
+  outcomes: { under: '小', over: '大', yes: '是', no: '否', other: '其他' },
+};
+export default zh;

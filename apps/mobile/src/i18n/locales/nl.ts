@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const nl: Messages = {
+  tabs: { matches: 'Wedstrijden', coupons: 'Wedbonnen', games: 'Spellen', savings: 'Spaarpot' },
+  nav: { match: 'Wedstrijd', live: 'Live', coupon: 'Wedbon', settings: 'Instellingen', back: 'Wedstrijden' },
+  common: { dataError: 'Gegevens konden niet worden geladen', dbError: 'De database kon niet worden voorbereid: %{message}', comingSoon: 'Fase %{n}' },
+  matches: {
+    title: 'Wedstrijden', subtitle: 'Echte wedstrijden, echte odds. Speelgeld.', preMatch: 'Voor de wedstrijd', live: 'Live',
+    none14: 'Geen wedstrijden in deze competitie in de komende 14 dagen.',
+    notSoon: '%{league} speelt vandaag en morgen niet; de volgende wedstrijden zijn op %{date}.',
+    soonLeagues: 'Competities met wedstrijden vandaag en morgen:', allBets: 'Alle weddenschappen ›', notFound: 'Wedstrijd niet gevonden',
+  },
+  live: {
+    noneNow: 'Er wordt nu geen wedstrijd gespeeld.', next: 'Volgende: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Live-uitslagen konden niet worden geladen: %{message}', inPlay: 'Bezig', soon: 'Begint zo', finished: 'Afgelopen',
+    sourceCache: 'Bron: ESPN (cache)', sourceDirect: 'Bron: ESPN', updated: 'bijgewerkt om %{time}', allLiveBets: 'Alle live-weddenschappen ›',
+    redCards: 'Rode kaarten: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Live-odds worden berekend…',
+    onlyInPlay: 'Live wedden kan alleen tijdens de wedstrijd.', notInList: 'Deze wedstrijd staat niet in de livelijst',
+    notStarted: 'Nog niet begonnen', finishedScore: 'Afgelopen · %{score}', halfTime: 'Rust', fullTime: 'Einde',
+  },
+  slip: {
+    title: 'Jouw wedbon', subtitle: 'Je zet dit geld niet echt in. Het bedrag gaat naar je spaarpot.',
+    empty: 'Je wedbon is leeg. Kies odds bij Wedstrijden.', bar: 'Wedbon · wedstrijden: %{count}', barOdds: 'Odd %{odds}',
+    remove: 'Van wedbon verwijderen', live: 'Live', stake: 'Inzet', totalOdds: 'Totale odd', potential: 'Mogelijke uitbetaling',
+    create: 'Wedbon maken · %{amount} naar de spaarpot',
+    errors: {
+      invalidAmount: 'Vul een geldig bedrag in (bijv. %{example})', empty: 'Voeg minstens één wedstrijd toe',
+      tooMany: 'Een wedbon mag maximaal %{max} wedstrijden bevatten', sameMatch: 'Je kunt geen twee keuzes uit dezelfde wedstrijd toevoegen',
+      unknownBet: 'Onbekende weddenschap', closed: 'Wedden op %{match} is gesloten',
+      started: '%{match} is begonnen; wedden vooraf is gesloten', postponed: '%{match} is uitgesteld of afgelast',
+      minStake: 'De minimale inzet is %{min}', staleLive: 'De live-odd voor %{match} is ouder dan een minuut; verwijder hem en kies opnieuw',
+    },
+  },
+  coupons: {
+    title: 'Wedbonnen', subtitle: 'Je schaduwwedbonnen: echte wedstrijden, speelgeld.', none: 'Nog geen wedbonnen. Begin met odds kiezen bij Wedstrijden.',
+    open: 'Open', won: 'Gewonnen', lost: 'Verloren', stakeOdds: 'Inzet %{stake} · Odd %{odds}', potential: 'Mogelijk %{amount}',
+  },
+  savings: {
+    title: 'Spaarpot', subtitle: 'Elke munt die je niet hebt ingezet, zit hier.', inBank: 'In je spaarpot',
+    notToBookie: 'Dit geld ging niet naar een bookmaker. Als je het echt opzij hebt gezet, is het van jou.',
+    allTime: 'Sinds het begin', coupons: 'Wedbonnen', couponsValue: '%{count} (%{open} open)', staked: 'Je zou hebben ingezet',
+    wonLost: 'Gewonnen / verloren', ifReal: 'Als je met echt geld had gespeeld',
+    noSettled: 'Zodra een wedbon is afgerekend, zie je hier wat er met echt geld was gebeurd.',
+    houseEdge: 'De odds bevatten een marge, net als bij echte bookmakers: op de lange termijn wint het huis.',
+    houseEdgeYours: 'Deze cijfers laten dat zien met je eigen wedbonnen.', help: 'Wil je met iemand praten? %{name}: %{contact}',
+    otherCurrencies: 'Wedbonnen in andere valuta zijn niet meegeteld.',
+  },
+  games: { title: 'Spellen', subtitle: 'Alleen speelfiches. Geen aankopen, geen uitbetaling.', crash: 'Crash', roulette: 'Roulette', slot: 'Gokkasten' },
+  settings: {
+    title: 'Instellingen', language: 'Taal', deviceLanguage: 'Taal van het apparaat', currency: 'Valuta', automatic: 'Automatisch (%{value})',
+    oddsFormat: 'Oddsnotatie', decimal: 'Decimaal', fractional: 'Breuk', american: 'Amerikaans',
+    restartForRtl: 'Start de app opnieuw om de schrijfrichting te wijzigen.',
+    translationNote: 'Vertalingen behalve Engels en Turks zijn met hulp van machinevertaling gemaakt en wachten op controle door moedertaalsprekers.',
+  },
+  markets: { '1X2': 'Uitslag', DC: 'Dubbele kans', OU: 'Meer/Minder dan %{line}', BTTS: 'Beide teams scoren', TG: 'Aantal doelpunten', HC: 'Handicap (%{hc})', CS: 'Exacte uitslag' },
+  outcomes: { under: 'Minder', over: 'Meer', yes: 'Ja', no: 'Nee', other: 'Anders' },
+};
+export default nl;

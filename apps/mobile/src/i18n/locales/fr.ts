@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const fr: Messages = {
+  tabs: { matches: 'Matchs', coupons: 'Tickets', games: 'Jeux', savings: 'Tirelire' },
+  nav: { match: 'Match', live: 'En direct', coupon: 'Ticket', settings: 'Réglages', back: 'Matchs' },
+  common: { dataError: 'Impossible de charger les données', dbError: 'Impossible de préparer la base de données : %{message}', comingSoon: 'Phase %{n}' },
+  matches: {
+    title: 'Matchs', subtitle: 'De vrais matchs, de vraies cotes. De l’argent fictif.', preMatch: 'Avant-match', live: 'En direct',
+    none14: 'Aucun match dans cette compétition dans les 14 prochains jours.',
+    notSoon: '%{league} n’a pas de match aujourd’hui ni demain ; prochains matchs le %{date}.',
+    soonLeagues: 'Compétitions avec des matchs aujourd’hui et demain :', allBets: 'Tous les paris ›', notFound: 'Match introuvable',
+  },
+  live: {
+    noneNow: 'Aucun match n’est en cours.', next: 'Prochain : %{home} – %{away}, %{time} (%{league}).',
+    error: 'Impossible de charger les scores en direct : %{message}', inPlay: 'En cours', soon: 'Commence bientôt', finished: 'Terminé',
+    sourceCache: 'Source : ESPN (cache)', sourceDirect: 'Source : ESPN', updated: 'mis à jour à %{time}', allLiveBets: 'Tous les paris en direct ›',
+    redCards: 'Cartons rouges : %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Calcul des cotes en direct…',
+    onlyInPlay: 'Les paris en direct ne sont ouverts que pendant le match.', notInList: 'Ce match n’est pas dans la liste en direct',
+    notStarted: 'Pas commencé', finishedScore: 'Terminé · %{score}', halfTime: 'MT', fullTime: 'Fin',
+  },
+  slip: {
+    title: 'Ton ticket', subtitle: 'Tu ne mises pas vraiment cet argent. Le montant va dans ta tirelire.',
+    empty: 'Ton ticket est vide. Choisis des cotes dans Matchs.', bar: 'Ticket · matchs : %{count}', barOdds: 'Cote %{odds}',
+    remove: 'Retirer du ticket', live: 'En direct', stake: 'Mise', totalOdds: 'Cote totale', potential: 'Gain possible',
+    create: 'Créer le ticket · %{amount} dans la tirelire',
+    errors: {
+      invalidAmount: 'Saisis un montant valide (ex. %{example})', empty: 'Ajoute au moins un match à ton ticket',
+      tooMany: 'Un ticket peut contenir au maximum %{max} matchs', sameMatch: 'Tu ne peux pas ajouter deux choix du même match',
+      unknownBet: 'Pari inconnu', closed: 'Les paris sont fermés pour %{match}',
+      started: '%{match} a commencé ; les paris avant-match sont fermés', postponed: '%{match} a été reporté ou annulé',
+      minStake: 'La mise minimale est de %{min}', staleLive: 'La cote en direct de %{match} date de plus d’une minute ; retire-la et choisis-la à nouveau',
+    },
+  },
+  coupons: {
+    title: 'Tickets', subtitle: 'Tes tickets fantômes : de vrais matchs, de l’argent fictif.', none: 'Aucun ticket pour l’instant. Commence par choisir des cotes dans Matchs.',
+    open: 'En cours', won: 'Gagné', lost: 'Perdu', stakeOdds: 'Mise %{stake} · Cote %{odds}', potential: 'Possible %{amount}',
+  },
+  savings: {
+    title: 'Tirelire', subtitle: 'Chaque pièce que tu n’as pas misée est ici.', inBank: 'Dans ta tirelire',
+    notToBookie: 'Cet argent n’est pas allé chez un bookmaker. Si tu l’as vraiment mis de côté, il est à toi.',
+    allTime: 'Depuis le début', coupons: 'Tickets', couponsValue: '%{count} (%{open} en cours)', staked: 'Tu aurais misé',
+    wonLost: 'Gagnés / perdus', ifReal: 'Si tu avais joué avec de l’argent réel',
+    noSettled: 'Quand un ticket sera réglé, tu verras ici ce qui se serait passé avec de l’argent réel.',
+    houseEdge: 'Les cotes incluent une marge, comme chez les vrais bookmakers : sur la durée, c’est la maison qui gagne.',
+    houseEdgeYours: 'Ces chiffres le montrent avec tes propres tickets.', help: 'Besoin d’en parler ? %{name} : %{contact}',
+    otherCurrencies: 'Les tickets dans d’autres devises ne sont pas inclus.',
+  },
+  games: { title: 'Jeux', subtitle: 'Jetons fictifs uniquement. Aucun achat, aucun retrait.', crash: 'Crash', roulette: 'Roulette', slot: 'Machines à sous' },
+  settings: {
+    title: 'Réglages', language: 'Langue', deviceLanguage: 'Langue de l’appareil', currency: 'Devise', automatic: 'Automatique (%{value})',
+    oddsFormat: 'Format des cotes', decimal: 'Décimal', fractional: 'Fractionnaire', american: 'Américain',
+    restartForRtl: 'Redémarre l’application pour changer le sens d’écriture.',
+    translationNote: 'Les traductions autres que l’anglais et le turc ont été réalisées avec une aide automatique et attendent la relecture de locuteurs natifs.',
+  },
+  markets: { '1X2': 'Résultat du match', DC: 'Double chance', OU: 'Plus/Moins de %{line}', BTTS: 'Les deux équipes marquent', TG: 'Nombre de buts', HC: 'Handicap (%{hc})', CS: 'Score exact' },
+  outcomes: { under: 'Moins', over: 'Plus', yes: 'Oui', no: 'Non', other: 'Autre' },
+};
+export default fr;

@@ -55,7 +55,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc -p test",
+    "test": "node --test \"test/*.test.ts\""
   },
   "private": true
 }

@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const sq: Messages = {
+  tabs: { matches: 'Ndeshjet', coupons: 'Kuponët', games: 'Lojërat', savings: 'Kumbara' },
+  nav: { match: 'Ndeshja', live: 'Live', coupon: 'Kuponi', settings: 'Cilësimet', back: 'Ndeshjet' },
+  common: { dataError: 'Të dhënat nuk u ngarkuan', dbError: 'Baza e të dhënave nuk u përgatit: %{message}', comingSoon: 'Faza %{n}' },
+  matches: {
+    title: 'Ndeshjet', subtitle: 'Ndeshje të vërteta, koeficientë të vërtetë. Para virtuale.', preMatch: 'Para ndeshjes', live: 'Live',
+    none14: 'Nuk ka ndeshje në këtë kompeticion në 14 ditët e ardhshme.',
+    notSoon: '%{league} nuk ka ndeshje sot as nesër; ndeshjet e radhës janë më %{date}.',
+    soonLeagues: 'Kompeticione me ndeshje sot dhe nesër:', allBets: 'Të gjitha bastet ›', notFound: 'Ndeshja nuk u gjet',
+  },
+  live: {
+    noneNow: 'Asnjë ndeshje nuk po luhet tani.', next: 'E radhës: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Rezultatet live nuk u ngarkuan: %{message}', inPlay: 'Në lojë', soon: 'Fillon së shpejti', finished: 'Përfundoi',
+    sourceCache: 'Burimi: ESPN (memorie e përkohshme)', sourceDirect: 'Burimi: ESPN', updated: 'përditësuar në %{time}', allLiveBets: 'Të gjitha bastet live ›',
+    redCards: 'Kartonë të kuq: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Po llogariten koeficientët live…',
+    onlyInPlay: 'Basti live është i hapur vetëm gjatë ndeshjes.', notInList: 'Kjo ndeshje nuk është në listën live',
+    notStarted: 'Nuk ka filluar', finishedScore: 'Përfundoi · %{score}', halfTime: 'Pushim', fullTime: 'Fund',
+  },
+  slip: {
+    title: 'Kuponi yt', subtitle: 'Nuk po i vë vërtet këto para. Shuma shkon në kumbarën tënde.',
+    empty: 'Kuponi është bosh. Zgjidh koeficientë te Ndeshjet.', bar: 'Kuponi · ndeshje: %{count}', barOdds: 'Koef. %{odds}',
+    remove: 'Hiqe nga kuponi', live: 'Live', stake: 'Shuma', totalOdds: 'Koeficienti total', potential: 'Fitimi i mundshëm',
+    create: 'Krijo kuponin · %{amount} në kumbara',
+    errors: {
+      invalidAmount: 'Shkruaj një shumë të vlefshme (p.sh. %{example})', empty: 'Shto të paktën një ndeshje në kupon',
+      tooMany: 'Një kupon mund të ketë deri në %{max} ndeshje', sameMatch: 'Nuk mund të shtosh dy zgjedhje nga e njëjta ndeshje',
+      unknownBet: 'Bast i panjohur', closed: 'Bastet për %{match} janë mbyllur',
+      started: '%{match} ka filluar; bastet para ndeshjes janë mbyllur', postponed: '%{match} u shty ose u anulua',
+      minStake: 'Shuma minimale është %{min}', staleLive: 'Koeficienti live për %{match} është më i vjetër se një minutë; hiqe dhe zgjidhe përsëri',
+    },
+  },
+  coupons: {
+    title: 'Kuponët', subtitle: 'Kuponët e tu në hije: ndeshje të vërteta, para virtuale.', none: 'Ende nuk ke kuponë. Fillo duke zgjedhur koeficientë te Ndeshjet.',
+    open: 'I hapur', won: 'Fitues', lost: 'Humbës', stakeOdds: 'Shuma %{stake} · Koef. %{odds}', potential: 'E mundshme %{amount}',
+  },
+  savings: {
+    title: 'Kumbara', subtitle: 'Çdo monedhë që nuk e ve në bast është këtu.', inBank: 'Në kumbarën tënde',
+    notToBookie: 'Këto para nuk shkuan te një bastore. Nëse i ke ndarë vërtet, janë të tuat.',
+    allTime: 'Që nga fillimi', coupons: 'Kuponët', couponsValue: '%{count} (të hapur: %{open})', staked: 'Do të kishe vënë',
+    wonLost: 'Fitues / humbës', ifReal: 'Po të kishe luajtur me para të vërteta',
+    noSettled: 'Kur një kupon të mbyllet, këtu do të shohësh çfarë do të ndodhte me para të vërteta.',
+    houseEdge: 'Koeficientët përfshijnë marzhin e bastores, si në bastoret e vërteta: në afat të gjatë fiton bastorja.',
+    houseEdgeYours: 'Këto shifra e tregojnë këtë me kuponët e tu.', help: 'Dëshiron të flasësh me dikë? %{name}: %{contact}',
+    otherCurrencies: 'Kuponët në monedha të tjera nuk përfshihen.',
+  },
+  games: { title: 'Lojërat', subtitle: 'Vetëm monedha virtuale. Pa blerje, pa tërheqje parash.', crash: 'Crash', roulette: 'Ruletë', slot: 'Lojëra me makineri' },
+  settings: {
+    title: 'Cilësimet', language: 'Gjuha', deviceLanguage: 'Gjuha e pajisjes', currency: 'Monedha', automatic: 'Automatik (%{value})',
+    oddsFormat: 'Formati i koeficientëve', decimal: 'Dhjetor', fractional: 'Thyesor', american: 'Amerikan',
+    restartForRtl: 'Rinise aplikacionin për të ndryshuar drejtimin e tekstit.',
+    translationNote: 'Përkthimet përveç anglishtes dhe turqishtes u bënë me ndihmën e përkthimit automatik dhe presin kontrollin e folësve amtarë.',
+  },
+  markets: { '1X2': 'Rezultati përfundimtar', DC: 'Shans i dyfishtë', OU: 'Mbi/Nën %{line}', BTTS: 'Të dy skuadrat shënojnë', TG: 'Totali i golave', HC: 'Hendikep (%{hc})', CS: 'Rezultati i saktë' },
+  outcomes: { under: 'Nën', over: 'Mbi', yes: 'Po', no: 'Jo', other: 'Tjetër' },
+};
+export default sq;

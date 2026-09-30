@@ -1,0 +1,57 @@
+import type { Messages } from './en';
+
+const ja: Messages = {
+  tabs: { matches: '試合', coupons: 'ベット', games: 'ゲーム', savings: '貯金箱' },
+  nav: { match: '試合', live: 'ライブ', coupon: 'ベットスリップ', settings: '設定', back: '試合' },
+  common: { dataError: 'データを読み込めませんでした', dbError: 'データベースを準備できませんでした: %{message}', comingSoon: 'フェーズ %{n}' },
+  matches: {
+    title: '試合', subtitle: '本物の試合、本物のオッズ。お金は仮想です。', preMatch: '試合前', live: 'ライブ',
+    none14: 'この大会では今後14日間に試合がありません。', notSoon: '%{league} は今日と明日は試合がありません。次の試合は %{date} です。',
+    soonLeagues: '今日と明日に試合がある大会:', allBets: 'すべてのベット ›', notFound: '試合が見つかりません',
+  },
+  live: {
+    noneNow: '現在行われている試合はありません。', next: '次の試合: %{home} – %{away}、%{time}（%{league}）。',
+    error: 'ライブスコアを読み込めませんでした: %{message}', inPlay: '試合中', soon: 'まもなく開始', finished: '終了',
+    sourceCache: '情報源: ESPN（キャッシュ）', sourceDirect: '情報源: ESPN', updated: '%{time} に更新', allLiveBets: 'すべてのライブベット ›',
+    redCards: 'レッドカード: %{home} %{homeCount}、%{away} %{awayCount}', computing: 'ライブオッズを計算中…',
+    onlyInPlay: 'ライブベットは試合中のみ可能です。', notInList: 'この試合はライブ一覧にありません',
+    notStarted: '未開始', finishedScore: '終了 · %{score}', halfTime: 'ハーフタイム', fullTime: '試合終了',
+  },
+  slip: {
+    title: 'あなたのベットスリップ', subtitle: '実際にこのお金を賭けるわけではありません。金額は貯金箱に入ります。',
+    empty: 'ベットスリップは空です。「試合」でオッズを選んでください。', bar: 'ベットスリップ · %{count} 試合', barOdds: 'オッズ %{odds}',
+    remove: 'スリップから削除', live: 'ライブ', stake: '金額', totalOdds: '合計オッズ', potential: '払戻の可能性',
+    create: 'ベットスリップを作成 · %{amount} を貯金箱へ',
+    errors: {
+      invalidAmount: '正しい金額を入力してください（例: %{example}）', empty: '少なくとも1試合を追加してください',
+      tooMany: '1枚のスリップに入れられるのは最大 %{max} 試合です', sameMatch: '同じ試合から2つの選択はできません',
+      unknownBet: '不明なベット', closed: '%{match} のベットは締め切られました',
+      started: '%{match} は始まりました。試合前ベットは締め切られました', postponed: '%{match} は延期または中止されました',
+      minStake: '最低金額は %{min} です', staleLive: '%{match} のライブオッズが1分以上前のものです。削除して選び直してください',
+    },
+  },
+  coupons: {
+    title: 'ベット', subtitle: 'あなたのシャドーベット: 本物の試合、仮想のお金。', none: 'まだベットはありません。「試合」でオッズを選ぶところから始めましょう。',
+    open: '未確定', won: '的中', lost: '外れ', stakeOdds: '金額 %{stake} · オッズ %{odds}', potential: '予想 %{amount}',
+  },
+  savings: {
+    title: '貯金箱', subtitle: '賭けなかったお金はすべてここにあります。', inBank: '貯金箱の中',
+    notToBookie: 'このお金はブックメーカーに渡っていません。本当に取っておいたなら、それはあなたのものです。',
+    allTime: 'これまでの合計', coupons: 'ベット', couponsValue: '%{count}（未確定 %{open}）', staked: '賭けていた金額',
+    wonLost: '的中 / 外れ', ifReal: '本物のお金で賭けていたら',
+    noSettled: 'ベットが確定すると、本物のお金だったらどうなっていたかがここに表示されます。',
+    houseEdge: 'オッズには実際のブックメーカーと同じく控除率が含まれています。長い目で見ると胴元が勝ちます。',
+    houseEdgeYours: 'この数字はあなた自身のベットでそれを示しています。', help: '誰かに相談したいですか？ %{name}: %{contact}',
+    otherCurrencies: 'ほかの通貨のベットは含まれていません。',
+  },
+  games: { title: 'ゲーム', subtitle: '仮想チップのみ。購入も換金もできません。', crash: 'クラッシュ', roulette: 'ルーレット', slot: 'スロット' },
+  settings: {
+    title: '設定', language: '言語', deviceLanguage: '端末の言語', currency: '通貨', automatic: '自動（%{value}）',
+    oddsFormat: 'オッズの表示形式', decimal: '小数', fractional: '分数', american: 'アメリカ式',
+    restartForRtl: '文字の方向を変えるにはアプリを再起動してください。',
+    translationNote: '英語とトルコ語以外の翻訳は機械翻訳の助けを借りて作成されており、ネイティブスピーカーの確認待ちです。',
+  },
+  markets: { '1X2': '試合結果', DC: 'ダブルチャンス', OU: 'オーバー/アンダー %{line}', BTTS: '両チーム得点', TG: '合計ゴール数', HC: 'ハンディキャップ（%{hc}）', CS: '正確なスコア' },
+  outcomes: { under: 'アンダー', over: 'オーバー', yes: 'はい', no: 'いいえ', other: 'その他' },
+};
+export default ja;

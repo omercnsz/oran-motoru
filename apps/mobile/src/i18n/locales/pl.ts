@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const pl: Messages = {
+  tabs: { matches: 'Mecze', coupons: 'Kupony', games: 'Gry', savings: 'Skarbonka' },
+  nav: { match: 'Mecz', live: 'Na żywo', coupon: 'Kupon', settings: 'Ustawienia', back: 'Mecze' },
+  common: { dataError: 'Nie udało się wczytać danych', dbError: 'Nie udało się przygotować bazy danych: %{message}', comingSoon: 'Etap %{n}' },
+  matches: {
+    title: 'Mecze', subtitle: 'Prawdziwe mecze, prawdziwe kursy. Wirtualne pieniądze.', preMatch: 'Przed meczem', live: 'Na żywo',
+    none14: 'W tych rozgrywkach nie ma meczów w ciągu najbliższych 14 dni.',
+    notSoon: 'W rozgrywkach %{league} nie ma meczów dziś ani jutro; następne: %{date}.',
+    soonLeagues: 'Rozgrywki z meczami dziś i jutro:', allBets: 'Wszystkie zakłady ›', notFound: 'Nie znaleziono meczu',
+  },
+  live: {
+    noneNow: 'W tej chwili nie trwa żaden mecz.', next: 'Następny: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Nie udało się wczytać wyników na żywo: %{message}', inPlay: 'W trakcie', soon: 'Wkrótce', finished: 'Zakończony',
+    sourceCache: 'Źródło: ESPN (pamięć podręczna)', sourceDirect: 'Źródło: ESPN', updated: 'aktualizacja %{time}', allLiveBets: 'Wszystkie zakłady na żywo ›',
+    redCards: 'Czerwone kartki: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Obliczanie kursów na żywo…',
+    onlyInPlay: 'Zakłady na żywo są otwarte tylko w trakcie meczu.', notInList: 'Tego meczu nie ma na liście na żywo',
+    notStarted: 'Nie rozpoczął się', finishedScore: 'Zakończony · %{score}', halfTime: 'Przerwa', fullTime: 'Koniec',
+  },
+  slip: {
+    title: 'Twój kupon', subtitle: 'Naprawdę nie stawiasz tych pieniędzy. Kwota trafia do twojej skarbonki.',
+    empty: 'Kupon jest pusty. Wybierz kursy w zakładce Mecze.', bar: 'Kupon · mecze: %{count}', barOdds: 'Kurs %{odds}',
+    remove: 'Usuń z kuponu', live: 'Na żywo', stake: 'Stawka', totalOdds: 'Kurs łączny', potential: 'Możliwa wygrana',
+    create: 'Utwórz kupon · %{amount} do skarbonki',
+    errors: {
+      invalidAmount: 'Wpisz poprawną kwotę (np. %{example})', empty: 'Dodaj do kuponu co najmniej jeden mecz',
+      tooMany: 'Kupon może mieć najwyżej %{max} meczów', sameMatch: 'Nie możesz dodać dwóch typów z tego samego meczu',
+      unknownBet: 'Nieznany zakład', closed: 'Zakłady na %{match} są zamknięte',
+      started: 'Mecz %{match} już się zaczął; zakłady przedmeczowe są zamknięte', postponed: 'Mecz %{match} został przełożony lub odwołany',
+      minStake: 'Minimalna stawka to %{min}', staleLive: 'Kurs na żywo dla %{match} ma ponad minutę; usuń go i wybierz ponownie',
+    },
+  },
+  coupons: {
+    title: 'Kupony', subtitle: 'Twoje kupony w cieniu: prawdziwe mecze, wirtualne pieniądze.', none: 'Nie masz jeszcze kuponów. Zacznij od wybrania kursów w zakładce Mecze.',
+    open: 'Otwarty', won: 'Wygrany', lost: 'Przegrany', stakeOdds: 'Stawka %{stake} · Kurs %{odds}', potential: 'Możliwe %{amount}',
+  },
+  savings: {
+    title: 'Skarbonka', subtitle: 'Każda moneta, której nie postawiłeś, jest tutaj.', inBank: 'W skarbonce',
+    notToBookie: 'Te pieniądze nie trafiły do bukmachera. Jeśli naprawdę je odłożyłeś, są twoje.',
+    allTime: 'Od początku', coupons: 'Kupony', couponsValue: '%{count} (otwarte: %{open})', staked: 'Postawiłbyś',
+    wonLost: 'Wygrane / przegrane', ifReal: 'Gdybyś grał prawdziwymi pieniędzmi',
+    noSettled: 'Gdy kupon zostanie rozliczony, zobaczysz tu, co stałoby się z prawdziwymi pieniędzmi.',
+    houseEdge: 'Kursy zawierają marżę, jak u prawdziwych bukmacherów: na dłuższą metę wygrywa bukmacher.',
+    houseEdgeYours: 'Te liczby pokazują to na twoich własnych kuponach.', help: 'Chcesz z kimś porozmawiać? %{name}: %{contact}',
+    otherCurrencies: 'Kupony w innych walutach nie są uwzględnione.',
+  },
+  games: { title: 'Gry', subtitle: 'Tylko wirtualne żetony. Bez zakupów i wypłat.', crash: 'Crash', roulette: 'Ruletka', slot: 'Automaty' },
+  settings: {
+    title: 'Ustawienia', language: 'Język', deviceLanguage: 'Język urządzenia', currency: 'Waluta', automatic: 'Automatycznie (%{value})',
+    oddsFormat: 'Format kursów', decimal: 'Dziesiętny', fractional: 'Ułamkowy', american: 'Amerykański',
+    restartForRtl: 'Uruchom aplikację ponownie, aby zmienić kierunek tekstu.',
+    translationNote: 'Tłumaczenia inne niż angielskie i tureckie powstały z pomocą tłumaczenia maszynowego i czekają na sprawdzenie przez rodzimych użytkowników języka.',
+  },
+  markets: { '1X2': 'Wynik meczu', DC: 'Podwójna szansa', OU: 'Powyżej/Poniżej %{line}', BTTS: 'Obie drużyny strzelą', TG: 'Liczba goli', HC: 'Handicap (%{hc})', CS: 'Dokładny wynik' },
+  outcomes: { under: 'Poniżej', over: 'Powyżej', yes: 'Tak', no: 'Nie', other: 'Inny' },
+};
+export default pl;

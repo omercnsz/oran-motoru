@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const bs: Messages = {
+  tabs: { matches: 'Utakmice', coupons: 'Tiketi', games: 'Igre', savings: 'Kasica' },
+  nav: { match: 'Utakmica', live: 'Uživo', coupon: 'Tiket', settings: 'Postavke', back: 'Utakmice' },
+  common: { dataError: 'Podaci se nisu mogli učitati', dbError: 'Baza podataka se nije mogla pripremiti: %{message}', comingSoon: 'Faza %{n}' },
+  matches: {
+    title: 'Utakmice', subtitle: 'Prave utakmice, prave kvote. Virtuelni novac.', preMatch: 'Prije utakmice', live: 'Uživo',
+    none14: 'U ovom takmičenju nema utakmica u narednih 14 dana.',
+    notSoon: '%{league} nema utakmica danas ni sutra; sljedeće su %{date}.',
+    soonLeagues: 'Takmičenja s utakmicama danas i sutra:', allBets: 'Sve opklade ›', notFound: 'Utakmica nije pronađena',
+  },
+  live: {
+    noneNow: 'Trenutno se ne igra nijedna utakmica.', next: 'Sljedeća: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Rezultati uživo se nisu mogli učitati: %{message}', inPlay: 'U toku', soon: 'Uskoro počinje', finished: 'Završena',
+    sourceCache: 'Izvor: ESPN (keš)', sourceDirect: 'Izvor: ESPN', updated: 'ažurirano u %{time}', allLiveBets: 'Sve opklade uživo ›',
+    redCards: 'Crveni kartoni: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Računaju se kvote uživo…',
+    onlyInPlay: 'Klađenje uživo je otvoreno samo tokom utakmice.', notInList: 'Ova utakmica nije na listi uživo',
+    notStarted: 'Nije počela', finishedScore: 'Završena · %{score}', halfTime: 'Poluvrijeme', fullTime: 'Kraj',
+  },
+  slip: {
+    title: 'Tvoj tiket', subtitle: 'Ovaj novac zapravo ne ulažeš. Iznos ide u tvoju kasicu.',
+    empty: 'Tiket je prazan. Odaberi kvote u Utakmicama.', bar: 'Tiket · utakmica: %{count}', barOdds: 'Kvota %{odds}',
+    remove: 'Ukloni s tiketa', live: 'Uživo', stake: 'Ulog', totalOdds: 'Ukupna kvota', potential: 'Mogući dobitak',
+    create: 'Napravi tiket · %{amount} u kasicu',
+    errors: {
+      invalidAmount: 'Unesi ispravan iznos (npr. %{example})', empty: 'Dodaj barem jednu utakmicu na tiket',
+      tooMany: 'Tiket može imati najviše %{max} utakmica', sameMatch: 'Ne možeš dodati dva izbora iz iste utakmice',
+      unknownBet: 'Nepoznata opklada', closed: 'Klađenje na %{match} je zatvoreno',
+      started: '%{match} je počela; klađenje prije utakmice je zatvoreno', postponed: '%{match} je odgođena ili otkazana',
+      minStake: 'Najmanji ulog je %{min}', staleLive: 'Kvota uživo za %{match} je starija od minute; ukloni je i odaberi ponovo',
+    },
+  },
+  coupons: {
+    title: 'Tiketi', subtitle: 'Tvoji tiketi u sjeni: prave utakmice, virtuelni novac.', none: 'Još nemaš tiketa. Počni odabirom kvota u Utakmicama.',
+    open: 'Otvoren', won: 'Dobitan', lost: 'Gubitan', stakeOdds: 'Ulog %{stake} · Kvota %{odds}', potential: 'Moguće %{amount}',
+  },
+  savings: {
+    title: 'Kasica', subtitle: 'Svaki novčić koji nisi uložio je ovdje.', inBank: 'U tvojoj kasici',
+    notToBookie: 'Ovaj novac nije otišao kladionici. Ako si ga zaista odvojio, tvoj je.',
+    allTime: 'Od početka', coupons: 'Tiketi', couponsValue: '%{count} (otvoreno: %{open})', staked: 'Uložio bi',
+    wonLost: 'Dobitni / gubitni', ifReal: 'Da si igrao pravim novcem',
+    noSettled: 'Kad se tiket obračuna, ovdje ćeš vidjeti šta bi se desilo s pravim novcem.',
+    houseEdge: 'Kvote sadrže maržu, kao kod pravih kladionica: dugoročno kladionica dobija.',
+    houseEdgeYours: 'Ovi brojevi to pokazuju na tvojim tiketima.', help: 'Želiš li razgovarati s nekim? %{name}: %{contact}',
+    otherCurrencies: 'Tiketi u drugim valutama nisu uključeni.',
+  },
+  games: { title: 'Igre', subtitle: 'Samo virtuelni žetoni. Bez kupovine, bez isplate.', crash: 'Crash', roulette: 'Rulet', slot: 'Automati' },
+  settings: {
+    title: 'Postavke', language: 'Jezik', deviceLanguage: 'Jezik uređaja', currency: 'Valuta', automatic: 'Automatski (%{value})',
+    oddsFormat: 'Format kvota', decimal: 'Decimalni', fractional: 'Razlomački', american: 'Američki',
+    restartForRtl: 'Ponovo pokreni aplikaciju da bi se promijenio smjer teksta.',
+    translationNote: 'Prijevodi osim engleskog i turskog urađeni su uz pomoć mašinskog prevođenja i čekaju provjeru izvornih govornika.',
+  },
+  markets: { '1X2': 'Konačan ishod', DC: 'Dupla šansa', OU: 'Više/Manje od %{line}', BTTS: 'Oba tima daju gol', TG: 'Ukupno golova', HC: 'Hendikep (%{hc})', CS: 'Tačan rezultat' },
+  outcomes: { under: 'Manje', over: 'Više', yes: 'Da', no: 'Ne', other: 'Ostalo' },
+};
+export default bs;

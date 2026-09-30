@@ -1,0 +1,58 @@
+import type { Messages } from './en';
+
+const it: Messages = {
+  tabs: { matches: 'Partite', coupons: 'Schedine', games: 'Giochi', savings: 'Salvadanaio' },
+  nav: { match: 'Partita', live: 'Live', coupon: 'Schedina', settings: 'Impostazioni', back: 'Partite' },
+  common: { dataError: 'Impossibile caricare i dati', dbError: 'Impossibile preparare il database: %{message}', comingSoon: 'Fase %{n}' },
+  matches: {
+    title: 'Partite', subtitle: 'Partite vere, quote vere. Soldi finti.', preMatch: 'Prepartita', live: 'Live',
+    none14: 'Nessuna partita in questa competizione nei prossimi 14 giorni.',
+    notSoon: '%{league} non ha partite oggi né domani; le prossime sono %{date}.',
+    soonLeagues: 'Competizioni con partite oggi e domani:', allBets: 'Tutte le scommesse ›', notFound: 'Partita non trovata',
+  },
+  live: {
+    noneNow: 'Nessuna partita in corso in questo momento.', next: 'Prossima: %{home} – %{away}, %{time} (%{league}).',
+    error: 'Impossibile caricare i risultati live: %{message}', inPlay: 'In corso', soon: 'Inizia a breve', finished: 'Finita',
+    sourceCache: 'Fonte: ESPN (cache)', sourceDirect: 'Fonte: ESPN', updated: 'aggiornato alle %{time}', allLiveBets: 'Tutte le scommesse live ›',
+    redCards: 'Cartellini rossi: %{home} %{homeCount}, %{away} %{awayCount}', computing: 'Calcolo delle quote live…',
+    onlyInPlay: 'Le scommesse live sono aperte solo durante la partita.', notInList: 'Questa partita non è nella lista live',
+    notStarted: 'Non iniziata', finishedScore: 'Finita · %{score}', halfTime: 'Int.', fullTime: 'Fine',
+  },
+  slip: {
+    title: 'La tua schedina', subtitle: 'Non stai davvero puntando questi soldi. L’importo va nel tuo salvadanaio.',
+    empty: 'La schedina è vuota. Scegli le quote in Partite.', bar: 'Schedina · partite: %{count}', barOdds: 'Quota %{odds}',
+    remove: 'Togli dalla schedina', live: 'Live', stake: 'Importo', totalOdds: 'Quota totale', potential: 'Vincita possibile',
+    create: 'Crea schedina · %{amount} nel salvadanaio',
+    errors: {
+      invalidAmount: 'Inserisci un importo valido (es. %{example})', empty: 'Aggiungi almeno una partita alla schedina',
+      tooMany: 'Una schedina può contenere al massimo %{max} partite', sameMatch: 'Non puoi aggiungere due pronostici della stessa partita',
+      unknownBet: 'Scommessa sconosciuta', closed: 'Le scommesse su %{match} sono chiuse',
+      started: '%{match} è iniziata; le scommesse prepartita sono chiuse', postponed: '%{match} è stata rinviata o annullata',
+      minStake: 'L’importo minimo è %{min}', staleLive: 'La quota live di %{match} ha più di un minuto; toglila e sceglila di nuovo',
+    },
+  },
+  coupons: {
+    title: 'Schedine', subtitle: 'Le tue schedine ombra: partite vere, soldi finti.', none: 'Ancora nessuna schedina. Inizia scegliendo le quote in Partite.',
+    open: 'Aperta', won: 'Vinta', lost: 'Persa', stakeOdds: 'Importo %{stake} · Quota %{odds}', potential: 'Possibile %{amount}',
+  },
+  savings: {
+    title: 'Salvadanaio', subtitle: 'Ogni moneta che non hai puntato è qui.', inBank: 'Nel tuo salvadanaio',
+    notToBookie: 'Questi soldi non sono andati a un bookmaker. Se li hai davvero messi da parte, sono tuoi.',
+    allTime: 'Dall’inizio', coupons: 'Schedine', couponsValue: '%{count} (%{open} aperte)', staked: 'Avresti puntato',
+    wonLost: 'Vinte / perse', ifReal: 'Se avessi giocato con soldi veri',
+    noSettled: 'Quando una schedina sarà chiusa, vedrai qui cosa sarebbe successo con soldi veri.',
+    houseEdge: 'Le quote includono il margine del banco, come nei veri siti di scommesse: nel lungo periodo vince il banco.',
+    houseEdgeYours: 'Questi numeri lo mostrano con le tue schedine.', help: 'Vuoi parlarne con qualcuno? %{name}: %{contact}',
+    otherCurrencies: 'Le schedine in altre valute non sono incluse.',
+  },
+  games: { title: 'Giochi', subtitle: 'Solo gettoni finti. Nessun acquisto, nessun prelievo.', crash: 'Crash', roulette: 'Roulette', slot: 'Slot machine' },
+  settings: {
+    title: 'Impostazioni', language: 'Lingua', deviceLanguage: 'Lingua del dispositivo', currency: 'Valuta', automatic: 'Automatico (%{value})',
+    oddsFormat: 'Formato quote', decimal: 'Decimale', fractional: 'Frazionario', american: 'Americano',
+    restartForRtl: 'Riavvia l’app per cambiare la direzione del testo.',
+    translationNote: 'Le traduzioni diverse da inglese e turco sono state fatte con l’aiuto della traduzione automatica e attendono la revisione di madrelingua.',
+  },
+  markets: { '1X2': 'Esito finale', DC: 'Doppia chance', OU: 'Over/Under %{line}', BTTS: 'Goal/No goal', TG: 'Numero di gol', HC: 'Handicap (%{hc})', CS: 'Risultato esatto' },
+  outcomes: { under: 'Under', over: 'Over', yes: 'Goal', no: 'No goal', other: 'Altro' },
+};
+export default it;
