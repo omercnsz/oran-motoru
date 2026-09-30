@@ -2,7 +2,7 @@
 // (Eksik ya da fazla anahtarı zaten tip kontrolü yakalar.)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 
 import en from '../src/i18n/locales/en.ts';
 
@@ -25,3 +25,11 @@ for (const file of locales) {
     }
   });
 }
+
+// iOS ve Android'e uygulamanın dillerini bildiren liste (sağdan sola düzen ve sistemdeki uygulama dili ayarı için)
+test('app.json dil listesi çeviri dosyalarıyla aynı', () => {
+  const app = JSON.parse(readFileSync(new URL('../app.json', import.meta.url), 'utf8'));
+  const plugin = app.expo.plugins.find((p: unknown) => Array.isArray(p) && p[0] === 'expo-localization');
+  const supported = [...plugin[1].supportedLocales].sort();
+  assert.deepEqual(supported, ['en.ts', ...locales].map((f) => f.replace(/\.ts$/, '')).sort());
+});

@@ -36,6 +36,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="mac/[id]" options={{ title: t('nav.match'), headerBackTitle: t('nav.back') }} />
             <Stack.Screen name="canli/[espnId]" options={{ title: t('nav.live'), headerBackTitle: t('nav.back') }} />
+            <Stack.Screen name="ligler" options={{ title: t('leagues.title'), presentation: 'modal' }} />
             <Stack.Screen name="kupon" options={{ title: t('nav.coupon'), presentation: 'modal' }} />
             <Stack.Screen name="ayarlar" options={{ title: t('nav.settings'), headerBackTitle: t('nav.back') }} />
           </Stack>

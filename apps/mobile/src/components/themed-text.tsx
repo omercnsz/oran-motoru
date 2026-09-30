@@ -15,6 +15,7 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
     <Text
       style={[
         { color: theme[themeColor ?? 'text'] },
+        styles.start,
         type === 'default' && styles.default,
         type === 'title' && styles.title,
         type === 'small' && styles.small,
@@ -31,6 +32,9 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
 }
 
 const styles = StyleSheet.create({
+  // Satır başına hizala. React Native sağdan sola düzende 'left' değerini sağa çevirir; hiç belirtilmezse iOS
+  // metni telefonun diline göre hizalar ve dil uygulama içinden Arapça seçildiğinde metinler sola yaslanır.
+  start: { textAlign: 'left' },
   small: {
     fontSize: 14,
     lineHeight: 20,

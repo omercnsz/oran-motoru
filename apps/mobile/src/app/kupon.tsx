@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   rowText: { flex: 1, gap: Spacing.half },
   card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
   inputRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: Spacing.two, paddingHorizontal: Spacing.three },
-  input: { flex: 1, fontSize: 24, fontWeight: '600', paddingVertical: Spacing.two },
+  input: { flex: 1, fontSize: 24, fontWeight: '600', paddingVertical: Spacing.two, textAlign: 'left' },
   quick: { flexDirection: 'row', gap: Spacing.two },
   quickBtn: { flex: 1, alignItems: 'center', paddingVertical: Spacing.two, borderRadius: Spacing.two },
   summary: { flexDirection: 'row', justifyContent: 'space-between' },

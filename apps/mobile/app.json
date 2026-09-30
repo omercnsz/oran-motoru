@@ -10,10 +10,7 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.omercnsz.oran",
-      "supportsTablet": false,
-      "infoPlist": {
-        "ExpoLocalization_supportsRTL": true
-      }
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
@@ -43,7 +40,35 @@
       [
         "expo-localization",
         {
-          "supportsRTL": true
+          "supportedLocales": [
+            "en",
+            "tr",
+            "es",
+            "pt",
+            "ar",
+            "ru",
+            "de",
+            "fr",
+            "it",
+            "nl",
+            "pl",
+            "ro",
+            "el",
+            "sr",
+            "hr",
+            "bs",
+            "sq",
+            "bg",
+            "mk",
+            "sl",
+            "zh",
+            "ja",
+            "ko",
+            "id",
+            "vi",
+            "th",
+            "hi"
+          ]
         }
       ]
     ],

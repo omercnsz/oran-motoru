@@ -1,9 +1,9 @@
 import type { UpcomingMatch } from '@oran/contracts';
-import { homeCompetition } from '@oran/leagues';
-import { Link } from 'expo-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, router } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
+import { ErrorCard } from '@/components/error-card';
 import { LiveList } from '@/components/live-list';
 import { OddsButton } from '@/components/odds-button';
 import { Screen } from '@/components/screen';
@@ -17,29 +17,54 @@ import { useNow } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { dayKey, formatDay, formatTime } from '@/lib/format';
+import { leagueInfo } from '@/lib/leagues';
 import { toSelection } from '@/lib/selection';
+import { useLeagues } from '@/state/leagues';
 import { isSelected, useSlip } from '@/state/slip';
 
 const ONE_X_TWO = [['1', '1'], ['X', 'X'], ['2', '2']] as const;
+/** "Yakında maçı olan turnuvalar" kartında en fazla bu kadar öneri */
+const MAX_SUGGESTIONS = 8;
 
 export default function MaclarScreen() {
-  const { t, regionCode } = useT();
+  const { t, language } = useT();
   const index = useLeagueIndex();
-  const leagues = useMemo(() => (index.data?.leagues ?? []).filter((l) => l.upcoming > 0), [index.data]);
-  const [picked, setPicked] = useState<string>();
+  const favorites = useLeagues((s) => s.favorites);
+  const current = useLeagues((s) => s.current);
+  const pick = useLeagues((s) => s.pick);
   const [mode, setMode] = useState<'pre' | 'live'>('pre');
   const leagueNames = useMemo(() => Object.fromEntries((index.data?.leagues ?? []).map((l) => [l.code, l.name])), [index.data]);
-  // İlk açılışta kullanıcının ülkesinin ligi; maçı yoksa ilk turnuva
-  const home = homeCompetition(regionCode)?.code;
-  const league = picked ?? (leagues.find((l) => l.code === home) ?? leagues[0])?.code;
+  // Düğme etiketleri: bayrak + ad
+  const labels = useMemo(() => Object.fromEntries((index.data?.leagues ?? []).map((l) => {
+    const info = leagueInfo(l, language);
+    return [l.code, `${info.flag} ${info.name}`];
+  })), [index.data, language]);
+  // Son seçilen turnuva; hiç seçilmediyse maçı olan ilk favori, o da yoksa maçı olan ilk turnuva
+  const league = useMemo(() => {
+    const all = index.data?.leagues ?? [];
+    if (current && all.some((l) => l.code === current)) return current;
+    const playing = new Set(all.filter((l) => l.upcoming > 0).map((l) => l.code));
+    return favorites.find((c) => playing.has(c)) ?? [...playing][0];
+  }, [index.data, current, favorites]);
+  // Üst çubuk: favoriler; seçili turnuva favori değilse en başta
+  const quick = useMemo(() => {
+    const known = new Set((index.data?.leagues ?? []).map((l) => l.code));
+    const favs = favorites.filter((c) => known.has(c));
+    return league && !favs.includes(league) ? [league, ...favs] : favs;
+  }, [index.data, favorites, league]);
   const odds = useOdds(league);
-  // Seçili lig düğmesi, uzun lig listesinde ekran dışında kalmasın
+  // Seçili lig düğmesi ekran dışındaysa görünür yere kaydırılır (görünüyorsa çubuk yerinde kalır)
   const chipsRef = useRef<ScrollView>(null);
-  const chipX = useRef(new Map<string, number>());
-  useEffect(() => {
-    const x = league ? chipX.current.get(league) : undefined;
-    if (x !== undefined) chipsRef.current?.scrollTo({ x: Math.max(0, x - Spacing.three), animated: true });
-  }, [league, leagues]);
+  const chipLayout = useRef(new Map<string, { x: number; width: number }>());
+  const chipsView = useRef({ width: 0, offset: 0 });
+  const reveal = useCallback((code: string | undefined, animated: boolean) => {
+    const chip = code ? chipLayout.current.get(code) : undefined;
+    const { width, offset } = chipsView.current;
+    if (!chip || width === 0) return;
+    if (chip.x >= offset && chip.x + chip.width <= offset + width) return;
+    chipsRef.current?.scrollTo({ x: Math.max(0, chip.x - Spacing.three), animated });
+  }, []);
+  useEffect(() => reveal(league, true), [reveal, league, quick]);
   const now = useNow();
   const schedule = useSchedule();
   // Önümüzdeki 36 saatte maçı olan ligler (maç sayısıyla), en yakın maça göre sıralı
@@ -49,8 +74,13 @@ export default function MaclarScreen() {
       const t = Date.parse(m.kickoff);
       if (t > now && t <= now + 36 * 3_600_000) counts.set(m.league, (counts.get(m.league) ?? 0) + 1);
     }
-    return [...counts.entries()];
+    return counts;
   }, [schedule.data, now]);
+  // Öneriler: önce favoriler
+  const suggestions = useMemo(() => {
+    const codes = [...soonLeagues.keys()].filter((c) => c !== league);
+    return [...codes.filter((c) => favorites.includes(c)), ...codes.filter((c) => !favorites.includes(c))].slice(0, MAX_SUGGESTIONS);
+  }, [soonLeagues, favorites, league]);
 
   // Cihazın saat dilimine göre günlere ayır; başlamış maçlar listelenmez
   const days = useMemo(() => {
@@ -62,6 +92,8 @@ export default function MaclarScreen() {
     }
     return [...groups.entries()];
   }, [odds.data, now]);
+
+  const openPicker = () => router.push({ pathname: '/ligler', params: league ? { selected: league } : {} });
 
   return (
     <View style={styles.fill}>
@@ -77,34 +109,38 @@ export default function MaclarScreen() {
         {mode === 'live' ? <LiveList now={now} leagueNames={leagueNames} /> : null}
 
         {mode === 'pre' ? <>
-        <ScrollView ref={chipsRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-          {leagues.map((l) => (
-            <View key={l.code} onLayout={(e) => {
-              chipX.current.set(l.code, e.nativeEvent.layout.x);
-              if (l.code === league) chipsRef.current?.scrollTo({ x: Math.max(0, e.nativeEvent.layout.x - Spacing.three), animated: false });
+        <ScrollView ref={chipsRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}
+          scrollEventThrottle={32}
+          onScroll={(e) => { chipsView.current.offset = e.nativeEvent.contentOffset.x; }}
+          onLayout={(e) => { chipsView.current.width = e.nativeEvent.layout.width; reveal(league, false); }}>
+          {index.data ? <AllLeaguesChip label={t('leagues.all')} onPress={openPicker} /> : null}
+          {quick.map((code) => (
+            <View key={code} onLayout={(e) => {
+              chipLayout.current.set(code, { x: e.nativeEvent.layout.x, width: e.nativeEvent.layout.width });
+              if (code === league) reveal(code, false);
             }}>
-              <Chip label={l.name} active={l.code === league} onPress={() => setPicked(l.code)} />
+              <Chip label={labels[code] ?? code} active={code === league} onPress={() => pick(code)} />
             </View>
           ))}
         </ScrollView>
 
         {odds.isPending && league ? <ActivityIndicator /> : null}
-        {odds.data && days.length === 0 ? (
-          <ThemedText themeColor="textSecondary">{t('matches.none14')}</ThemedText>
-        ) : null}
 
-        {league && days.length > 0 && !soonLeagues.some(([l]) => l === league) ? (
+        {league && odds.data && !soonLeagues.has(league) ? (
           <ThemedView type="backgroundElement" style={styles.card}>
             <ThemedText type="smallBold">
-              {t('matches.notSoon', { league: leagueNames[league] ?? league, date: formatDay(days[0][1][0].kickoff) })}
+              {days.length > 0
+                ? t('matches.notSoon', { league: leagueNames[league] ?? league, date: formatDay(days[0][1][0].kickoff) })
+                : t('matches.none14')}
             </ThemedText>
-            {soonLeagues.length > 0 ? (
+            {suggestions.length > 0 ? (
               <>
                 <ThemedText type="small" themeColor="textSecondary">{t('matches.soonLeagues')}</ThemedText>
                 <View style={styles.soon}>
-                  {soonLeagues.map(([l, n]) => (
-                    <Chip key={l} label={`${leagueNames[l] ?? l} (${n}) ›`} active={false} onCard onPress={() => setPicked(l)} />
+                  {suggestions.map((c) => (
+                    <Chip key={c} label={`${labels[c] ?? c} (${soonLeagues.get(c)}) ›`} active={false} onCard onPress={() => pick(c)} />
                   ))}
+                  <AllLeaguesChip label={t('leagues.all')} onPress={openPicker} />
                 </View>
               </>
             ) : null}
@@ -166,6 +202,16 @@ function Chip({ label, active, onCard, onPress }: { label: string; active: boole
   );
 }
 
+/** Lig seçiciyi açar */
+function AllLeaguesChip({ label, onPress }: { label: string; onPress: () => void }) {
+  const theme = useTheme();
+  return (
+    <Pressable accessibilityRole="button" onPress={onPress} style={[styles.chip, styles.allChip, { borderColor: theme.accent }]}>
+      <ThemedText type="smallBold" style={{ color: theme.accent }}>{label} ›</ThemedText>
+    </Pressable>
+  );
+}
+
 function SettingsButton() {
   const { t } = useT();
   const theme = useTheme();
@@ -180,22 +226,13 @@ function SettingsButton() {
   );
 }
 
-export function ErrorCard({ message }: { message: string }) {
-  const { t } = useT();
-  return (
-    <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="smallBold">{t('common.dataError')}</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary">{message}</ThemedText>
-    </ThemedView>
-  );
-}
-
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   segment: { flexDirection: 'row', gap: Spacing.two },
   soon: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
   chips: { gap: Spacing.two, paddingVertical: Spacing.one },
   chip: { paddingVertical: Spacing.two, paddingHorizontal: Spacing.three, borderRadius: Spacing.four },
+  allChip: { borderWidth: 1.5 },
   day: { gap: Spacing.two },
   card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
   matchHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },

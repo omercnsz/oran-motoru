@@ -7,7 +7,7 @@ Kumar bağımlılığında zarar azaltma uygulaması: gerçek maçlara ve casino
 ```
 packages/
 ├── odds-engine   Oran motoru: takım güçleri, Poisson + Dixon-Coles, marketler, kasa payı, sonuçlandırma
-├── leagues       Turnuvaların tek listesi (63 turnuva: ligler, kupalar, kıta kupaları)
+├── leagues       Turnuvaların tek listesi (63 turnuva: ligler, kupalar, kıta kupaları), kıtaları, ilk favoriler
 ├── teams         Farklı kaynaklardaki takım adlarını eşleştirme (geriye dönük testte kullanılır)
 ├── betting       Gölge kupon kuralları: doğrulama, sonuçlandırma, kumbara raporu
 ├── live-sources  ESPN skor tablosu: canlı skor, kırmızı kart, biten maç sonuçları
@@ -73,8 +73,9 @@ Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm
 - İngilizce ana dildir (`en.ts`). Diğer diller `Messages` tipine uymak zorunda: eksik ya da fazla anahtar derleme hatası verir. `apps/mobile/test/i18n.test.ts` her dilde yer tutucuların (`%{...}`) İngilizceyle aynı olduğunu denetler.
 - **İngilizce ve Türkçe dışındaki çeviriler makine desteklidir; yayından önce ana dili konuşan biri kontrol etmeli.**
 - Varsayılanlar cihazdan gelir, kullanıcı Ayarlar'dan değiştirir: dil, para birimi (her para birimi kendi kuruş basamağıyla), oran biçimi (ondalık / İngiliz kesirli / Amerikan), saat dilimi, ilk açılan lig, yardım hattı.
-- Arapça için sağdan sola düzen `app.json`'daki `expo-localization` eklentisiyle açılır; Expo Go bunu uygulamaz, kendi derlemede (EAS) çalışır.
+- Uygulamanın dilleri `app.json`'daki `expo-localization` eklentisinde (`supportedLocales`) listelenir (test, çeviri dosyalarıyla aynı olduğunu denetler). Telefonun dili Arapçaysa sağdan sola düzen ilk açılışta gelir; dil uygulama içinden değişince düzen, uygulama yeniden açıldığında değişir. Expo Go bunu uygulamaz, kendi derlemede çalışır.
 - Yardım hatları `apps/mobile/src/i18n/index.ts` içindedir; yayından önce her numara doğrulanmalı.
+- Lig seçicideki ülke ve kıta adları Unicode CLDR verisinden üretilir (`apps/mobile/src/i18n/regions.ts`); telefondaki JavaScript motoru bu veriyi içermez. Yeni bir ülkenin ligi ya da yeni bir dil eklenince `npm run regions -w @oran/mobile` çalıştırılır.
 
 ## Uygulamanın kendi derlemesi (EAS)
 
