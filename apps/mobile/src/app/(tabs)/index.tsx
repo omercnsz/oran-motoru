@@ -1,4 +1,5 @@
 import type { UpcomingMatch } from '@oran/contracts';
+import { homeCompetition } from '@oran/leagues';
 import { Link } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -14,6 +15,7 @@ import { useLeagueIndex, useOdds } from '@/data/api';
 import { useSchedule } from '@/data/live';
 import { useNow } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 import { dayKey, formatDay, formatTime } from '@/lib/format';
 import { toSelection } from '@/lib/selection';
 import { isSelected, useSlip } from '@/state/slip';
@@ -21,12 +23,15 @@ import { isSelected, useSlip } from '@/state/slip';
 const ONE_X_TWO = [['1', '1'], ['X', 'X'], ['2', '2']] as const;
 
 export default function MaclarScreen() {
+  const { t, regionCode } = useT();
   const index = useLeagueIndex();
   const leagues = useMemo(() => (index.data?.leagues ?? []).filter((l) => l.upcoming > 0), [index.data]);
   const [picked, setPicked] = useState<string>();
   const [mode, setMode] = useState<'pre' | 'live'>('pre');
   const leagueNames = useMemo(() => Object.fromEntries((index.data?.leagues ?? []).map((l) => [l.code, l.name])), [index.data]);
-  const league = picked ?? (leagues.find((l) => l.code === 'T1') ?? leagues[0])?.code;
+  // İlk açılışta kullanıcının ülkesinin ligi; maçı yoksa ilk turnuva
+  const home = homeCompetition(regionCode)?.code;
+  const league = picked ?? (leagues.find((l) => l.code === home) ?? leagues[0])?.code;
   const odds = useOdds(league);
   // Seçili lig düğmesi, uzun lig listesinde ekran dışında kalmasın
   const chipsRef = useRef<ScrollView>(null);
@@ -47,7 +52,7 @@ export default function MaclarScreen() {
     return [...counts.entries()];
   }, [schedule.data, now]);
 
-  // Türkiye saatine göre günlere ayır; başlamış maçlar listelenmez
+  // Cihazın saat dilimine göre günlere ayır; başlamış maçlar listelenmez
   const days = useMemo(() => {
     const groups = new Map<string, UpcomingMatch[]>();
     for (const m of odds.data?.matches ?? []) {
@@ -60,10 +65,10 @@ export default function MaclarScreen() {
 
   return (
     <View style={styles.fill}>
-      <Screen title="Maçlar" subtitle="Gerçek maçlar, gerçek oranlar. Para sanal.">
+      <Screen title={t('matches.title')} subtitle={t('matches.subtitle')} accessory={<SettingsButton />}>
         <View style={styles.segment}>
-          <Chip label="Maç öncesi" active={mode === 'pre'} onPress={() => setMode('pre')} />
-          <Chip label="Canlı" active={mode === 'live'} onPress={() => setMode('live')} />
+          <Chip label={t('matches.preMatch')} active={mode === 'pre'} onPress={() => setMode('pre')} />
+          <Chip label={t('matches.live')} active={mode === 'live'} onPress={() => setMode('live')} />
         </View>
 
         {index.isPending ? <ActivityIndicator /> : null}
@@ -85,17 +90,17 @@ export default function MaclarScreen() {
 
         {odds.isPending && league ? <ActivityIndicator /> : null}
         {odds.data && days.length === 0 ? (
-          <ThemedText themeColor="textSecondary">Bu ligde önümüzdeki 14 günde maç yok.</ThemedText>
+          <ThemedText themeColor="textSecondary">{t('matches.none14')}</ThemedText>
         ) : null}
 
         {league && days.length > 0 && !soonLeagues.some(([l]) => l === league) ? (
           <ThemedView type="backgroundElement" style={styles.card}>
             <ThemedText type="smallBold">
-              {leagueNames[league] ?? league} bugün ve yarın oynanmıyor; sıradaki maçlar {formatDay(days[0][1][0].kickoff)}.
+              {t('matches.notSoon', { league: leagueNames[league] ?? league, date: formatDay(days[0][1][0].kickoff) })}
             </ThemedText>
             {soonLeagues.length > 0 ? (
               <>
-                <ThemedText type="small" themeColor="textSecondary">Bugün ve yarın maç olan ligler:</ThemedText>
+                <ThemedText type="small" themeColor="textSecondary">{t('matches.soonLeagues')}</ThemedText>
                 <View style={styles.soon}>
                   {soonLeagues.map(([l, n]) => (
                     <Chip key={l} label={`${leagueNames[l] ?? l} (${n}) ›`} active={false} onCard onPress={() => setPicked(l)} />
@@ -122,13 +127,14 @@ export default function MaclarScreen() {
 function MatchRow({ league, match }: { league: string; match: UpcomingMatch }) {
   const slip = useSlip((s) => s.selections);
   const toggle = useSlip((s) => s.toggle);
+  const { t } = useT();
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
       <Link href={{ pathname: '/mac/[id]', params: { id: match.id, league } }} asChild>
         <Pressable accessibilityRole="link" style={styles.matchHeader}>
           <ThemedText type="small" themeColor="textSecondary">{formatTime(match.kickoff)}</ThemedText>
           <ThemedText type="smallBold" style={styles.teams}>{match.home} – {match.away}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">Tüm bahisler ›</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">{t('matches.allBets')}</ThemedText>
         </Pressable>
       </Link>
       <View style={styles.oddsRow}>
@@ -160,10 +166,25 @@ function Chip({ label, active, onCard, onPress }: { label: string; active: boole
   );
 }
 
+function SettingsButton() {
+  const { t } = useT();
+  const theme = useTheme();
+  return (
+    <Link href="/ayarlar" asChild>
+      <Pressable accessibilityRole="button" accessibilityLabel={t('settings.title')} hitSlop={12}
+        // Link asChild içindeki bileşene stil dizisi verilemez
+        style={StyleSheet.flatten([styles.settings, { backgroundColor: theme.backgroundElement }])}>
+        <ThemedText type="smallBold">⚙︎</ThemedText>
+      </Pressable>
+    </Link>
+  );
+}
+
 export function ErrorCard({ message }: { message: string }) {
+  const { t } = useT();
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="smallBold">Veri alınamadı</ThemedText>
+      <ThemedText type="smallBold">{t('common.dataError')}</ThemedText>
       <ThemedText type="small" themeColor="textSecondary">{message}</ThemedText>
     </ThemedView>
   );
@@ -180,4 +201,5 @@ const styles = StyleSheet.create({
   matchHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   teams: { flex: 1 },
   oddsRow: { flexDirection: 'row', gap: Spacing.two },
+  settings: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
 });

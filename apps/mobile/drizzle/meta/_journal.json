@@ -15,6 +15,13 @@
       "when": 1790593261834,
       "tag": "0001_live_bets",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1790762245630,
+      "tag": "0002_currency",
+      "breakpoints": true
     }
   ]
 }

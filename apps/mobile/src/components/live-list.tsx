@@ -10,7 +10,8 @@ import { Spacing } from '@/constants/theme';
 import { useLive, type LiveRow } from '@/data/live';
 import { useRatings } from '@/data/ratings';
 import { useTheme } from '@/hooks/use-theme';
-import { formatTime } from '@/lib/format';
+import { useT } from '@/i18n';
+import { clockLabel, formatTime, outcomeLabel } from '@/lib/format';
 import { toLiveSelection } from '@/lib/selection';
 import { isSelected, useSlip } from '@/state/slip';
 
@@ -23,6 +24,7 @@ export function liveMarkets(row: LiveRow, ratings: RatingsFile | undefined) {
 }
 
 export function LiveList({ now, leagueNames }: { now: number; leagueNames: Record<string, string> }) {
+  const { t } = useT();
   const live = useLive(now);
   const ratings = useRatings([...new Set(live.matches.map((m) => m.league))]);
 
@@ -31,17 +33,17 @@ export function LiveList({ now, leagueNames }: { now: number; leagueNames: Recor
     const next = live.schedule.data?.matches.find((m) => Date.parse(m.kickoff) > now);
     return (
       <ThemedText themeColor="textSecondary">
-        Şu an oynanan maç yok.{next ? ` Sıradaki: ${next.home} – ${next.away}, ${formatTime(next.kickoff)} (${leagueNames[next.league] ?? next.league}).` : ''}
+        {t('live.noneNow')}{next ? ` ${t('live.next', { home: next.home, away: next.away, time: formatTime(next.kickoff), league: leagueNames[next.league] ?? next.league })}` : ''}
       </ThemedText>
     );
   }
-  if (live.error) return <ThemedText themeColor="textSecondary">Canlı skorlar alınamadı: {live.error.message}</ThemedText>;
+  if (live.error) return <ThemedText themeColor="textSecondary">{t('live.error', { message: live.error.message })}</ThemedText>;
 
   const rows = live.data?.rows ?? [];
   const groups: [string, LiveRow[]][] = [
-    ['Oynanıyor', rows.filter((r) => r.event.state === 'in')],
-    ['Birazdan başlıyor', rows.filter((r) => r.event.state === 'pre')],
-    ['Bitti', rows.filter((r) => r.event.state === 'post')],
+    [t('live.inPlay'), rows.filter((r) => r.event.state === 'in')],
+    [t('live.soon'), rows.filter((r) => r.event.state === 'pre')],
+    [t('live.finished'), rows.filter((r) => r.event.state === 'post')],
   ];
   return (
     <>
@@ -55,7 +57,7 @@ export function LiveList({ now, leagueNames }: { now: number; leagueNames: Recor
       ))}
       {live.data ? (
         <ThemedText type="small" themeColor="textSecondary">
-          {live.data.source === 'cache' ? 'Kaynak: ESPN (önbellek)' : 'Kaynak: ESPN'} · {formatTime(new Date(live.data.fetchedAt).toISOString())} güncellendi
+          {t(live.data.source === 'cache' ? 'live.sourceCache' : 'live.sourceDirect')} · {t('live.updated', { time: formatTime(new Date(live.data.fetchedAt).toISOString()) })}
         </ThemedText>
       ) : null}
     </>
@@ -64,6 +66,7 @@ export function LiveList({ now, leagueNames }: { now: number; leagueNames: Recor
 
 function LiveCard({ row, ratings, leagueName }: { row: LiveRow; ratings: RatingsFile | undefined; leagueName: string }) {
   const theme = useTheme();
+  const { t } = useT();
   const slip = useSlip((s) => s.selections);
   const toggle = useSlip((s) => s.toggle);
   const { match: m, event: e } = row;
@@ -76,7 +79,7 @@ function LiveCard({ row, ratings, leagueName }: { row: LiveRow; ratings: Ratings
       <Link href={{ pathname: '/canli/[espnId]', params: { espnId: m.espnId } }} asChild>
         <Pressable accessibilityRole="link" style={styles.header}>
           <ThemedText type="smallBold" style={{ color: e.state === 'in' ? theme.danger : theme.textSecondary, minWidth: 44 }}>
-            {e.state === 'pre' ? formatTime(m.kickoff) : e.clock}
+            {e.state === 'pre' ? formatTime(m.kickoff) : clockLabel(e)}
           </ThemedText>
           <View style={styles.teams}>
             <View style={styles.teamRow}>
@@ -90,13 +93,13 @@ function LiveCard({ row, ratings, leagueName }: { row: LiveRow; ratings: Ratings
           </View>
         </Pressable>
       </Link>
-      <ThemedText type="small" themeColor="textSecondary">{leagueName}{oneXTwo ? ' · Tüm canlı bahisler ›' : ''}</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary">{leagueName}{oneXTwo ? ` · ${t('live.allLiveBets')}` : ''}</ThemedText>
       {oneXTwo ? (
         <View style={styles.oddsRow}>
           {oneXTwo.outcomes.map((o) => (
             <OddsButton
               key={o.key}
-              label={o.label}
+              label={outcomeLabel('1X2', o.key)}
               odds={o.odds}
               selected={isSelected(slip, m.id, '1X2', o.key, true)}
               onPress={() => { const s = toLiveSelection(row, '1X2', o.key, o.odds); if (s) toggle(s); }}

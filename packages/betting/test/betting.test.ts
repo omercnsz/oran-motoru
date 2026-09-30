@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  validateSlip, totalOdds, ukKickoffToUtc, utcToUkDate, potentialReturn, indexResults, settleCoupon, summarize, formatTL, parseTL,
+  validateSlip, totalOdds, ukKickoffToUtc, utcToUkDate, potentialReturn, indexResults, settleCoupon, summarize,
+  formatMoney, parseAmount, minorDigits, oneUnit, formatOdds, defaultOddsFormat,
   type Coupon, type Selection,
 } from '../src/index.ts';
 
@@ -25,12 +26,13 @@ const goztep = sel({ matchId: 'g', home: 'Goztep', away: 'Rizespor', odds: 2.2 }
 test('kupon doğrulama', () => {
   const before = new Date('2026-09-20T12:00:00Z');
   assert.equal(validateSlip([sel()], 10_000, before), null);
-  assert.match(validateSlip([], 10_000, before)!, /en az bir/);
-  assert.match(validateSlip([sel(), sel({ outcomeKey: 'X' })], 10_000, before)!, /Aynı maç/);
-  assert.match(validateSlip([sel({ outcomeKey: 'Z' })], 10_000, before)!, /Bilinmeyen/);
-  assert.match(validateSlip([sel({ odds: 1 })], 10_000, before)!, /kapalı/);
-  assert.match(validateSlip([sel()], 50, before)!, /1 TL/);
-  assert.match(validateSlip([sel()], 10_000, new Date('2026-09-20T16:00:00Z'))!, /başladı/);
+  assert.deepEqual(validateSlip([], 10_000, before), { code: 'empty' });
+  assert.deepEqual(validateSlip([sel(), sel({ outcomeKey: 'X' })], 10_000, before), { code: 'sameMatch' });
+  assert.deepEqual(validateSlip([sel({ outcomeKey: 'Z' })], 10_000, before), { code: 'unknownBet' });
+  assert.deepEqual(validateSlip([sel({ odds: 1 })], 10_000, before), { code: 'closed', match: 'Fenerbahce – Eyupspor' });
+  assert.deepEqual(validateSlip([sel()], 50, before), { code: 'minStake', min: 100 });
+  assert.equal(validateSlip([sel()], 1, before, 1), null); // JPY: en küçük tutar 1 yen
+  assert.deepEqual(validateSlip([sel()], 10_000, new Date('2026-09-20T16:00:00Z')), { code: 'started', match: 'Fenerbahce – Eyupspor' });
   assert.equal(validateSlip([sel({ live: true })], 10_000, new Date('2026-09-20T17:00:00Z')), null); // canlı bahis
 });
 
@@ -82,14 +84,42 @@ test('özet: gerçek parayla oynasaydın', () => {
   assert.deepEqual(s, { coupons: 3, open: 1, won: 1, lost: 1, staked: 35_000, returned: 15_000, net: -15_000 });
 });
 
-test('TL biçimlendirme ve okuma', () => {
-  assert.equal(formatTL(123_450), '1.234,50 TL');
-  assert.equal(formatTL(-5), '−0,05 TL');
-  assert.equal(parseTL('150'), 15_000);
-  assert.equal(parseTL('1.500,75'), 150_075);
-  assert.equal(parseTL('12,5 TL'), 1_250);
-  assert.equal(parseTL('abc'), null);
-  assert.equal(parseTL('1,234'), null);
+test('para birimleri: kuruş basamağı, biçim, okuma', () => {
+  assert.equal(minorDigits('TRY'), 2);
+  assert.equal(minorDigits('JPY'), 0);
+  assert.equal(minorDigits('KWD'), 3);
+  assert.equal(oneUnit('EUR'), 100);
+  assert.equal(oneUnit('JPY'), 1);
+  const plain = (s: string) => s.replace(/[\u00a0\u202f]/g, ' ');
+  assert.equal(plain(formatMoney(123_450, 'TRY', 'tr')), '₺1.234,50');
+  assert.equal(plain(formatMoney(-5, 'EUR', 'de')), '-0,05 €');
+  assert.equal(formatMoney(1_500, 'JPY', 'en'), '¥1,500');
+  assert.equal(parseAmount('150', 'TRY', ','), 15_000);
+  assert.equal(parseAmount('1.500,75', 'TRY', ','), 150_075);
+  assert.equal(parseAmount('1,500.75', 'USD', '.'), 150_075);
+  assert.equal(parseAmount('12,5 TL', 'TRY', ','), 1_250);
+  assert.equal(parseAmount('1500', 'JPY', '.'), 1_500);
+  assert.equal(parseAmount('1500.5', 'JPY', '.'), null); // yende kuruş yok
+  assert.equal(parseAmount('abc', 'TRY', ','), null);
+  assert.equal(parseAmount('1,234', 'TRY', ','), null); // 3 ondalık basamak
+});
+
+test('oran biçimleri', () => {
+  assert.equal(formatOdds(2.5), '2.50');
+  assert.equal(formatOdds(2.5, 'fractional'), '6/4'); // İngiliz siteleri sadeleştirmez
+  assert.equal(formatOdds(1.5, 'fractional'), '1/2');
+  assert.equal(formatOdds(11, 'fractional'), '10/1');
+  assert.equal(formatOdds(1.91, 'fractional'), '10/11');
+  assert.equal(formatOdds(5.29, 'fractional'), '17/4'); // 73/17 değil: standart merdiven
+  assert.equal(formatOdds(1.67, 'fractional'), '4/6');
+  assert.equal(formatOdds(1.02, 'fractional'), '1/20');
+  assert.equal(formatOdds(2.5, 'american'), '+150');
+  assert.equal(formatOdds(1.5, 'american'), '-200');
+  assert.equal(formatOdds(2, 'american'), '+100');
+  assert.equal(defaultOddsFormat('GB'), 'fractional');
+  assert.equal(defaultOddsFormat('US'), 'american');
+  assert.equal(defaultOddsFormat('TR'), 'decimal');
+  assert.equal(defaultOddsFormat(null), 'decimal');
 });
 
 test('UTC → İngiltere tarihi', () => {

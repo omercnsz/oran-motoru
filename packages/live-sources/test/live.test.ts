@@ -10,7 +10,7 @@ const real = JSON.parse(readFileSync(new URL('./fixtures/espn-tur1-20260920.json
 test('biten maçlar: skor, kırmızı kart, durum', () => {
   const [fb, amed] = parseScoreboard(real);
   assert.deepEqual({ home: fb.home, away: fb.away, score: fb.score, state: fb.state, fullTime: fb.fullTime, clock: fb.clock },
-    { home: 'Fenerbahce', away: 'Eyupspor', score: { home: 8, away: 0 }, state: 'post', fullTime: true, clock: 'MS' });
+    { home: 'Fenerbahce', away: 'Eyupspor', score: { home: 8, away: 0 }, state: 'post', fullTime: true, clock: '' });
   assert.ok(fb.homeId && fb.awayId && fb.homeId !== fb.awayId);
   assert.equal(parseScoreboard(real)[1].homeId, '132335'); // Amed SFK'nın ESPN kimliği
   assert.equal(amed.home, 'Amed SFK');
@@ -26,7 +26,8 @@ test('oynanan maç: dakika, devre arası, ertelenen', () => {
     { minute: 67, clock: "67'", fullTime: false, state: 'in' });
   e.status = { clock: 2700, displayClock: "45'+2'", period: 1, type: { name: 'STATUS_HALFTIME', state: 'in', completed: false } };
   assert.equal(parseScoreboard(live)[0].minute, 45);
-  assert.equal(parseScoreboard(live)[0].clock, 'İY');
+  assert.equal(parseScoreboard(live)[0].clock, '');
+  assert.equal(parseScoreboard(live)[0].status, 'STATUS_HALFTIME');
   e.status = { clock: 0, displayClock: "0'", period: 0, type: { name: 'STATUS_POSTPONED', state: 'post', completed: false } };
   assert.equal(parseScoreboard(live)[0].fullTime, false);
 });
@@ -51,10 +52,10 @@ test('bahis öncesi kontrol: başlamış, ertelenmiş ve öne alınmış maçlar
   const sel = { espnId: fb.espnId, home: 'Fenerbahce', away: 'Eyupspor' };
   const at = (over: Partial<typeof fb>) => [{ ...fb, ...over }];
   assert.equal(preMatchProblem([sel], at({ state: 'pre', kickoff: '2026-09-20T14:00:00.000Z' }), now), null);
-  assert.match(preMatchProblem([sel], at({ state: 'in' }), now)!, /başladı/);
-  assert.match(preMatchProblem([sel], at({ state: 'post', fullTime: false, status: 'STATUS_POSTPONED' }), now)!, /ertelendi/);
+  assert.equal(preMatchProblem([sel], at({ state: 'in' }), now)?.code, 'started');
+  assert.equal(preMatchProblem([sel], at({ state: 'post', fullTime: false, status: 'STATUS_POSTPONED' }), now)?.code, 'postponed');
   // Fikstürde 14:00 yazıyor ama ESPN'e göre 11:30'a alınmış: henüz "pre" görünse de saat geçti
-  assert.match(preMatchProblem([sel], at({ state: 'pre', kickoff: '2026-09-20T11:30:00.000Z' }), now)!, /başladı/);
+  assert.deepEqual(preMatchProblem([sel], at({ state: 'pre', kickoff: '2026-09-20T11:30:00.000Z' }), now), { code: 'started', match: 'Fenerbahce – Eyupspor' });
   // Canlı bahis ve ESPN'de bulunamayan maç bu kontrole takılmaz
   assert.equal(preMatchProblem([{ ...sel, live: true }], at({ state: 'in' }), now), null);
   assert.equal(preMatchProblem([{ ...sel, espnId: 'yok' }], at({ state: 'in' }), now), null);

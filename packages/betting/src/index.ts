@@ -1,6 +1,7 @@
 // Gölge kupon kuralları: kupon kurma, sonuçlandırma ve kumbara hesabı.
 // Veritabanından ve ekranlardan bağımsız; telefon olmadan test edilebilir.
-// Para her yerde kuruş cinsinden tam sayıdır (kayan nokta yuvarlama hatası olmasın).
+// Para her yerde para biriminin en küçük birimi (kuruş, sent, yen…) cinsinden tam sayıdır.
+// Kullanıcıya gösterilecek metin üretilmez; sorunlar kodla döner, metni uygulama kendi dilinde yazar.
 import type { ResultsFile } from '@oran/contracts';
 import { MARKETS, settle } from '@oran/odds-engine';
 
@@ -33,32 +34,42 @@ export interface SettledSelection extends Selection {
 export interface Coupon {
   id: string;
   createdAt: string;
-  /** Kuruş */
+  /** En küçük birim (kuruş, sent…) */
   stake: number;
   selections: SettledSelection[];
   status: CouponStatus;
-  /** Kuruş; kaybeden kuponda 0, açık kuponda null */
+  /** En küçük birim; kaybeden kuponda 0, açık kuponda null */
   payout: number | null;
 }
 
-export const MIN_STAKE = 100; // 1 TL
 export const MAX_SELECTIONS = 20;
 /** Sonucu bu kadar gün içinde gelmeyen maç ertelenmiş sayılır ve iade edilir (oran 1.00) */
 export const VOID_AFTER_DAYS = 7;
 
-/** Kupon kurulurken seçilebilecek sonuçlar geçerli mi? Hata mesajı döner, geçerliyse null. */
-export function validateSlip(selections: Selection[], stake: number, now: Date): string | null {
-  if (selections.length === 0) return 'Kupona en az bir maç ekle';
-  if (selections.length > MAX_SELECTIONS) return `Bir kuponda en fazla ${MAX_SELECTIONS} maç olabilir`;
+/** Kupon kurulamama sebebi; metni uygulama kendi dilinde yazar. match: "Ev – Deplasman" */
+export type SlipProblem =
+  | { code: 'empty' }
+  | { code: 'tooMany'; max: number }
+  | { code: 'sameMatch' }
+  | { code: 'unknownBet' }
+  | { code: 'closed'; match: string }
+  | { code: 'started'; match: string }
+  | { code: 'minStake'; min: number };
+
+/** Kupon geçerli mi? Geçerliyse null. minStake: en küçük birim cinsinden (varsayılan 1 birim = 100) */
+export function validateSlip(selections: Selection[], stake: number, now: Date, minStake = 100): SlipProblem | null {
+  if (selections.length === 0) return { code: 'empty' };
+  if (selections.length > MAX_SELECTIONS) return { code: 'tooMany', max: MAX_SELECTIONS };
   const ids = new Set(selections.map((s) => s.matchId));
-  if (ids.size !== selections.length) return 'Aynı maçtan kupona birden fazla seçim eklenemez';
+  if (ids.size !== selections.length) return { code: 'sameMatch' };
   for (const s of selections) {
     const market = MARKETS.find((m) => m.key === s.marketKey);
-    if (!market?.outcomes.some((o) => o.key === s.outcomeKey)) return `Bilinmeyen bahis: ${s.marketKey}/${s.outcomeKey}`;
-    if (!(s.odds > 1)) return `${s.home} – ${s.away} için bahis kapalı`;
-    if (!s.live && Date.parse(s.kickoff) <= now.getTime()) return `${s.home} – ${s.away} başladı; maç öncesi bahis kapandı`;
+    if (!market?.outcomes.some((o) => o.key === s.outcomeKey)) return { code: 'unknownBet' };
+    const match = `${s.home} – ${s.away}`;
+    if (!(s.odds > 1)) return { code: 'closed', match };
+    if (!s.live && Date.parse(s.kickoff) <= now.getTime()) return { code: 'started', match };
   }
-  if (!Number.isInteger(stake) || stake < MIN_STAKE) return 'Tutar en az 1 TL olmalı';
+  if (!Number.isInteger(stake) || stake < minStake) return { code: 'minStake', min: minStake };
   return null;
 }
 
@@ -118,11 +129,11 @@ export interface Summary {
   open: number;
   won: number;
   lost: number;
-  /** Toplam yatırılacak olan (kuruş) = kumbaraya giden para */
+  /** Toplam yatırılacak olan (en küçük birim) = kumbaraya giden para */
   staked: number;
-  /** Sonuçlanan kuponlardan geri dönen (kuruş) */
+  /** Sonuçlanan kuponlardan geri dönen (en küçük birim) */
   returned: number;
-  /** Gerçek parayla oynasaydın net sonuç (kuruş): sonuçlanan kuponlarda dönen − yatırılan */
+  /** Gerçek parayla oynasaydın net sonuç: sonuçlanan kuponlarda dönen − yatırılan */
   net: number;
 }
 
@@ -140,20 +151,78 @@ export function summarize(coupons: Coupon[]): Summary {
   return s;
 }
 
-/** Kuruşu "1.234,50 TL" biçiminde yazar */
-export function formatTL(kurus: number): string {
-  const sign = kurus < 0 ? '−' : '';
-  const abs = Math.abs(kurus);
-  const lira = Math.floor(abs / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  const k = (abs % 100).toString().padStart(2, '0');
-  return `${sign}${lira},${k} TL`;
+// ---------------------------------------------------------------------------
+// Para birimleri
+// ---------------------------------------------------------------------------
+
+/** Para biriminin kuruş basamağı: TRY/EUR/USD 2, JPY/KRW 0, KWD/BHD 3 */
+export function minorDigits(currency: string): number {
+  return new Intl.NumberFormat('en', { style: 'currency', currency }).resolvedOptions().maximumFractionDigits ?? 2;
 }
 
-/** Kullanıcının yazdığı "150", "150,5", "1.500,75" → kuruş; geçersizse null */
-export function parseTL(text: string): number | null {
-  const t = text.trim().replace(/\s|TL/gi, '').replace(/\./g, '').replace(',', '.');
-  if (!/^\d+(\.\d{1,2})?$/.test(t)) return null;
-  return Math.round(Number(t) * 100);
+/** Bir tam birim (1 TL, 1 €, 1 ¥) en küçük birim cinsinden */
+export const oneUnit = (currency: string) => 10 ** minorDigits(currency);
+
+/** En küçük birimi yerel biçimde yazar: 123450 TRY, "tr" → "₺1.234,50"; 1500 JPY, "ja" → "￥1,500" */
+export function formatMoney(minor: number, currency: string, locale: string): string {
+  const d = minorDigits(currency);
+  return new Intl.NumberFormat(locale, { style: 'currency', currency, minimumFractionDigits: d, maximumFractionDigits: d })
+    .format(minor / 10 ** d);
+}
+
+/**
+ * Kullanıcının yazdığı tutarı en küçük birime çevirir; geçersizse null.
+ * decimalSeparator: cihazın ondalık ayracı ("," ya da "."); diğer ayraç binlik sayılır.
+ * "1.500,75" (",") → 150075; "1,500.75" (".") → 150075; "1500" (JPY) → 1500
+ */
+export function parseAmount(text: string, currency: string, decimalSeparator: string): number | null {
+  const group = decimalSeparator === ',' ? '.' : ',';
+  const t = text.trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^\d.,]/g, '').split(group).join('').replace(decimalSeparator, '.');
+  const d = minorDigits(currency);
+  const re = d > 0 ? new RegExp(`^\\d+(\\.\\d{1,${d}})?$`) : /^\d+$/;
+  if (!re.test(t)) return null;
+  return Math.round(Number(t) * 10 ** d);
+}
+
+// ---------------------------------------------------------------------------
+// Oran biçimleri
+// ---------------------------------------------------------------------------
+
+export type OddsFormat = 'decimal' | 'fractional' | 'american';
+
+/** Ülkeye göre alışılmış biçim: İngiltere/İrlanda kesirli, ABD Amerikan, diğerleri ondalık */
+export function defaultOddsFormat(regionCode: string | null | undefined): OddsFormat {
+  if (regionCode === 'GB' || regionCode === 'IE') return 'fractional';
+  if (regionCode === 'US') return 'american';
+  return 'decimal';
+}
+
+/**
+ * İngiliz bahis sitelerinin kullandığı standart kesirli oran merdiveni (kazanç / yatırılan).
+ * Siteler kesirleri sadeleştirmeden yazar: 6/4, 4/6, 11/8…
+ */
+const FRACTION_LADDER = [
+  '1/20', '1/16', '1/14', '1/12', '1/10', '1/9', '1/8', '1/7', '1/6', '1/5', '2/9', '1/4', '2/7', '3/10', '1/3', '4/11',
+  '2/5', '4/9', '1/2', '8/15', '4/7', '8/13', '4/6', '8/11', '4/5', '5/6', '10/11', '1/1', '21/20', '11/10', '6/5',
+  '5/4', '11/8', '6/4', '13/8', '17/10', '7/4', '15/8', '19/10', '2/1', '21/10', '85/40', '9/4', '23/10', '12/5',
+  '5/2', '13/5', '11/4', '14/5', '29/10', '3/1', '16/5', '10/3', '17/5', '7/2', '18/5', '15/4', '4/1', '17/4',
+  '9/2', '19/4', '5/1', '21/4', '11/2', '23/4', '6/1', '13/2', '7/1', '15/2', '8/1', '17/2', '9/1', '10/1', '11/1', '12/1', '14/1', '16/1',
+  '18/1', '20/1', '25/1', '33/1', '40/1', '50/1', '66/1', '80/1', '100/1', '150/1', '200/1', '250/1', '500/1',
+].map((f) => { const [n, d] = f.split('/').map(Number); return { text: f, value: n / d }; });
+
+/**
+ * Ondalık oranı istenen biçimde yazar: 2.50 → "2.50" | "6/4" | "+150"; 1.50 → "1/2" | "-200".
+ * Kesirli biçim görüntü içindir: merdivendeki en yakın kesir gösterilir, ödeme ondalık orandan hesaplanır.
+ */
+export function formatOdds(decimal: number, format: OddsFormat = 'decimal'): string {
+  if (format === 'decimal') return decimal.toFixed(2);
+  const profit = decimal - 1;
+  if (format === 'american') {
+    return profit >= 1 ? `+${Math.round(profit * 100)}` : `-${Math.round(100 / profit)}`;
+  }
+  let best = FRACTION_LADDER[0];
+  for (const f of FRACTION_LADDER) if (Math.abs(f.value - profit) < Math.abs(best.value - profit)) best = f;
+  return best.text;
 }
 
 /** Mart ya da Ekim'in son pazarı (İngiltere yaz saati geçiş günleri) */

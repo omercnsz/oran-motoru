@@ -6,6 +6,7 @@ import { ActivityIndicator, AppState, Platform, StyleSheet, useColorScheme, View
 import migrations from '../../drizzle/migrations';
 import { ThemedText } from '@/components/themed-text';
 import { db } from '@/db/client';
+import { useT } from '@/i18n';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1 } } });
 
@@ -19,22 +20,24 @@ if (Platform.OS !== 'web') {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const { t } = useT();
   // Veritabanı şeması güncel değilse ekranlar açılmadan önce güncellenir
   const { success, error } = useMigrations(db, migrations);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       {error ? (
-        <View style={styles.center}><ThemedText>Veritabanı hazırlanamadı: {error.message}</ThemedText></View>
+        <View style={styles.center}><ThemedText>{t('common.dbError', { message: error.message })}</ThemedText></View>
       ) : !success ? (
         <View style={styles.center}><ActivityIndicator /></View>
       ) : (
         <QueryClientProvider client={queryClient}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="mac/[id]" options={{ title: 'Maç', headerBackTitle: 'Maçlar' }} />
-            <Stack.Screen name="canli/[espnId]" options={{ title: 'Canlı', headerBackTitle: 'Maçlar' }} />
-            <Stack.Screen name="kupon" options={{ title: 'Kupon', presentation: 'modal' }} />
+            <Stack.Screen name="mac/[id]" options={{ title: t('nav.match'), headerBackTitle: t('nav.back') }} />
+            <Stack.Screen name="canli/[espnId]" options={{ title: t('nav.live'), headerBackTitle: t('nav.back') }} />
+            <Stack.Screen name="kupon" options={{ title: t('nav.coupon'), presentation: 'modal' }} />
+            <Stack.Screen name="ayarlar" options={{ title: t('nav.settings'), headerBackTitle: t('nav.back') }} />
           </Stack>
         </QueryClientProvider>
       )}

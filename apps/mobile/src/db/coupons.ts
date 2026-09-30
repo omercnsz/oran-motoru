@@ -1,7 +1,7 @@
 // Kuponların veritabanına yazılması ve okunması. Kurallar @oran/betting paketinde.
 import { indexResults, settleCoupon, totalOdds, type Coupon, type Selection } from '@oran/betting';
 import type { ResultsFile } from '@oran/contracts';
-import { desc, eq, inArray, sum } from 'drizzle-orm';
+import { and, desc, eq, inArray, sum } from 'drizzle-orm';
 import { randomUUID } from 'expo-crypto';
 
 import { db } from './client';
@@ -10,13 +10,14 @@ import { coupons, savings, selections } from './schema';
 type CouponRow = typeof coupons.$inferSelect;
 type SelectionRow = typeof selections.$inferSelect;
 
-export type StoredCoupon = Coupon & { totalOdds: number };
+export type StoredCoupon = Coupon & { totalOdds: number; currency: string };
 
 export function toCoupon(row: CouponRow, rows: SelectionRow[]): StoredCoupon {
   return {
     id: row.id,
     createdAt: row.createdAt,
     stake: row.stake,
+    currency: row.currency,
     totalOdds: row.totalOdds,
     status: row.status,
     payout: row.payout,
@@ -30,13 +31,13 @@ export function toCoupon(row: CouponRow, rows: SelectionRow[]): StoredCoupon {
 }
 
 /** Kuponu kaydeder; tutar kumbaraya "yatırılmayan para" olarak eklenir. */
-export function createCoupon(slip: Selection[], stake: number, now = new Date()): string {
+export function createCoupon(slip: Selection[], stake: number, currency: string, now = new Date()): string {
   const id = randomUUID();
   const createdAt = now.toISOString();
   db.transaction((tx) => {
-    tx.insert(coupons).values({ id, createdAt, stake, totalOdds: totalOdds(slip), status: 'open' }).run();
+    tx.insert(coupons).values({ id, createdAt, stake, currency, totalOdds: totalOdds(slip), status: 'open' }).run();
     tx.insert(selections).values(slip.map((s) => ({ ...s, couponId: id }))).run();
-    tx.insert(savings).values({ createdAt, amount: stake, kind: 'stake', couponId: id }).run();
+    tx.insert(savings).values({ createdAt, amount: stake, currency, kind: 'stake', couponId: id }).run();
   });
   return id;
 }
@@ -87,8 +88,8 @@ export function settleOpenCoupons(files: ResultsFile[], now = new Date()): numbe
   return changed;
 }
 
-/** Kumbaradaki toplam (kuruş) */
-export function savingsTotal(): number {
-  const [row] = db.select({ total: sum(savings.amount) }).from(savings).all();
+/** Kumbaradaki toplam (verilen para biriminde, en küçük birim) */
+export function savingsTotal(currency: string): number {
+  const [row] = db.select({ total: sum(savings.amount) }).from(savings).where(and(eq(savings.currency, currency))).all();
   return Number(row?.total ?? 0);
 }

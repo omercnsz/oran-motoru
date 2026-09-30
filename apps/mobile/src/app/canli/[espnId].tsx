@@ -11,11 +11,14 @@ import { Spacing } from '@/constants/theme';
 import { useLive } from '@/data/live';
 import { useRatings } from '@/data/ratings';
 import { useNow } from '@/hooks/use-now';
+import { useT } from '@/i18n';
+import { clockLabel, marketName, outcomeLabel } from '@/lib/format';
 import { toLiveSelection } from '@/lib/selection';
 import { isSelected, useSlip } from '@/state/slip';
 
 export default function CanliScreen() {
   const { espnId } = useLocalSearchParams<{ espnId: string }>();
+  const { t } = useT();
   const now = useNow(30_000);
   const live = useLive(now);
   const row = live.data?.rows.find((r) => r.match.espnId === espnId);
@@ -24,30 +27,31 @@ export default function CanliScreen() {
   const toggle = useSlip((s) => s.toggle);
 
   if (!row) {
-    return <View style={styles.center}>{live.isPending ? <ActivityIndicator /> : <ThemedText>Maç canlı listede değil</ThemedText>}</View>;
+    return <View style={styles.center}>{live.isPending ? <ActivityIndicator /> : <ThemedText>{t('live.notInList')}</ThemedText>}</View>;
   }
   const { match: m, event: e } = row;
   const markets = liveMarkets(row, ratings.get(m.league));
-  const status = e.state === 'in' ? `${e.clock} · ${e.score.home}-${e.score.away}` : e.state === 'post' ? `Bitti · ${e.score.home}-${e.score.away}` : 'Başlamadı';
+  const score = `${e.score.home}-${e.score.away}`;
+  const status = e.state === 'in' ? `${clockLabel(e)} · ${score}` : e.state === 'post' ? t('live.finishedScore', { score }) : t('live.notStarted');
 
   return (
     <View style={styles.fill}>
       <Stack.Screen options={{ title: `${m.home} – ${m.away}` }} />
       <Screen title={`${m.home} ${e.state === 'pre' ? '–' : `${e.score.home}-${e.score.away}`} ${m.away}`} subtitle={status} compact>
         {e.redCards.home + e.redCards.away > 0 ? (
-          <ThemedText type="small" themeColor="textSecondary">Kırmızı kart: {m.home} {e.redCards.home}, {m.away} {e.redCards.away}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">{t('live.redCards', { home: m.home, homeCount: e.redCards.home, away: m.away, awayCount: e.redCards.away })}</ThemedText>
         ) : null}
         {!markets ? (
-          <ThemedText themeColor="textSecondary">{e.state === 'in' ? 'Canlı oranlar hesaplanıyor…' : 'Canlı bahis sadece maç oynanırken açık.'}</ThemedText>
+          <ThemedText themeColor="textSecondary">{t(e.state === 'in' ? 'live.computing' : 'live.onlyInPlay')}</ThemedText>
         ) : null}
         {markets?.filter((mk) => mk.outcomes.some((o) => o.odds)).map((mk) => (
           <ThemedView key={mk.key} type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">{mk.name}</ThemedText>
+            <ThemedText type="smallBold">{marketName(mk.key)}</ThemedText>
             <View style={styles.grid}>
               {mk.outcomes.map((o) => (
                 <View key={o.key} style={mk.outcomes.length > 4 ? styles.cellSmall : styles.cell}>
                   <OddsButton
-                    label={o.label}
+                    label={outcomeLabel(mk.key, o.key)}
                     odds={o.odds}
                     selected={isSelected(slip, m.id, mk.key, o.key, true)}
                     onPress={() => { const s = toLiveSelection(row, mk.key, o.key, o.odds); if (s) toggle(s); }}

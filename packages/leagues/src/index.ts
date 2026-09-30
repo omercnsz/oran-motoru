@@ -93,3 +93,8 @@ export const COMPETITIONS: Competition[] = [
 ];
 
 export const BY_CODE: Record<string, Competition> = Object.fromEntries(COMPETITIONS.map((x) => [x.code, x]));
+
+/** Kullanıcının ülkesinin ana ligi (uygulama ilk açıldığında gösterilir); yoksa undefined */
+export function homeCompetition(regionCode: string | null | undefined): Competition | undefined {
+  return regionCode ? COMPETITIONS.find((x) => x.kind === 'league' && x.region === regionCode) : undefined;
+}

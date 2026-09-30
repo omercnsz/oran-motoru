@@ -48,7 +48,7 @@ export interface EspnEvent {
   fullTime: boolean;
   /** Oran motoruna verilecek dakika (0–90) */
   minute: number;
-  /** Ekranda gösterilecek süre, ör. "67'", "90'+4'" */
+  /** Maç sürerken ESPN'in süre metni, ör. "67'", "90'+4'"; devre arası ve maç sonrası boş (uygulama kendi dilinde yazar) */
   clock: string;
   home: string;
   away: string;
@@ -82,7 +82,7 @@ export function parseScoreboard(body: EspnScoreboard): EspnEvent[] {
       status,
       fullTime: status === 'STATUS_FULL_TIME' && e.status.type.completed,
       minute,
-      clock: status === 'STATUS_HALFTIME' ? 'İY' : state === 'post' ? 'MS' : e.status.displayClock ?? '',
+      clock: state === 'in' && status !== 'STATUS_HALFTIME' ? e.status.displayClock ?? '' : '',
       home: home.team.displayName,
       away: away.team.displayName,
       homeId: home.team.id,
@@ -110,20 +110,22 @@ export function finalsToResults(events: EspnEvent[], schedule: Map<string, Sched
 /**
  * Maç öncesi bahisler kaydedilmeden önce son kontrol: fikstür dosyası en fazla bir saat eski olabilir,
  * maç o arada öne alınmış, başlamış ya da ertelenmiş olabilir. ESPN'deki anlık duruma bakılır.
- * Sorun varsa açıklamasını, yoksa null döner. ESPN'de bulunamayan maç engellenmez (saat kontrolü yine geçerli).
+ * Sorun varsa kodunu (metni uygulama kendi dilinde yazar), yoksa null döner.
+ * ESPN'de bulunamayan maç engellenmez (saat kontrolü yine geçerli).
  */
 export function preMatchProblem(
   selections: { espnId?: string; live?: boolean; home: string; away: string }[],
   events: EspnEvent[],
   now: Date,
-): string | null {
+): { code: 'started' | 'postponed'; match: string } | null {
   const byId = new Map(events.map((e) => [e.espnId, e]));
   for (const s of selections) {
     if (s.live || !s.espnId) continue;
     const e = byId.get(s.espnId);
     if (!e) continue;
-    if (e.state === 'post' && !e.fullTime) return `${s.home} – ${s.away} ertelendi ya da iptal edildi`;
-    if (e.state !== 'pre' || Date.parse(e.kickoff) <= now.getTime()) return `${s.home} – ${s.away} başladı; maç öncesi bahis kapandı`;
+    const match = `${s.home} – ${s.away}`;
+    if (e.state === 'post' && !e.fullTime) return { code: 'postponed', match };
+    if (e.state !== 'pre' || Date.parse(e.kickoff) <= now.getTime()) return { code: 'started', match };
   }
   return null;
 }

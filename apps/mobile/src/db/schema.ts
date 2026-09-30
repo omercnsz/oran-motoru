@@ -1,11 +1,13 @@
 // Telefondaki veritabanı. Kullanıcının bahis geçmişi cihazdan çıkmaz.
-// Para her yerde kuruş cinsinden tam sayıdır.
+// Para her yerde para biriminin en küçük birimi (kuruş, sent…) cinsinden tam sayıdır; birimi currency söyler.
 import { index, integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const coupons = sqliteTable('coupons', {
   id: text('id').primaryKey(),
   createdAt: text('created_at').notNull(),
   stake: integer('stake').notNull(),
+  /** ISO 4217; bu sütundan önceki kayıtlar TL'ydi */
+  currency: text('currency').notNull().default('TRY'),
   totalOdds: real('total_odds').notNull(),
   status: text('status', { enum: ['open', 'won', 'lost'] }).notNull().default('open'),
   payout: integer('payout'),
@@ -36,6 +38,7 @@ export const savings = sqliteTable('savings', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   createdAt: text('created_at').notNull(),
   amount: integer('amount').notNull(),
+  currency: text('currency').notNull().default('TRY'),
   kind: text('kind', { enum: ['stake', 'deposit', 'withdraw'] }).notNull(),
   couponId: text('coupon_id').references(() => coupons.id, { onDelete: 'set null' }),
 });

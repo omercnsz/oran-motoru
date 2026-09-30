@@ -2,22 +2,33 @@ import type { ResultsFile, ScheduledMatch } from '@oran/contracts';
 import { espnDateOf, finalsToResults } from '@oran/live-sources';
 import { useFocusEffect } from 'expo-router';
 import { addDatabaseChangeListener } from 'expo-sqlite';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 import { fetchResults } from '@/data/api';
 import { fetchEspnEvents } from '@/data/live';
 import { loadCoupons, openSelections, savingsTotal, settleOpenCoupons, type StoredCoupon } from '@/db/coupons';
+import { useLocalization } from '@/i18n';
 
-/** Kuponlar ve kumbara toplamı; veritabanı değişince kendiliğinden yenilenir. */
+// Veritabanı bir dış veri kaynağı gibi dinlenir: her değişiklikte sürüm artar, anlık görüntü yeniden okunur.
+let dbVersion = 0;
+let snapshot: { key: string; value: { coupons: StoredCoupon[]; savings: number } } | null = null;
+
+function subscribe(onChange: () => void) {
+  const sub = addDatabaseChangeListener(() => { dbVersion++; onChange(); });
+  return () => sub.remove();
+}
+
+function read(currency: string) {
+  const key = `${dbVersion}|${currency}`;
+  if (snapshot?.key !== key) snapshot = { key, value: { coupons: loadCoupons(), savings: savingsTotal(currency) } };
+  return snapshot.value;
+}
+
+/** Kuponlar ve kumbara toplamı (seçili para biriminde); veritabanı değişince kendiliğinden yenilenir. */
 export function useCoupons(): { coupons: StoredCoupon[]; savings: number } {
-  const read = () => ({ coupons: loadCoupons(), savings: savingsTotal() });
-  const [state, setState] = useState(read);
-  useEffect(() => {
-    const sub = addDatabaseChangeListener(() => setState(read()));
-    return () => sub.remove();
-  }, []);
-  useFocusEffect(useCallback(() => setState(read()), []));
-  return state;
+  const currency = useLocalization((l) => l.currency);
+  const get = useCallback(() => read(currency), [currency]);
+  return useSyncExternalStore(subscribe, get, get);
 }
 
 const MATCH_LENGTH_MS = 105 * 60_000; // 90 dk + devre arası
