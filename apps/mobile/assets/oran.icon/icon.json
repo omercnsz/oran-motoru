@@ -1,0 +1,33 @@
+{
+  "fill": {
+    "automatic-gradient": "extended-srgb:0.05490,0.48627,0.33333,1.00000"
+  },
+  "groups": [
+    {
+      "layers": [
+        {
+          "image-name": "slot.svg",
+          "name": "slot"
+        },
+        {
+          "image-name": "coin.svg",
+          "name": "coin"
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    }
+  ],
+  "supported-platforms": {
+    "circles": [
+      "watchOS"
+    ],
+    "squares": "shared"
+  }
+}

@@ -58,7 +58,8 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit && tsc -p test",
     "test": "node --test \"test/*.test.ts\"",
-    "regions": "node scripts/region-names.mts"
+    "regions": "node scripts/region-names.mts",
+    "icons": "node scripts/icons.mts"
   },
   "private": true
 }

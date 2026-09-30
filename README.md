@@ -77,6 +77,10 @@ Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm
 - Yardım hatları `apps/mobile/src/i18n/index.ts` içindedir; yayından önce her numara doğrulanmalı.
 - Lig seçicideki ülke ve kıta adları Unicode CLDR verisinden üretilir (`apps/mobile/src/i18n/regions.ts`); telefondaki JavaScript motoru bu veriyi içermez. Yeni bir ülkenin ligi ya da yeni bir dil eklenince `npm run regions -w @oran/mobile` çalıştırılır.
 
+## İkon ve açılış ekranı
+
+Tasarım: futbol topu desenli bir madeni para kumbaranın yarığına düşüyor. Ölçüler ve renkler tek yerde, `apps/mobile/scripts/icons.mts` içinde. `npm run icons -w @oran/mobile` (macOS) şunları üretir: SVG kaynakları (`assets/brand`), iOS 26 ikonu (`assets/oran.icon`, Icon Composer biçimi), Android ve genel PNG'ler (`assets/images`). PNG'ler macOS'un kendi SVG işleyicisiyle çizilir, ek araç gerekmez. İkon değişince uygulamanın yerel derlemesi yeniden alınır.
+
 ## Uygulamanın kendi derlemesi (EAS)
 
 Expo projesi: https://expo.dev/accounts/eco1453/projects/oran · paket kimliği `com.omercnsz.oran` (mağazaya ilk yüklemeden sonra değiştirilemez).
@@ -84,13 +88,15 @@ Expo projesi: https://expo.dev/accounts/eco1453/projects/oran · paket kimliği 
 | Profil | Ne için |
 |---|---|
 | `development` | Geliştirme derlemesi, iOS simülatörü |
-| `development-device` | Geliştirme derlemesi, gerçek cihaz (Apple geliştirici hesabı gerekir) |
+| `development-device` | Geliştirme derlemesi, gerçek cihaz (EAS ile iPhone için ücretli Apple geliştirici hesabı gerekir) |
 | `preview` | Test için dağıtım; Android'de doğrudan kurulabilen APK |
 | `production` | Mağaza sürümü |
 
 ```bash
 cd apps/mobile
-npx expo run:ios                                            # simülatör için bu bilgisayarda derle
+npx expo run:ios                                            # simülatör için bu bilgisayarda derle (ücretsiz)
+npx expo run:ios --device                                   # kabloyla bağlı iPhone'a; ücretsiz Apple kimliğiyle olur, kurulum 7 gün geçerli
+npx expo run:android                                        # emülatöre ya da USB ile bağlı Android telefona (ücretsiz)
 npx eas-cli@latest build --profile preview --platform android   # bulutta Android APK
 ```
 
