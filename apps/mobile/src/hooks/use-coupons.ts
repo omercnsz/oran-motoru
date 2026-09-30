@@ -41,7 +41,7 @@ export async function settleNow(now = Date.now()): Promise<number> {
       league: s.league, id: '', espnId: s.espnId!, home: s.home, away: s.away, date: s.date, kickoff: s.kickoff,
     }]));
     try {
-      files.push(finalsToResults(await fetchEspnEvents([...pairs.values()]), byEspnId));
+      files.push(finalsToResults((await fetchEspnEvents([...pairs.values()])).events, byEspnId));
     } catch (err) {
       console.warn('ESPN sonuçları alınamadı:', (err as Error).message);
     }

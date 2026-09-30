@@ -125,3 +125,11 @@ export function preMatchProblem(
   }
   return null;
 }
+
+/** Worker'ın /espn/<lig>/<tarih> yanıtı: ESPN verisi işlenmiş hâlde */
+export interface EspnEventsResponse {
+  league: string;
+  dates: string;
+  fetchedAt: string;
+  events: EspnEvent[];
+}

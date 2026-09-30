@@ -22,7 +22,7 @@ async function currentEvents(selections: SlipSelection[]): Promise<EspnEvent[]> 
   if (pre.length === 0) return [];
   const pairs = new Map(pre.map((s) => [`${s.league}|${espnDateOf(s.kickoff)}`, { league: s.league, espnDate: espnDateOf(s.kickoff) }]));
   try {
-    return await fetchEspnEvents([...pairs.values()]);
+    return (await fetchEspnEvents([...pairs.values()])).events;
   } catch {
     return [];
   }

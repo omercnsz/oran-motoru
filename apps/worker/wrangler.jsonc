@@ -3,19 +3,5 @@
   "name": "oran-canli",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-01",
-  "triggers": { "crons": ["* * * * *"] }, // her dakika tetiklenir; gerçek sorgu sıklığına live.js karar verir
-  "kv_namespaces": [
-    // "npx wrangler kv namespace create LIVE" komutunun verdiği id'yi buraya yazın
-    { "binding": "LIVE", "id": "BURAYA_KV_ID" }
-  ],
-  "vars": {
-    // GitHub Pages adresiniz (sonunda / olmadan)
-    "DATA_BASE_URL": "https://omercnsz.github.io/oran-motoru",
-    // API-Football ücretsiz paket: günde 100 istek. Ücretli pakete geçince yükseltin.
-    "DAILY_LIMIT": "100",
-    "LIVE_INTERVAL_SEC": "60",
-    "IDLE_INTERVAL_SEC": "900"
-  },
   "observability": { "enabled": true }
-  // API anahtarı gizli tutulur: "npx wrangler secret put API_FOOTBALL_KEY"
 }

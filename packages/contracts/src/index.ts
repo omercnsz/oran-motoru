@@ -62,25 +62,3 @@ export interface ResultsFile {
   results: { date: string; home: string; away: string; score: Score }[];
 }
 
-/** Worker: GET /live */
-export interface LiveFile {
-  updatedAt: string | null;
-  matches: LiveMatch[];
-}
-
-export interface LiveMatch {
-  id: number;
-  league: string;
-  kickoff: string;
-  status: string;
-  /** Oran motoruna verilecek dakika (devre arası 45, uzatmalar 90) */
-  minute: number;
-  elapsed: number | null;
-  score: Score;
-  redCards: Score;
-  /** Bizim veri setimizdeki ad; eşleşmediyse null */
-  home: string | null;
-  away: string | null;
-  apiHome: string;
-  apiAway: string;
-}

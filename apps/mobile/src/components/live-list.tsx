@@ -55,7 +55,7 @@ export function LiveList({ now, leagueNames }: { now: number; leagueNames: Recor
       ))}
       {live.data ? (
         <ThemedText type="small" themeColor="textSecondary">
-          {live.data.source === 'espn' ? 'Kaynak: ESPN' : 'Kaynak: yedek servis'} · {formatTime(new Date(live.data.fetchedAt).toISOString())} güncellendi
+          {live.data.source === 'cache' ? 'Kaynak: ESPN (önbellek)' : 'Kaynak: ESPN'} · {formatTime(new Date(live.data.fetchedAt).toISOString())} güncellendi
         </ThemedText>
       ) : null}
     </>
