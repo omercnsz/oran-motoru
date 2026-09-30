@@ -11,6 +11,8 @@ test('biten maçlar: skor, kırmızı kart, durum', () => {
   const [fb, amed] = parseScoreboard(real);
   assert.deepEqual({ home: fb.home, away: fb.away, score: fb.score, state: fb.state, fullTime: fb.fullTime, clock: fb.clock },
     { home: 'Fenerbahce', away: 'Eyupspor', score: { home: 8, away: 0 }, state: 'post', fullTime: true, clock: 'MS' });
+  assert.ok(fb.homeId && fb.awayId && fb.homeId !== fb.awayId);
+  assert.equal(parseScoreboard(real)[1].homeId, '132335'); // Amed SFK'nın ESPN kimliği
   assert.equal(amed.home, 'Amed SFK');
   assert.deepEqual(amed.score, { home: 3, away: 2 });
   assert.deepEqual(amed.redCards, { home: 1, away: 0 }); // 84' Amed (ev sahibi)

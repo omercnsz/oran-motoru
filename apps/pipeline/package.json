@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "GitHub Actions'ta çalışır: maç verisini indirir, takım güçlerini ve oranları üretip public/ klasörüne yazar",
+  "description": "GitHub Actions'ta saatte bir çalışır: ESPN'den tüm turnuvaların maçları → global takım güç modeli → oranlar → public/",
   "scripts": {
     "build": "node src/build.ts",
     "demo": "node src/demo.ts",
@@ -15,7 +15,8 @@
     "@oran/contracts": "*",
     "@oran/odds-engine": "*",
     "@oran/betting": "*",
-    "@oran/teams": "*",
-    "@oran/live-sources": "*"
+    "@oran/live-sources": "*",
+    "@oran/leagues": "*",
+    "@oran/teams": "*"
   }
 }

@@ -1,0 +1,9 @@
+{
+  "name": "@oran/leagues",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Uygulamadaki turnuvaların tek listesi (veri hattı, Worker ve uygulama ortak kullanır)",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p ." }
+}

@@ -1,98 +1,111 @@
-// GitHub Actions'ın düzenli çalıştırdığı betik:
-// maç sonuçlarını indirir, takım güçlerini hesaplar, yaklaşan maçların oranlarını üretir
-// ve uygulamanın okuyacağı JSON dosyalarını public/ klasörüne yazar.
+// GitHub Actions'ın saatte bir çalıştırdığı betik:
+// tüm turnuvaların maçlarını ESPN'den indirir, dünyadaki bütün takımlar için TEK bir güç modeli kurar
+// (kıta kupaları ve kupalar ligleri birbirine bağlar), yaklaşan maçların oranlarını üretir ve
+// uygulamanın okuyacağı JSON dosyalarını public/ klasörüne yazar.
 import { mkdir, writeFile } from 'node:fs/promises';
 import { utcToUkDate } from '@oran/betting';
-import { matchTeam } from '@oran/teams';
-import { fitRatings, priceMatch } from '@oran/odds-engine';
 import type { IndexFile, OddsFile, RatingsFile, ResultsFile, ScheduleFile, ScheduledMatch, UpcomingMatch } from '@oran/contracts';
-import { loadSeason, seasonCode, type CsvMatch } from './football-data.ts';
-import { loadEspnEvents } from './espn.ts';
+import { COMPETITIONS } from '@oran/leagues';
+import type { EspnEvent } from '@oran/live-sources';
+import { fitRatings, priceMatch, type MatchResult } from '@oran/odds-engine';
+import { loadCompetition, requestCount } from './espn.ts';
 
-const LEAGUES: Record<string, string> = {
-  T1: 'Süper Lig',
-  E0: 'Premier League', E1: 'Championship', E2: 'League One', E3: 'League Two', EC: 'National League',
-  SP1: 'La Liga', SP2: 'La Liga 2', I1: 'Serie A', I2: 'Serie B', D1: 'Bundesliga', D2: '2. Bundesliga',
-  F1: 'Ligue 1', F2: 'Ligue 2', N1: 'Eredivisie', P1: 'Liga Portugal', B1: 'Jupiler Pro League', G1: 'Super League Yunanistan',
-  SC0: 'İskoçya Premiership', SC1: 'İskoçya Championship', SC2: 'İskoçya League One', SC3: 'İskoçya League Two',
-};
 const OUT = 'public';
+const CACHE = 'data/espn';
+const DAY = 86_400_000;
+const HISTORY_DAYS = 400; // model bu kadar geriye bakar (eski maçların ağırlığı zaten azalıyor)
+const FUTURE_DAYS = 14;
+const MIN_MATCHES = 4; // hakkında bundan az maç olan takıma oran üretilmez (ör. kupadaki amatör takımlar)
+
 const now = new Date();
 const round = (x: number, d = 4) => Math.round(x * 10 ** d) / 10 ** d;
-const json = (path: string, data: IndexFile | OddsFile | RatingsFile | ResultsFile | ScheduleFile) => writeFile(`${OUT}/${path}`, JSON.stringify(data));
+const json = (path: string, data: IndexFile | OddsFile | RatingsFile | ResultsFile | ScheduleFile) =>
+  writeFile(`${OUT}/${path}`, JSON.stringify(data));
 
-await mkdir(`${OUT}/ratings`, { recursive: true });
-await mkdir(`${OUT}/odds`, { recursive: true });
-await mkdir(`${OUT}/results`, { recursive: true });
-await mkdir('data', { recursive: true });
+for (const d of ['ratings', 'odds', 'results']) await mkdir(`${OUT}/${d}`, { recursive: true });
 
+// 1) Tüm turnuvaların maçları
+const from = new Date(now.getTime() - HISTORY_DAYS * DAY);
+const until = new Date(now.getTime() + FUTURE_DAYS * DAY);
+const byComp = new Map<string, EspnEvent[]>();
+for (const comp of COMPETITIONS) {
+  try {
+    byComp.set(comp.code, await loadCompetition(comp, from, until, now, CACHE));
+  } catch (err) {
+    console.warn(`${comp.code} atlandı: ${(err as Error).message}`);
+  }
+}
+
+// 2) Global model: bütün turnuvaların biten maçları, takımlar ESPN kimliğiyle
+const names = new Map<string, string>(); // ESPN takım kimliği → en güncel ad
+const played = new Map<string, MatchResult>();
+const matchCount = new Map<string, number>();
+for (const events of byComp.values()) {
+  for (const e of events) {
+    names.set(e.homeId, e.home);
+    names.set(e.awayId, e.away);
+    if (!e.fullTime || played.has(e.espnId)) continue;
+    played.set(e.espnId, { date: new Date(e.kickoff), home: e.homeId, away: e.awayId, hg: e.score.home, ag: e.score.away });
+    for (const id of [e.homeId, e.awayId]) matchCount.set(id, (matchCount.get(id) ?? 0) + 1);
+  }
+}
+const model = fitRatings([...played.values()], { asOf: now });
+console.log(`Model: ${played.size} maç, ${Object.keys(model.attack).length} takım (${requestCount} ESPN isteği)`);
+
+// 3) Turnuva başına dosyalar
 const index: IndexFile = { updatedAt: now.toISOString(), leagues: [] };
 const schedule: ScheduledMatch[] = [];
-for (const [code, name] of Object.entries(LEAGUES)) {
-  let matches: CsvMatch[];
-  try {
-    const seasons = await Promise.all([seasonCode(now, -1), seasonCode(now)].map((s) =>
-      loadSeason(code, s, 'data').catch((): CsvMatch[] => [])));
-    matches = seasons.flat();
-    if (matches.length === 0) throw new Error('veri yok');
-  } catch (err) {
-    console.warn(`${code} atlandı: ${(err as Error).message}`);
-    continue;
-  }
+let skipped = 0;
+for (const comp of COMPETITIONS) {
+  const events = byComp.get(comp.code);
+  if (!events) continue;
 
-  // 1) Takım güçleri: uygulama canlı oranları bu dosyayla cihazda hesaplar
-  const model = fitRatings(matches, { asOf: now });
-  const r = (obj: Record<string, number>) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, round(v)]));
-  await json(`ratings/${code}.json`, {
-    league: code, updatedAt: now.toISOString(),
-    homeAvg: round(model.homeAvg), awayAvg: round(model.awayAvg),
-    attack: r(model.attack), defense: r(model.defense),
+  // Takım güçleri (bu turnuvadaki takımlar, adlarıyla): uygulama canlı oranları bununla hesaplar
+  const attack: Record<string, number> = {}, defense: Record<string, number> = {};
+  for (const e of events) {
+    for (const [id, name] of [[e.homeId, e.home], [e.awayId, e.away]]) {
+      if (model.attack[id] === undefined || attack[name] !== undefined) continue;
+      attack[name] = round(model.attack[id]);
+      defense[name] = round(model.defense[id]);
+    }
+  }
+  await json(`ratings/${comp.code}.json`, {
+    league: comp.code, updatedAt: now.toISOString(),
+    homeAvg: round(model.homeAvg), awayAvg: round(model.awayAvg), attack, defense,
   });
 
-  // 2) Son 2 gün + önümüzdeki 14 günün maçları (ESPN). Başlamamış olanlara maç öncesi oran üretilir;
-  // hepsi schedule.json'a girer (canlı ekran ve hızlı sonuçlandırma için).
-  // Takım adları bizim veri setimize eşlenir; eşleşmeyen maç atlanır (oranı güvenilir olmaz).
-  const teams = Object.keys(model.attack);
-  let fixtures: Awaited<ReturnType<typeof loadEspnEvents>> = [];
-  try {
-    fixtures = await loadEspnEvents(code, now);
-  } catch (err) {
-    console.warn(`${code} fikstür alınamadı: ${(err as Error).message}`);
-  }
+  // Program (son 2 gün + önümüzdeki 14 gün) ve maç öncesi oranlar
   const odds: UpcomingMatch[] = [];
-  for (const f of fixtures) {
-    const home = matchTeam(f.home, teams), away = matchTeam(f.away, teams);
-    if (!home || !away) {
-      console.warn(`${code} eşleşmedi: ${f.home}${home ? '' : ' (?)'} – ${f.away}${away ? '' : ' (?)'}`);
+  for (const e of events) {
+    const t = Date.parse(e.kickoff);
+    if (t < now.getTime() - 2 * DAY) continue;
+    const date = utcToUkDate(e.kickoff);
+    const id = `${comp.code}-${e.espnId}`;
+    schedule.push({ league: comp.code, id, espnId: e.espnId, home: e.home, away: e.away, date, kickoff: e.kickoff });
+    if (e.state !== 'pre' || t <= now.getTime()) continue;
+    if ((matchCount.get(e.homeId) ?? 0) < MIN_MATCHES || (matchCount.get(e.awayId) ?? 0) < MIN_MATCHES) {
+      skipped++;
       continue;
     }
-    const date = utcToUkDate(f.kickoff);
-    const id = `${code}-${date}-${home}-${away}`.replace(/\s+/g, '_');
-    schedule.push({ league: code, id, espnId: f.espnId, home, away, date, kickoff: f.kickoff });
-    if (f.state !== 'pre' || Date.parse(f.kickoff) <= now.getTime()) continue;
-    const priced = priceMatch(model, home, away);
+    const priced = priceMatch(model, e.homeId, e.awayId);
     odds.push({
-      id, espnId: f.espnId,
-      date, kickoff: f.kickoff,
-      home, away,
+      id, espnId: e.espnId, date, kickoff: e.kickoff, home: e.home, away: e.away,
       xg: { home: round(priced.xg.home, 2), away: round(priced.xg.away, 2) },
-      markets: Object.fromEntries(priced.markets.map((mk) => [mk.key,
-        Object.fromEntries(mk.outcomes.map((o) => [o.key, o.odds]))])),
+      markets: Object.fromEntries(priced.markets.map((mk) => [mk.key, Object.fromEntries(mk.outcomes.map((o) => [o.key, o.odds]))])),
     });
   }
-  await json(`odds/${code}.json`, { league: code, updatedAt: now.toISOString(), matches: odds });
+  await json(`odds/${comp.code}.json`, { league: comp.code, updatedAt: now.toISOString(), matches: odds });
 
-  // 3) Son 30 günün sonuçları: gölge bahis kuponlarını sonuçlandırmak için
-  const since = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const results = matches.filter((m) => m.date >= since && Number.isFinite(m.hg))
-    .map((m) => ({ date: m.date.toISOString().slice(0, 10), home: m.home, away: m.away, score: { home: m.hg, away: m.ag } }));
-  await json(`results/${code}.json`, { league: code, updatedAt: now.toISOString(), results });
+  // Son 30 günün sonuçları: gölge kuponları sonuçlandırmak için
+  const results = events.filter((e) => e.fullTime && Date.parse(e.kickoff) >= now.getTime() - 30 * DAY)
+    .map((e) => ({ date: utcToUkDate(e.kickoff), home: e.home, away: e.away, score: e.score }));
+  await json(`results/${comp.code}.json`, { league: comp.code, updatedAt: now.toISOString(), results });
 
-  index.leagues.push({ code, name, teams: Object.keys(model.attack).length, upcoming: odds.length, results: results.length });
-  console.log(`${code.padEnd(4)} ${name.padEnd(20)} ${String(Object.keys(model.attack).length).padStart(2)} takım, ${String(odds.length).padStart(2)} yaklaşan maç, ${results.length} sonuç`);
+  index.leagues.push({ code: comp.code, name: comp.name, kind: comp.kind, region: comp.region, teams: Object.keys(attack).length, upcoming: odds.length, results: results.length });
 }
 
 await json('index.json', index);
 schedule.sort((a, b) => a.kickoff.localeCompare(b.kickoff));
 await json('schedule.json', { updatedAt: now.toISOString(), matches: schedule });
-console.log(`\n${index.leagues.length} lig, programda ${schedule.length} maç → ${OUT}/`);
+const withMatches = index.leagues.filter((l) => l.upcoming > 0).length;
+console.log(`${index.leagues.length} turnuva (${withMatches} tanesinde yaklaşan maç), ${index.leagues.reduce((a, l) => a + l.upcoming, 0)} oranlı maç, programda ${schedule.length} maç; yetersiz veri yüzünden ${skipped} maç atlandı`);

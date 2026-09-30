@@ -5,7 +5,7 @@ const DAY_MS = 86_400_000;
 
 /** İstek bizim liglerimizden biri ve geçerli bir tarih mi? (açık bir ESPN aracısı olmayalım) */
 export function parseEspnPath(pathname: string): { league: string; dates: string } | null {
-  const m = pathname.match(/^\/espn\/([A-Z0-9]{1,4})\/(\d{6}|\d{8})$/);
+  const m = pathname.match(/^\/espn\/([A-Z0-9]{1,6})\/(\d{6}|\d{8})$/);
   if (!m || !ESPN_SLUGS[m[1]]) return null;
   return { league: m[1], dates: m[2] };
 }

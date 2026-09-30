@@ -5,7 +5,7 @@ import type { Ratings, Score } from '@oran/odds-engine';
 /** index.json */
 export interface IndexFile {
   updatedAt: string;
-  leagues: { code: string; name: string; teams: number; upcoming: number; results: number }[];
+  leagues: { code: string; name: string; kind: 'league' | 'cup' | 'continental'; region: string; teams: number; upcoming: number; results: number }[];
 }
 
 /** ratings/<lig>.json */

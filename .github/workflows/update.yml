@@ -8,7 +8,7 @@ on:
   workflow_dispatch: # elle çalıştırma düğmesi
   push:
     branches: [main]
-    paths: ['packages/**', 'apps/pipeline/**']
+    paths: ['packages/**', 'apps/pipeline/**', '.github/workflows/update.yml']
 
 permissions:
   contents: read
@@ -31,6 +31,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test -w @oran/odds-engine
+      # Bitmiş ayların ESPN verisi çalışmalar arasında saklanır (her saat ~900 yerine ~130 istek)
+      - uses: actions/cache@v4
+        with:
+          path: apps/pipeline/data/espn
+          key: espn-${{ github.run_id }}
+          restore-keys: espn-
       - run: npm run build:data
       - uses: actions/upload-pages-artifact@v3
         with:

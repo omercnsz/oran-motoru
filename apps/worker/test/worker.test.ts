@@ -11,6 +11,7 @@ const ESPN_BODY = readFileSync(new URL('../../../packages/live-sources/test/fixt
 test('yol doğrulama: sadece bizim liglerimiz ve geçerli tarihler', () => {
   assert.deepEqual(parseEspnPath('/espn/T1/20260920'), { league: 'T1', dates: '20260920' });
   assert.deepEqual(parseEspnPath('/espn/E0/202610'), { league: 'E0', dates: '202610' });
+  assert.deepEqual(parseEspnPath('/espn/CAFCL/20261004'), { league: 'CAFCL', dates: '20261004' }); // 5 harfli kod
   assert.equal(parseEspnPath('/espn/XX/20260920'), null); // tanımsız lig
   assert.equal(parseEspnPath('/espn/T1/2026-09-20'), null);
   assert.equal(parseEspnPath('/espn/T1/20260920/../../x'), null);

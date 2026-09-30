@@ -1,13 +1,10 @@
 // ESPN'in herkese açık (resmî olarak belgelenmemiş) skor tablosu.
 // Anahtar istemez. Bir istek = bir lig × bir gün (YYYYMMDD) ya da bir ay (YYYYMM).
 import type { ResultsFile, ScheduledMatch } from '@oran/contracts';
+import { COMPETITIONS } from '@oran/leagues';
 
-export const ESPN_SLUGS: Record<string, string> = {
-  T1: 'tur.1', E0: 'eng.1', E1: 'eng.2', E2: 'eng.3', E3: 'eng.4', EC: 'eng.5',
-  SP1: 'esp.1', SP2: 'esp.2', I1: 'ita.1', I2: 'ita.2', D1: 'ger.1', D2: 'ger.2',
-  F1: 'fra.1', F2: 'fra.2', N1: 'ned.1', P1: 'por.1', B1: 'bel.1', G1: 'gre.1',
-  SC0: 'sco.1', SC1: 'sco.2', SC2: 'sco.3', SC3: 'sco.4',
-};
+/** Turnuva kodu → ESPN adresi (tek kaynak: @oran/leagues) */
+export const ESPN_SLUGS: Record<string, string> = Object.fromEntries(COMPETITIONS.map((c) => [c.code, c.slug]));
 
 export function scoreboardUrl(league: string, dates: string): string {
   const slug = ESPN_SLUGS[league];
@@ -55,6 +52,9 @@ export interface EspnEvent {
   clock: string;
   home: string;
   away: string;
+  /** ESPN takım kimlikleri: dünya genelinde benzersiz (aynı adlı farklı takımlar karışmaz) */
+  homeId: string;
+  awayId: string;
   score: { home: number; away: number };
   redCards: { home: number; away: number };
 }
@@ -85,6 +85,8 @@ export function parseScoreboard(body: EspnScoreboard): EspnEvent[] {
       clock: status === 'STATUS_HALFTIME' ? 'İY' : state === 'post' ? 'MS' : e.status.displayClock ?? '',
       home: home.team.displayName,
       away: away.team.displayName,
+      homeId: home.team.id,
+      awayId: away.team.id,
       score: { home: Number(home.score ?? 0), away: Number(away.score ?? 0) },
       redCards: reds,
     };
