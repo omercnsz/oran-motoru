@@ -1,6 +1,6 @@
 import type { UpcomingMatch } from '@oran/contracts';
 import { Link } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { LiveList } from '@/components/live-list';
@@ -28,6 +28,13 @@ export default function MaclarScreen() {
   const leagueNames = useMemo(() => Object.fromEntries((index.data?.leagues ?? []).map((l) => [l.code, l.name])), [index.data]);
   const league = picked ?? (leagues.find((l) => l.code === 'T1') ?? leagues[0])?.code;
   const odds = useOdds(league);
+  // Seçili lig düğmesi, uzun lig listesinde ekran dışında kalmasın
+  const chipsRef = useRef<ScrollView>(null);
+  const chipX = useRef(new Map<string, number>());
+  useEffect(() => {
+    const x = league ? chipX.current.get(league) : undefined;
+    if (x !== undefined) chipsRef.current?.scrollTo({ x: Math.max(0, x - Spacing.three), animated: true });
+  }, [league, leagues]);
   const now = useNow();
   const schedule = useSchedule();
   // Önümüzdeki 36 saatte maçı olan ligler (maç sayısıyla), en yakın maça göre sıralı
@@ -65,9 +72,14 @@ export default function MaclarScreen() {
         {mode === 'live' ? <LiveList now={now} leagueNames={leagueNames} /> : null}
 
         {mode === 'pre' ? <>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+        <ScrollView ref={chipsRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
           {leagues.map((l) => (
-            <Chip key={l.code} label={l.name} active={l.code === league} onPress={() => setPicked(l.code)} />
+            <View key={l.code} onLayout={(e) => {
+              chipX.current.set(l.code, e.nativeEvent.layout.x);
+              if (l.code === league) chipsRef.current?.scrollTo({ x: Math.max(0, e.nativeEvent.layout.x - Spacing.three), animated: false });
+            }}>
+              <Chip label={l.name} active={l.code === league} onPress={() => setPicked(l.code)} />
+            </View>
           ))}
         </ScrollView>
 
