@@ -14,7 +14,7 @@ packages/
 apps/
 ├── mobile        Expo (React Native) uygulaması
 ├── pipeline      GitHub Actions: maç verisi → takım güçleri ve oranlar → GitHub Pages
-└── worker        Cloudflare Worker: canlı skorlar → GET /live
+└── worker        Cloudflare Worker: ESPN'in önünde kenar önbelleği → GET /espn/<lig>/<tarih>
 ```
 
 Kod TypeScript. Paketler derleme adımı olmadan çalışır: Node tip silme ile, Worker ve Metro kendi derleyicileriyle. Bu yüzden sadece silinebilir TypeScript sözdizimi kullanılır (enum ve namespace yok) ve göreli importlar `.ts` uzantısıyla yazılır.
@@ -41,8 +41,7 @@ Uygulama veriyi `apps/mobile/.env` içindeki `EXPO_PUBLIC_DATA_BASE_URL` adresin
 |---|---|---|---|
 | Geçmiş sonuçlar → takım güçleri | football-data.co.uk | `apps/pipeline` → GitHub Pages | saatte bir |
 | Önümüzdeki 14 günün maçları + maç öncesi oranlar | ESPN (açık, anahtarsız) + oran motoru | `apps/pipeline` → GitHub Pages | saatte bir |
-| Canlı skor | ESPN, telefondan doğrudan | `packages/live-sources` | Canlı ekrandayken 30 sn |
-| Canlı skor (yedek) | API-Football | `apps/worker` → Cloudflare | Dakikada bire kadar |
+| Canlı skor | ESPN, Cloudflare önbelleği üzerinden (ulaşılamazsa doğrudan) | `apps/worker`, `packages/live-sources` | Canlı ekrandayken 30 sn |
 | Kupon sonuçları | ESPN (maç biter bitmez) + football-data.co.uk (kesin) | Telefonda | Ekran açıldıkça |
 | Canlı oranlar | — | Telefonda, `odds-engine` ile | Anlık |
 
@@ -56,20 +55,12 @@ GitHub Pages çıktısı: `index.json`, `schedule.json`, `odds/<lig>.json`, `rat
 
 `ci.yml` her push'ta kontrolleri çalıştırır, `update.yml` saatte bir veriyi günceller.
 
-## Canlı skor servisi (Cloudflare Worker)
+## ESPN önbelleği (Cloudflare Worker)
 
-Sorgu sıklığı otomatik ayarlanır: canlı maç varsa `LIVE_INTERVAL_SEC`, yoksa `IDLE_INTERVAL_SEC`. Günlük istek limiti (`DAILY_LIMIT`) aşılmaz; kalan istekler güne yayılır. Ücretsiz pakette (günde 100 istek) bu yaklaşık 15 dakikada bir güncelleme demektir.
+Yayında: https://oran-canli.oran-worker.workers.dev
 
-- `GET /live`: canlı maçlar (lig, dakika, skor, kırmızı kartlar, eşleşmiş takım adları)
-- `GET /health`: son sorgu, günlük kullanım, son hata
+Telefonlar ESPN'e doğrudan değil Worker'a sorar: `GET /espn/<lig>/<YYYYMMDD | YYYYMM>`. Her Cloudflare noktası ESPN'e en fazla şu sıklıkla gider: dün/bugün/yarın 20 sn, ileri tarihler 5 dk, geçmiş 1 saat. Kullanıcı sayısı artsa da ESPN'e giden istek sayısı neredeyse sabit kalır. Sadece tanımlı liglere ve geçerli tarihlere yanıt verir. Yanıt, `packages/live-sources` ile işlenmiş `EspnEventsResponse` biçimindedir.
 
-Kurulum (`apps/worker` içinde):
+Uygulama adresi `apps/mobile/.env` içindeki `EXPO_PUBLIC_LIVE_URL` değerinden okur; Worker'a ulaşılamazsa ESPN'e doğrudan bağlanır.
 
-```bash
-npx wrangler login
-npx wrangler kv namespace create LIVE      # çıkan id'yi wrangler.jsonc'deki BURAYA_KV_ID yerine yazın
-npx wrangler secret put API_FOOTBALL_KEY
-npm run deploy
-```
-
-`wrangler.jsonc` içindeki `DATA_BASE_URL` değerini GitHub Pages adresinizle değiştirin.
+Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm run deploy`. Canlı istek günlüğü: `npx wrangler tail oran-canli`.

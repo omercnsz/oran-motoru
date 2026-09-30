@@ -23,7 +23,10 @@ async function espn(request: Request, ctx: ExecutionContext, league: string, dat
     return res;
   }
 
-  const upstream = await fetch(scoreboardUrl(league, dates), { headers: { accept: 'application/json' } });
+  const upstream = await fetch(scoreboardUrl(league, dates), {
+    // Kim olduğumuzu açıkça belirtiyoruz (Workers varsayılan olarak User-Agent göndermez)
+    headers: { accept: 'application/json', 'user-agent': 'oran-canli/1.0 (+https://github.com/omercnsz/oran-motoru)' },
+  });
   if (!upstream.ok) return json({ error: `ESPN HTTP ${upstream.status}` }, 502, 0); // hata önbelleğe alınmaz
 
   const now = new Date();
