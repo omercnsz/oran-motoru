@@ -12,6 +12,7 @@ import { fetchEspnEvents } from '@/data/live';
 import { createCoupon } from '@/db/coupons';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
+import { askPermission, syncReminders } from '@/notifications';
 import { describeBet, formatShort } from '@/lib/format';
 import { staleLiveSelection, useSlip, type SlipSelection } from '@/state/slip';
 
@@ -71,6 +72,8 @@ export default function KuponScreen() {
     const p = await placeCoupon(selections, stake, currency, minStake);
     setBusy(false);
     if (p) return setProblem(p);
+    // İlk kuponda bildirim izni sorulur; maç başlamadan 15 dk önce hatırlatma kurulur
+    void askPermission().finally(syncReminders);
     clear();
     router.dismissTo('/kuponlar');
   }

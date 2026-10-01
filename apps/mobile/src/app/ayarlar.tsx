@@ -1,5 +1,6 @@
 import { formatOdds, type OddsFormat } from '@oran/betting';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useEffect } from 'react';
+import { Linking, Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
@@ -7,6 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { CURRENCIES, deviceDefaults, LANGUAGES, useT, type Preferences } from '@/i18n';
+import { syncReminders, useReminders } from '@/notifications';
 
 const ODDS_FORMATS: OddsFormat[] = ['decimal', 'fractional', 'american'];
 
@@ -21,6 +23,8 @@ export default function AyarlarScreen() {
 
   return (
     <Screen title={t('settings.title')} compact>
+      <NotificationsSection />
+
       <Section title={t('settings.language')}>
         <Option label={t('settings.automatic', { value: languageName(auto.language) })} selected={prefs.language === 'auto'} onPress={() => setPreference('language', 'auto')} />
         {LANGUAGES.map((l) => (
@@ -44,6 +48,31 @@ export default function AyarlarScreen() {
       </Section>
       <ThemedText type="small" themeColor="textSecondary">{currency} · {t('settings.translationNote')}</ThemedText>
     </Screen>
+  );
+}
+
+function NotificationsSection() {
+  const { t } = useT();
+  const theme = useTheme();
+  const { kickoff, permission, setKickoff } = useReminders();
+  // İzin durumu telefon ayarlarında değişmiş olabilir
+  useEffect(() => { void syncReminders(); }, []);
+  return (
+    <Section title={t('notifications.title')}>
+      <View style={styles.option}>
+        <ThemedText style={styles.optionLabel}>{t('notifications.kickoff')}</ThemedText>
+        <Switch value={kickoff} onValueChange={(on) => void setKickoff(on)} trackColor={{ true: theme.accent }}
+          accessibilityLabel={t('notifications.kickoff')} />
+      </View>
+      {kickoff && permission === 'denied' ? (
+        <View style={styles.denied}>
+          <ThemedText type="small" style={{ color: theme.danger }}>{t('notifications.denied')}</ThemedText>
+          <Pressable accessibilityRole="button" onPress={() => void Linking.openSettings()}>
+            <ThemedText type="smallBold" style={{ color: theme.accent }}>{t('notifications.openSettings')}</ThemedText>
+          </Pressable>
+        </View>
+      ) : null}
+    </Section>
   );
 }
 
@@ -77,4 +106,5 @@ const styles = StyleSheet.create({
   card: { borderRadius: Spacing.three, paddingHorizontal: Spacing.three },
   option: { flexDirection: 'row', alignItems: 'center', minHeight: 48, gap: Spacing.two },
   optionLabel: { flex: 1 },
+  denied: { gap: Spacing.one, paddingBottom: Spacing.three },
 });

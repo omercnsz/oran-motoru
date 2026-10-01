@@ -60,6 +60,15 @@ const hi: Messages = {
     otherCurrencies: 'दूसरी मुद्राओं की स्लिप शामिल नहीं हैं।',
   },
   games: { title: 'गेम', subtitle: 'केवल नकली चिप्स। कोई खरीदारी नहीं, कोई निकासी नहीं।', crash: 'क्रैश', roulette: 'रूले', slot: 'स्लॉट' },
+  notifications: {
+    title: 'सूचनाएँ',
+    kickoff: 'मेरी बेट स्लिप के मैच से 15 मिनट पहले याद दिलाएँ',
+    denied: 'फ़ोन की सेटिंग में Oran की सूचनाएँ बंद हैं।',
+    openSettings: 'सेटिंग खोलें',
+    channel: 'मैच रिमाइंडर',
+    kickoffTitle: '%{match} %{time} बजे शुरू होगा',
+    kickoffBody: 'आपकी बेट स्लिप का मैच शुरू होने वाला है। लाइव स्कोर देखने के लिए टैप करें।',
+  },
   settings: {
     title: 'सेटिंग्स', language: 'भाषा', deviceLanguage: 'डिवाइस की भाषा', currency: 'मुद्रा', automatic: 'स्वचालित (%{value})',
     oddsFormat: 'ऑड्स का प्रारूप', decimal: 'दशमलव', fractional: 'भिन्न', american: 'अमेरिकी',

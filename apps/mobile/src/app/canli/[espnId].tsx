@@ -27,7 +27,9 @@ export default function CanliScreen() {
   const toggle = useSlip((s) => s.toggle);
 
   if (!row) {
-    return <View style={styles.center}>{live.isPending ? <ActivityIndicator /> : <ThemedText>{t('live.notInList')}</ThemedText>}</View>;
+    // Şu an canlı penceresinde maç yoksa canlı sorgusu hiç çalışmaz (hep "bekliyor" görünür); bu yüzden ona bakılmaz
+    const loading = live.schedule.isPending || (live.matches.length > 0 && live.isPending);
+    return <View style={styles.center}>{loading ? <ActivityIndicator /> : <ThemedText>{t('live.notInList')}</ThemedText>}</View>;
   }
   const { match: m, event: e } = row;
   const markets = liveMarkets(row, ratings.get(m.league));

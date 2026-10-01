@@ -60,6 +60,15 @@ const el: Messages = {
     otherCurrencies: 'Τα δελτία σε άλλα νομίσματα δεν περιλαμβάνονται.',
   },
   games: { title: 'Παιχνίδια', subtitle: 'Μόνο εικονικές μάρκες. Χωρίς αγορές, χωρίς ανάληψη.', crash: 'Crash', roulette: 'Ρουλέτα', slot: 'Κουλοχέρηδες' },
+  notifications: {
+    title: 'Ειδοποιήσεις',
+    kickoff: 'Ειδοποίησέ με 15 λεπτά πριν από αγώνα των δελτίων μου',
+    denied: 'Οι ειδοποιήσεις του Oran είναι απενεργοποιημένες στις ρυθμίσεις του τηλεφώνου.',
+    openSettings: 'Άνοιγμα ρυθμίσεων',
+    channel: 'Υπενθυμίσεις αγώνων',
+    kickoffTitle: 'Ο αγώνας %{match} ξεκινά στις %{time}',
+    kickoffBody: 'Ένας αγώνας του δελτίου σου ξεκινά σε λίγο. Πάτησε για να δεις το ζωντανό σκορ.',
+  },
   settings: {
     title: 'Ρυθμίσεις', language: 'Γλώσσα', deviceLanguage: 'Γλώσσα συσκευής', currency: 'Νόμισμα', automatic: 'Αυτόματα (%{value})',
     oddsFormat: 'Μορφή αποδόσεων', decimal: 'Δεκαδική', fractional: 'Κλασματική', american: 'Αμερικανική',

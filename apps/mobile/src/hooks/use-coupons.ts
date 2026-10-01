@@ -8,6 +8,7 @@ import { fetchResults } from '@/data/api';
 import { fetchEspnEvents } from '@/data/live';
 import { loadCoupons, openSelections, savingsTotal, settleOpenCoupons, type StoredCoupon } from '@/db/coupons';
 import { useLocalization } from '@/i18n';
+import { syncReminders } from '@/notifications';
 
 // Veritabanı bir dış veri kaynağı gibi dinlenir: her değişiklikte sürüm artar, anlık görüntü yeniden okunur.
 let dbVersion = 0;
@@ -62,7 +63,10 @@ export async function settleNow(now = Date.now()): Promise<number> {
   } catch (err) {
     console.warn('Sonuç dosyaları alınamadı:', (err as Error).message);
   }
-  return files.length ? settleOpenCoupons(files, new Date(now)) : 0;
+  const changed = files.length ? settleOpenCoupons(files, new Date(now)) : 0;
+  // Kaybeden kuponun maçları için hatırlatma kalmasın
+  if (changed > 0) void syncReminders();
+  return changed;
 }
 
 /** Ekran her açıldığında açık kuponları sonuçlandırır. */

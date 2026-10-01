@@ -60,6 +60,15 @@ const fr: Messages = {
     otherCurrencies: 'Les tickets dans d’autres devises ne sont pas inclus.',
   },
   games: { title: 'Jeux', subtitle: 'Jetons fictifs uniquement. Aucun achat, aucun retrait.', crash: 'Crash', roulette: 'Roulette', slot: 'Machines à sous' },
+  notifications: {
+    title: 'Notifications',
+    kickoff: 'Me prévenir 15 minutes avant un match de mes tickets',
+    denied: "Les notifications d'Oran sont désactivées dans les réglages du téléphone.",
+    openSettings: 'Ouvrir les réglages',
+    channel: 'Rappels de matchs',
+    kickoffTitle: '%{match} commence à %{time}',
+    kickoffBody: 'Un match de ton ticket va commencer. Touche pour suivre le score en direct.',
+  },
   settings: {
     title: 'Réglages', language: 'Langue', deviceLanguage: 'Langue de l’appareil', currency: 'Devise', automatic: 'Automatique (%{value})',
     oddsFormat: 'Format des cotes', decimal: 'Décimal', fractional: 'Fractionnaire', american: 'Américain',

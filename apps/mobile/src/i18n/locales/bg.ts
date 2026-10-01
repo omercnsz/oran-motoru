@@ -60,6 +60,15 @@ const bg: Messages = {
     otherCurrencies: 'Фишовете в други валути не са включени.',
   },
   games: { title: 'Игри', subtitle: 'Само виртуални чипове. Без покупки, без теглене.', crash: 'Crash', roulette: 'Рулетка', slot: 'Слот игри' },
+  notifications: {
+    title: 'Известия',
+    kickoff: 'Напомняй ми 15 минути преди мач от моите фишове',
+    denied: 'Известията на Oran са изключени в настройките на телефона.',
+    openSettings: 'Отвори настройките',
+    channel: 'Напомняния за мачове',
+    kickoffTitle: '%{match} започва в %{time}',
+    kickoffBody: 'Мач от твоя фиш започва скоро. Докосни, за да следиш резултата на живо.',
+  },
   settings: {
     title: 'Настройки', language: 'Език', deviceLanguage: 'Език на устройството', currency: 'Валута', automatic: 'Автоматично (%{value})',
     oddsFormat: 'Формат на коефициентите', decimal: 'Десетичен', fractional: 'Дробен', american: 'Американски',

@@ -77,6 +77,13 @@ Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm
 - Yardım hatları `apps/mobile/src/i18n/index.ts` içindedir; yayından önce her numara doğrulanmalı.
 - Lig seçicideki ülke ve kıta adları Unicode CLDR verisinden üretilir (`apps/mobile/src/i18n/regions.ts`); telefondaki JavaScript motoru bu veriyi içermez. Yeni bir ülkenin ligi ya da yeni bir dil eklenince `npm run regions -w @oran/mobile` çalıştırılır.
 
+## Bildirimler
+
+- Kupondaki bir maç başlamadan 15 dakika önce hatırlatma gelir. Bildirimi telefon kendisi kurar (yerel bildirim, `apps/mobile/src/notifications.ts`); sunucu ve ücretli Apple hesabı gerekmez. Sadece kullanıcının kendi kuponları için; yeni bahse çağıran bildirim yok.
+- İzin ilk kupon kaydedilince bir kez sorulur; Ayarlar'dan kapatılıp açılabilir.
+- iOS: `expo-notifications` sunucudan bildirim (push) yetkisini her zaman ekler, bu yetkiyle uygulama ücretsiz Apple kimliğiyle kurulamaz. `apps/mobile/plugins/without-push-entitlement.js` onu siler; sunucudan bildirim eklenince bu eklenti kaldırılmalı.
+- Android 14 ve üstünde tam zamanlı alarm izni varsayılan olarak kapalı; hatırlatma birkaç dakika gecikebilir. Başlıkta maçın saati yazdığı için gecikse de doğru kalır.
+
 ## İkon ve açılış ekranı
 
 Tasarım: futbol topu desenli bir madeni para kumbaranın yarığına düşüyor. Ölçüler ve renkler tek yerde, `apps/mobile/scripts/icons.mts` içinde. `npm run icons -w @oran/mobile` (macOS) şunları üretir: SVG kaynakları (`assets/brand`), iOS 26 ikonu (`assets/oran.icon`, Icon Composer biçimi), Android ve genel PNG'ler (`assets/images`). PNG'ler macOS'un kendi SVG işleyicisiyle çizilir, ek araç gerekmez. İkon değişince uygulamanın yerel derlemesi yeniden alınır.

@@ -60,6 +60,15 @@ const zh: Messages = {
     otherCurrencies: '不包括其他货币的投注单。',
   },
   games: { title: '游戏', subtitle: '只有虚拟筹码。不能购买，也不能提现。', crash: 'Crash', roulette: '轮盘', slot: '老虎机' },
+  notifications: {
+    title: '通知',
+    kickoff: '投注单中的比赛开始前 15 分钟提醒我',
+    denied: '手机设置中已关闭 Oran 的通知。',
+    openSettings: '打开设置',
+    channel: '比赛提醒',
+    kickoffTitle: '%{match} 将于 %{time} 开始',
+    kickoffBody: '你投注单中的比赛即将开始。点按查看实时比分。',
+  },
   settings: {
     title: '设置', language: '语言', deviceLanguage: '设备语言', currency: '货币', automatic: '自动（%{value}）',
     oddsFormat: '赔率格式', decimal: '小数', fractional: '分数', american: '美式',

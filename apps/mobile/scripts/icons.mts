@@ -94,9 +94,9 @@ const background = () =>
 const scaled = (s: number, body: string) => `<g transform="translate(512 512) scale(${s}) translate(-512 -512)">${body}</g>`;
 const svg = (body: string) => `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">${body}</svg>\n`;
 
-function monochrome(): string {
+function monochrome(color = '#000'): string {
   const shape = coinPolygon(SLOT.y - 18);
-  return `<path d="${[shape, ...patches(shape)].map(pathOf).join('')}" fill="#000" fill-rule="evenodd"/>${slotRect('#000')}`;
+  return `<path d="${[shape, ...patches(shape)].map(pathOf).join('')}" fill="${color}" fill-rule="evenodd"/>${slotRect(color)}`;
 }
 
 const root = new URL('../', import.meta.url);
@@ -109,6 +109,8 @@ const brand: Record<string, string> = {
   'android-background.svg': svg(background()),
   // Android'in tek renkli (temalı) ikonu: sadece şekil. Beşgenler parada boşluk; para ile yarık arasında boşluk
   'android-monochrome.svg': svg(scaled(0.8, monochrome())),
+  // Android bildirim simgesi: beyaz şekil, saydam zemin
+  'notification.svg': svg(scaled(1.15, monochrome('#fff'))),
 };
 mkdirSync(path('assets/brand'), { recursive: true });
 for (const [name, content] of Object.entries(brand)) writeFileSync(path(`assets/brand/${name}`), content);
@@ -141,6 +143,7 @@ const renders: [string, string, number][] = [
   ['assets/brand/android-foreground.svg', 'assets/images/android-icon-foreground.png', 1024],
   ['assets/brand/android-background.svg', 'assets/images/android-icon-background.png', 1024],
   ['assets/brand/android-monochrome.svg', 'assets/images/android-icon-monochrome.png', 1024],
+  ['assets/brand/notification.svg', 'assets/images/notification-icon.png', 96],
 ];
 execFileSync('swift', [path('scripts/render-svg.swift'), ...renders.flatMap(([src, out, size]) => [path(src), path(out), String(size)])], { stdio: 'inherit' });
 console.log(`Arka plan rengi (app.json'daki açılış ekranı ve Android ikonu için): ${COLORS.base}`);

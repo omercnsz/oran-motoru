@@ -60,6 +60,15 @@ const de: Messages = {
     otherCurrencies: 'Wettscheine in anderen Währungen sind nicht enthalten.',
   },
   games: { title: 'Casinospiele', subtitle: 'Nur Spielchips. Keine Käufe, keine Auszahlung.', crash: 'Crash', roulette: 'Roulette', slot: 'Spielautomaten' },
+  notifications: {
+    title: 'Benachrichtigungen',
+    kickoff: '15 Minuten vor einem Spiel auf meinen Wettscheinen erinnern',
+    denied: 'Benachrichtigungen für Oran sind in den Telefoneinstellungen deaktiviert.',
+    openSettings: 'Einstellungen öffnen',
+    channel: 'Spielerinnerungen',
+    kickoffTitle: '%{match} beginnt um %{time}',
+    kickoffBody: 'Ein Spiel auf deinem Wettschein beginnt gleich. Tippe, um den Live-Spielstand zu verfolgen.',
+  },
   settings: {
     title: 'Einstellungen', language: 'Sprache', deviceLanguage: 'Gerätesprache', currency: 'Währung', automatic: 'Automatisch (%{value})',
     oddsFormat: 'Quotenformat', decimal: 'Dezimal', fractional: 'Bruch', american: 'Amerikanisch',

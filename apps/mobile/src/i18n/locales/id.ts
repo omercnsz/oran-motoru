@@ -60,6 +60,15 @@ const id: Messages = {
     otherCurrencies: 'Kupon dalam mata uang lain tidak termasuk.',
   },
   games: { title: 'Permainan', subtitle: 'Hanya chip virtual. Tanpa pembelian, tanpa penarikan uang.', crash: 'Crash', roulette: 'Rolet', slot: 'Slot' },
+  notifications: {
+    title: 'Notifikasi',
+    kickoff: 'Ingatkan 15 menit sebelum pertandingan di kuponku',
+    denied: 'Notifikasi Oran dimatikan di pengaturan ponsel.',
+    openSettings: 'Buka pengaturan',
+    channel: 'Pengingat pertandingan',
+    kickoffTitle: '%{match} dimulai pukul %{time}',
+    kickoffBody: 'Pertandingan di kuponmu akan segera dimulai. Ketuk untuk mengikuti skor langsung.',
+  },
   settings: {
     title: 'Pengaturan', language: 'Bahasa', deviceLanguage: 'Bahasa perangkat', currency: 'Mata uang', automatic: 'Otomatis (%{value})',
     oddsFormat: 'Format odds', decimal: 'Desimal', fractional: 'Pecahan', american: 'Amerika',

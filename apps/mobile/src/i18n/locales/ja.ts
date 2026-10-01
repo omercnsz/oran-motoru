@@ -59,6 +59,15 @@ const ja: Messages = {
     otherCurrencies: 'ほかの通貨のベットは含まれていません。',
   },
   games: { title: 'ゲーム', subtitle: '仮想チップのみ。購入も換金もできません。', crash: 'クラッシュ', roulette: 'ルーレット', slot: 'スロット' },
+  notifications: {
+    title: '通知',
+    kickoff: 'ベットスリップの試合開始15分前に知らせる',
+    denied: 'スマートフォンの設定で Oran の通知がオフになっています。',
+    openSettings: '設定を開く',
+    channel: '試合リマインダー',
+    kickoffTitle: '%{match} は %{time} にキックオフ',
+    kickoffBody: 'ベットスリップの試合がまもなく始まります。タップしてライブスコアを確認しましょう。',
+  },
   settings: {
     title: '設定', language: '言語', deviceLanguage: '端末の言語', currency: '通貨', automatic: '自動（%{value}）',
     oddsFormat: 'オッズの表示形式', decimal: '小数', fractional: '分数', american: 'アメリカ式',

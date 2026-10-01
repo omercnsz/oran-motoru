@@ -112,6 +112,15 @@ const tr: Messages = {
     roulette: 'Rulet',
     slot: 'Slot',
   },
+  notifications: {
+    title: 'Bildirimler',
+    kickoff: 'Kuponumdaki maç başlamadan 15 dakika önce haber ver',
+    denied: "Oran'ın bildirimleri telefon ayarlarında kapalı.",
+    openSettings: 'Ayarları aç',
+    channel: 'Maç hatırlatmaları',
+    kickoffTitle: 'Maç saati %{time}: %{match}',
+    kickoffBody: 'Kuponundaki maç başlamak üzere. Canlı skoru takip etmek için dokun.',
+  },
   settings: {
     title: 'Ayarlar',
     language: 'Dil',

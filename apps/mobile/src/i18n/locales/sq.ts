@@ -60,6 +60,15 @@ const sq: Messages = {
     otherCurrencies: 'Kuponët në monedha të tjera nuk përfshihen.',
   },
   games: { title: 'Lojërat', subtitle: 'Vetëm monedha virtuale. Pa blerje, pa tërheqje parash.', crash: 'Crash', roulette: 'Ruletë', slot: 'Lojëra me makineri' },
+  notifications: {
+    title: 'Njoftimet',
+    kickoff: 'Më njofto 15 minuta para një ndeshjeje nga kuponët e mi',
+    denied: 'Njoftimet e Oran janë të çaktivizuara në cilësimet e telefonit.',
+    openSettings: 'Hap cilësimet',
+    channel: 'Kujtesa për ndeshjet',
+    kickoffTitle: '%{match} fillon në %{time}',
+    kickoffBody: 'Një ndeshje nga kuponi yt po fillon. Prek për të ndjekur rezultatin live.',
+  },
   settings: {
     title: 'Cilësimet', language: 'Gjuha', deviceLanguage: 'Gjuha e pajisjes', currency: 'Monedha', automatic: 'Automatik (%{value})',
     oddsFormat: 'Formati i koeficientëve', decimal: 'Dhjetor', fractional: 'Thyesor', american: 'Amerikan',

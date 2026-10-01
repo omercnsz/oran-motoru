@@ -61,6 +61,15 @@ const sr: Messages = {
     otherCurrencies: 'Tiketi u drugim valutama nisu uključeni.',
   },
   games: { title: 'Igre', subtitle: 'Samo virtuelni žetoni. Bez kupovine, bez isplate.', crash: 'Crash', roulette: 'Rulet', slot: 'Slot aparati' },
+  notifications: {
+    title: 'Obaveštenja',
+    kickoff: 'Podseti me 15 minuta pre utakmice sa mojih tiketa',
+    denied: 'Obaveštenja za Oran su isključena u podešavanjima telefona.',
+    openSettings: 'Otvori podešavanja',
+    channel: 'Podsetnici za utakmice',
+    kickoffTitle: '%{match} počinje u %{time}',
+    kickoffBody: 'Utakmica sa tvog tiketa uskoro počinje. Dodirni da pratiš rezultat uživo.',
+  },
   settings: {
     title: 'Podešavanja', language: 'Jezik', deviceLanguage: 'Jezik uređaja', currency: 'Valuta', automatic: 'Automatski (%{value})',
     oddsFormat: 'Format kvota', decimal: 'Decimalni', fractional: 'Razlomački', american: 'Američki',

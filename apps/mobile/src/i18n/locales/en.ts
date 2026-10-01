@@ -112,6 +112,15 @@ const en = {
     roulette: 'Roulette',
     slot: 'Slots',
   },
+  notifications: {
+    title: 'Notifications',
+    kickoff: 'Remind me 15 minutes before a match on my coupons',
+    denied: 'Notifications for Oran are turned off in your phone settings.',
+    openSettings: 'Open settings',
+    channel: 'Match reminders',
+    kickoffTitle: 'Kickoff %{time}: %{match}',
+    kickoffBody: 'A match on your coupon is about to start. Tap to follow the live score.',
+  },
   settings: {
     title: 'Settings',
     language: 'Language',

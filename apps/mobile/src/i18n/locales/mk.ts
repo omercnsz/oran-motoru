@@ -60,6 +60,15 @@ const mk: Messages = {
     otherCurrencies: 'Тикетите во други валути не се вклучени.',
   },
   games: { title: 'Игри', subtitle: 'Само виртуелни жетони. Без купување, без исплата.', crash: 'Crash', roulette: 'Рулет', slot: 'Слот машини' },
+  notifications: {
+    title: 'Известувања',
+    kickoff: 'Потсети ме 15 минути пред натпревар од моите тикети',
+    denied: 'Известувањата за Oran се исклучени во поставките на телефонот.',
+    openSettings: 'Отвори поставки',
+    channel: 'Потсетници за натпревари',
+    kickoffTitle: '%{match} почнува во %{time}',
+    kickoffBody: 'Натпревар од твојот тикет наскоро почнува. Допри за да го следиш резултатот во живо.',
+  },
   settings: {
     title: 'Поставки', language: 'Јазик', deviceLanguage: 'Јазик на уредот', currency: 'Валута', automatic: 'Автоматски (%{value})',
     oddsFormat: 'Формат на коефициенти', decimal: 'Децимален', fractional: 'Дропка', american: 'Американски',

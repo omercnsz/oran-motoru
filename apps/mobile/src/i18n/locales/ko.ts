@@ -59,6 +59,15 @@ const ko: Messages = {
     otherCurrencies: '다른 통화의 베팅 슬립은 포함되지 않습니다.',
   },
   games: { title: '게임', subtitle: '가상 칩만 사용합니다. 구매도, 환전도 없습니다.', crash: '크래시', roulette: '룰렛', slot: '슬롯' },
+  notifications: {
+    title: '알림',
+    kickoff: '내 베팅 슬립의 경기 시작 15분 전에 알림',
+    denied: '휴대폰 설정에서 Oran 알림이 꺼져 있습니다.',
+    openSettings: '설정 열기',
+    channel: '경기 알림',
+    kickoffTitle: '%{match} 경기가 %{time}에 시작됩니다',
+    kickoffBody: '베팅 슬립의 경기가 곧 시작됩니다. 눌러서 실시간 스코어를 확인하세요.',
+  },
   settings: {
     title: '설정', language: '언어', deviceLanguage: '기기 언어', currency: '통화', automatic: '자동 (%{value})',
     oddsFormat: '배당 표시 형식', decimal: '소수', fractional: '분수', american: '미국식',

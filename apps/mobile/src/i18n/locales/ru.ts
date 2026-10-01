@@ -112,6 +112,15 @@ const ru: Messages = {
     roulette: 'Рулетка',
     slot: 'Слоты',
   },
+  notifications: {
+    title: 'Уведомления',
+    kickoff: 'Напоминать за 15 минут до матча из моих купонов',
+    denied: 'Уведомления Oran отключены в настройках телефона.',
+    openSettings: 'Открыть настройки',
+    channel: 'Напоминания о матчах',
+    kickoffTitle: '%{match} начнётся в %{time}',
+    kickoffBody: 'Матч из вашего купона скоро начнётся. Нажмите, чтобы следить за счётом.',
+  },
   settings: {
     title: 'Настройки',
     language: 'Язык',

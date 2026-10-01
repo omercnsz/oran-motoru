@@ -60,6 +60,15 @@ const nl: Messages = {
     otherCurrencies: 'Wedbonnen in andere valuta zijn niet meegeteld.',
   },
   games: { title: 'Spellen', subtitle: 'Alleen speelfiches. Geen aankopen, geen uitbetaling.', crash: 'Crash', roulette: 'Roulette', slot: 'Gokkasten' },
+  notifications: {
+    title: 'Meldingen',
+    kickoff: 'Herinner me 15 minuten voor een wedstrijd op mijn wedbonnen',
+    denied: 'Meldingen voor Oran staan uit in de instellingen van je telefoon.',
+    openSettings: 'Instellingen openen',
+    channel: 'Wedstrijdherinneringen',
+    kickoffTitle: '%{match} begint om %{time}',
+    kickoffBody: 'Een wedstrijd op je wedbon begint zo. Tik om de livestand te volgen.',
+  },
   settings: {
     title: 'Instellingen', language: 'Taal', deviceLanguage: 'Taal van het apparaat', currency: 'Valuta', automatic: 'Automatisch (%{value})',
     oddsFormat: 'Oddsnotatie', decimal: 'Decimaal', fractional: 'Breuk', american: 'Amerikaans',

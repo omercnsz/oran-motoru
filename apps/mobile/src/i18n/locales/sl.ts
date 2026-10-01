@@ -60,6 +60,15 @@ const sl: Messages = {
     otherCurrencies: 'Listki v drugih valutah niso vključeni.',
   },
   games: { title: 'Igre', subtitle: 'Samo navidezni žetoni. Brez nakupov, brez izplačil.', crash: 'Crash', roulette: 'Ruleta', slot: 'Igralni avtomati' },
+  notifications: {
+    title: 'Obvestila',
+    kickoff: 'Opomni me 15 minut pred tekmo z mojih listkov',
+    denied: 'Obvestila za Oran so izklopljena v nastavitvah telefona.',
+    openSettings: 'Odpri nastavitve',
+    channel: 'Opomniki za tekme',
+    kickoffTitle: '%{match} se začne ob %{time}',
+    kickoffBody: 'Tekma s tvojega listka se bo kmalu začela. Tapni za spremljanje rezultata v živo.',
+  },
   settings: {
     title: 'Nastavitve', language: 'Jezik', deviceLanguage: 'Jezik naprave', currency: 'Valuta', automatic: 'Samodejno (%{value})',
     oddsFormat: 'Oblika koeficientov', decimal: 'Decimalna', fractional: 'Ulomek', american: 'Ameriška',

@@ -113,6 +113,15 @@ const ar: Messages = {
     roulette: 'روليت',
     slot: 'آلات القمار',
   },
+  notifications: {
+    title: 'الإشعارات',
+    kickoff: 'نبّهني قبل 15 دقيقة من مباراة في قسائمي',
+    denied: 'إشعارات Oran متوقفة في إعدادات الهاتف.',
+    openSettings: 'فتح الإعدادات',
+    channel: 'تذكيرات المباريات',
+    kickoffTitle: 'تبدأ %{match} الساعة %{time}',
+    kickoffBody: 'مباراة في قسيمتك على وشك البدء. اضغط لمتابعة النتيجة المباشرة.',
+  },
   settings: {
     title: 'الإعدادات',
     language: 'اللغة',

@@ -60,6 +60,15 @@ const it: Messages = {
     otherCurrencies: 'Le schedine in altre valute non sono incluse.',
   },
   games: { title: 'Giochi', subtitle: 'Solo gettoni finti. Nessun acquisto, nessun prelievo.', crash: 'Crash', roulette: 'Roulette', slot: 'Slot machine' },
+  notifications: {
+    title: 'Notifiche',
+    kickoff: 'Avvisami 15 minuti prima di una partita delle mie schedine',
+    denied: 'Le notifiche di Oran sono disattivate nelle impostazioni del telefono.',
+    openSettings: 'Apri impostazioni',
+    channel: 'Promemoria partite',
+    kickoffTitle: '%{match} inizia alle %{time}',
+    kickoffBody: 'Una partita della tua schedina sta per iniziare. Tocca per seguire il punteggio live.',
+  },
   settings: {
     title: 'Impostazioni', language: 'Lingua', deviceLanguage: 'Lingua del dispositivo', currency: 'Valuta', automatic: 'Automatico (%{value})',
     oddsFormat: 'Formato quote', decimal: 'Decimale', fractional: 'Frazionario', american: 'Americano',

@@ -59,6 +59,15 @@ const th: Messages = {
     otherCurrencies: 'ไม่รวมบิลในสกุลเงินอื่น',
   },
   games: { title: 'เกม', subtitle: 'ใช้ชิปปลอมเท่านั้น ไม่มีการซื้อ ไม่มีการถอนเงิน', crash: 'Crash', roulette: 'รูเล็ต', slot: 'สล็อต' },
+  notifications: {
+    title: 'การแจ้งเตือน',
+    kickoff: 'เตือนก่อนแมตช์ในบิลของฉันเริ่ม 15 นาที',
+    denied: 'การแจ้งเตือนของ Oran ถูกปิดในการตั้งค่าโทรศัพท์',
+    openSettings: 'เปิดการตั้งค่า',
+    channel: 'เตือนการแข่งขัน',
+    kickoffTitle: '%{match} เริ่มเวลา %{time}',
+    kickoffBody: 'แมตช์ในบิลของคุณกำลังจะเริ่ม แตะเพื่อติดตามผลสด',
+  },
   settings: {
     title: 'การตั้งค่า', language: 'ภาษา', deviceLanguage: 'ภาษาของอุปกรณ์', currency: 'สกุลเงิน', automatic: 'อัตโนมัติ (%{value})',
     oddsFormat: 'รูปแบบราคา', decimal: 'ทศนิยม', fractional: 'เศษส่วน', american: 'แบบอเมริกัน',
