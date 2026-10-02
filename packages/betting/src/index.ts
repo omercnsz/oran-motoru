@@ -124,32 +124,8 @@ export function settleCoupon(c: Coupon, results: Map<string, { home: number; awa
   return { ...c, selections };
 }
 
-export interface Summary {
-  coupons: number;
-  open: number;
-  won: number;
-  lost: number;
-  /** Toplam yatırılacak olan (en küçük birim) = kumbaraya giden para */
-  staked: number;
-  /** Sonuçlanan kuponlardan geri dönen (en küçük birim) */
-  returned: number;
-  /** Gerçek parayla oynasaydın net sonuç: sonuçlanan kuponlarda dönen − yatırılan */
-  net: number;
-}
-
-/** Dönem özeti: "Gerçek parayla oynasaydın" raporu */
-export function summarize(coupons: Coupon[]): Summary {
-  const s: Summary = { coupons: coupons.length, open: 0, won: 0, lost: 0, staked: 0, returned: 0, net: 0 };
-  for (const c of coupons) {
-    s.staked += c.stake;
-    s[c.status]++;
-    if (c.status !== 'open') {
-      s.returned += c.payout ?? 0;
-      s.net += (c.payout ?? 0) - c.stake;
-    }
-  }
-  return s;
-}
+export { buildReport, localDay, periodRange, SESSION_GAP_MS, summarize, tokensToMoney } from './report.ts';
+export type { GameLine, Period, Report, ReportCoupon, ReportInput, ReportRound, Summary } from './report.ts';
 
 // ---------------------------------------------------------------------------
 // Para birimleri

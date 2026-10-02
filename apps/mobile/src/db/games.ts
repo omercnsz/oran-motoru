@@ -170,3 +170,14 @@ export function recentOutcomes(game: Game, limit = 10): number[] {
     .where(and(eq(gameRounds.game, game), sql`${gameRounds.status} != 'running'`))
     .orderBy(desc(gameRounds.createdAt)).limit(limit).all().map((r) => r.outcome);
 }
+
+/** Rapor için bütün turlar (biten ve süren) */
+export const reportRounds = () =>
+  db.select({
+    game: gameRounds.game, createdAt: gameRounds.createdAt, endedAt: gameRounds.endedAt,
+    bet: gameRounds.bet, payout: gameRounds.payout, status: gameRounds.status,
+  }).from(gameRounds).all();
+
+/** Ödüllü reklamla jeton dolumlarının zamanları (jeton kaç kez bitti) */
+export const refillTimes = () =>
+  db.select({ createdAt: tokenEvents.createdAt }).from(tokenEvents).where(eq(tokenEvents.kind, 'refill')).all().map((r) => r.createdAt);

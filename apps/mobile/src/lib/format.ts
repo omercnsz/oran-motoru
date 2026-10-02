@@ -4,13 +4,14 @@ import { MARKETS } from '@oran/odds-engine';
 import { localization, t } from '@/i18n';
 
 const cache = new Map<string, Intl.DateTimeFormat>();
-function dateFormat(kind: 'day' | 'time' | 'short'): Intl.DateTimeFormat {
+function dateFormat(kind: 'day' | 'time' | 'short' | 'date'): Intl.DateTimeFormat {
   const locale = localization().locale;
   const key = `${locale}|${kind}`;
   let f = cache.get(key);
   if (!f) {
     const options: Intl.DateTimeFormatOptions = kind === 'day' ? { weekday: 'long', day: 'numeric', month: 'long' }
       : kind === 'time' ? { hour: '2-digit', minute: '2-digit' }
+      : kind === 'date' ? { day: 'numeric', month: 'short' }
       : { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' };
     f = new Intl.DateTimeFormat(locale, options); // saat dilimi belirtilmez: cihazınki kullanılır
     cache.set(key, f);
@@ -24,6 +25,11 @@ export const formatDay = (iso: string) => dateFormat('day').format(new Date(iso)
 export const formatTime = (iso: string) => dateFormat('time').format(new Date(iso));
 /** "9 Eki 20:00" */
 export const formatShort = (iso: string) => dateFormat('short').format(new Date(iso));
+/** Yerel takvim günü (YYYY-MM-DD) → "9 Eki" */
+export const formatShortDate = (day: string) => {
+  const [y, m, d] = day.split('-').map(Number);
+  return dateFormat('date').format(new Date(y, m - 1, d));
+};
 /** Gün gruplaması için anahtar (cihazın takvimine göre) */
 export const dayKey = (iso: string) => formatDay(iso);
 

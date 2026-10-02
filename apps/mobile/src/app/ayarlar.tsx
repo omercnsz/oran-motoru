@@ -1,4 +1,4 @@
-import { formatOdds, type OddsFormat } from '@oran/betting';
+import { formatMoney, formatOdds, minorDigits, type OddsFormat } from '@oran/betting';
 import { useEffect } from 'react';
 import { Linking, Pressable, StyleSheet, Switch, View } from 'react-native';
 
@@ -9,12 +9,17 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { CURRENCIES, deviceDefaults, LANGUAGES, useT, type Preferences } from '@/i18n';
 import { showAdPrivacyOptions, useAds } from '@/ads';
+import { tokenValueMinor } from '@/hooks/use-report';
 import { syncReminders, useReminders } from '@/notifications';
+import { TOKEN_VALUES, useReportSettings } from '@/state/report';
 
 const ODDS_FORMATS: OddsFormat[] = ['decimal', 'fractional', 'american'];
 
 export default function AyarlarScreen() {
-  const { t, prefs, setPreference, currency, needsRestart } = useT();
+  const { t, prefs, setPreference, currency, locale, needsRestart } = useT();
+  const { tokenValue, setTokenValue } = useReportSettings();
+  // Kuruşu olmayan para biriminde (¥, ₩) 0,10 seçeneği gösterilmez
+  const tokenValues = TOKEN_VALUES.filter((v) => v >= 1 || minorDigits(currency) > 0);
   // "Otomatik" seçeneği cihazın varsayılanını gösterir (o an seçili olanı değil)
   const auto = deviceDefaults();
   const deviceCurrency = auto.currency;
@@ -48,6 +53,13 @@ export default function AyarlarScreen() {
           <Option key={c} label={c} selected={prefs.currency === c} onPress={() => setPreference('currency', c as Preferences['currency'])} />
         ))}
       </Section>
+      <Section title={t('report.tokenValue')}>
+        {tokenValues.map((v) => (
+          <Option key={v} label={t('report.tokenOption', { value: formatMoney(tokenValueMinor(v, currency), currency, locale) })}
+            selected={tokenValue === v} onPress={() => setTokenValue(v)} />
+        ))}
+      </Section>
+
       <ThemedText type="small" themeColor="textSecondary">{currency} · {t('settings.translationNote')}</ThemedText>
     </Screen>
   );
