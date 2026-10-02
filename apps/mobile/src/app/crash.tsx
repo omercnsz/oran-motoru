@@ -3,29 +3,29 @@
 // "Hepsini bas" düğmesi yok; 15 dakikada bir gerçeklik uyarısı çıkar.
 import { CRASH, msToReach, multiplierAt, TOKEN } from '@oran/games-math';
 import { Canvas, Path, Skia } from '@shopify/react-native-skia';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, BackHandler, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { BackHandler, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
 
 import { RefillCard } from '@/components/refill-card';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { canRefill, closeInterruptedRounds, crashReport, finishCrashRound, MIN_BET, startCrashRound } from '@/db/games';
+import { canRefill, closeInterruptedRounds, finishCrashRound, MIN_BET, startCrashRound } from '@/db/games';
 import { useGames } from '@/hooks/use-games';
+import { useRealityCheck } from '@/hooks/use-reality-check';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { formatMultiplier, formatNet, formatPercent, formatTokens } from '@/lib/tokens';
 
 const QUICK_BETS = [10, 50, 100, 500];
-const REALITY_CHECK_MS = 15 * 60_000;
 const CANVAS_HEIGHT = 220;
 const K = CRASH.growthPerSecond;
 
 function buildCurve(ms: number, width: number, closed: boolean) {
   'worklet';
-  const path = Skia.Path.Make();
+  const path = Skia.PathBuilder.Make();
   const pad = 12;
   const bottom = CANVAS_HEIGHT - pad;
   const xMax = Math.max(8000, ms * 1.15);
@@ -39,12 +39,8 @@ function buildCurve(ms: number, width: number, closed: boolean) {
     if (i === 0) path.moveTo(x, y);
     else path.lineTo(x, y);
   }
-  if (closed) {
-    path.lineTo(x, bottom);
-    path.lineTo(pad, bottom);
-    path.close();
-  }
-  return path;
+  if (closed) path.lineTo(x, bottom).lineTo(pad, bottom).close();
+  return path.detach();
 }
 
 interface Running { id: string; outcome: number; target: number | null; bet: number; startedAt: number }
@@ -56,7 +52,8 @@ type Phase =
 export default function CrashScreen() {
   const { t, decimalSeparator } = useT();
   const theme = useTheme();
-  const { balance, recent } = useGames();
+  const { balance, recent: { crash: recent } } = useGames();
+  const reality = useRealityCheck('crash');
   const [betText, setBetText] = useState('100');
   const [targetText, setTargetText] = useState('');
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
@@ -65,7 +62,6 @@ export default function CrashScreen() {
   const [width, setWidth] = useState(0);
   const running = useRef<Running | null>(null);
   const frame = useRef<number | null>(null);
-  const session = useRef<{ since: string; startedAt: number; nextCheck: number } | null>(null);
   const elapsed = useSharedValue(0);
 
   // Uygulama tur sırasında kapandıysa o tur kurala göre kapanır; ekrandan çıkınca da aynısı
@@ -85,21 +81,6 @@ export default function CrashScreen() {
     return () => sub.remove();
   }, [isRunning]);
 
-  function realityCheck() {
-    const s = session.current;
-    if (!s || Date.now() < s.nextCheck) return;
-    s.nextCheck += REALITY_CHECK_MS;
-    const report = crashReport(s.since);
-    Alert.alert(t('crash.realityTitle'), t('crash.realityBody', {
-      minutes: Math.round((Date.now() - s.startedAt) / 60_000),
-      rounds: report.rounds,
-      net: formatNet(report.returned - report.staked),
-    }), [
-      { text: t('crash.takeBreak'), style: 'cancel', onPress: () => router.back() },
-      { text: t('crash.keepPlaying') },
-    ]);
-  }
-
   function end(cashout: number | null) {
     const r = running.current;
     if (!r) return;
@@ -112,7 +93,7 @@ export default function CrashScreen() {
     elapsed.value = msToReach(shown);
     setMultiplier(shown);
     setPhase({ kind: 'ended', outcome: r.outcome, bet: r.bet, cashout: won ? cashout : null, payout: result?.payout ?? 0 });
-    realityCheck();
+    reality.check();
   }
 
   function tick() {
@@ -143,7 +124,7 @@ export default function CrashScreen() {
     }
     // Oturum ilk turdan önce başlar: ilk tur da gerçeklik uyarısındaki sayıma girsin
     const now = new Date();
-    session.current ??= { since: now.toISOString(), startedAt: now.getTime(), nextCheck: now.getTime() + REALITY_CHECK_MS };
+    reality.begin(now);
     const { id, outcome } = startCrashRound(bet, target, now);
     running.current = { id, outcome, target, bet, startedAt: performance.now() };
     elapsed.value = 0;

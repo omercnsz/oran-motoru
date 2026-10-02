@@ -83,9 +83,10 @@ Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm
 Kurallar: jeton satılmaz ve paraya çevrilmez; bitince ödüllü reklamla dolar (reklam yoksa yine dolar, kullanıcı cezalandırılmaz). Oyunların matematiği gerçek casinolarla aynıdır; aksi hâlde rapor yalan söyler ve sanal oyunda kazanan kullanıcı gerçek siteye dönebilir.
 
 - **Crash** (`packages/games-math/src/crash.ts`): kasa avantajı %3 (geri dönüş %97). Patlama noktası tur başında işletim sisteminin güvenli rastgele sayısıyla belirlenir ve kaydedilir; oyuncu ne yaparsa yapsın beklenen getiri %97'dir (testler 10 milyon turla doğrular: `npm test -w @oran/games-math`). 1,00×'te çekilemez (anında patlamadan kaçmayı önler).
+- **Rulet** (`packages/games-math/src/roulette.ts`): tek sıfırlı Avrupa ruleti, gerçek çark dizilimi. Her bahis n sayıyı kapsar ve kazanınca 36/n katı döner; bu yüzden her bahsin beklenen getirisi tam olarak 36/37 ≈ %97,30 (test 37 sonucun hepsini sayarak kesin doğrular, simülasyonlar 10 milyon dönüşle). Kazanan sayı dönüş başlamadan güvenli rastgele sayıyla belirlenip bahislerle birlikte kaydedilir; çark sadece onu gösterir. Her dönüşten sonra net sonuç yazar (bir bahis tutsa da toplamda kayıp olabilir) ve masa temizlenir: "aynı bahsi tekrarla" ya da "ikiye katla" yok.
 - Jetonlar yüzde birlik birimlerle tutulur (1 jeton = 100 birim); bahis tam jeton olduğu için ödemede yuvarlama gerekmez. Bakiye = 1.000 başlangıç jetonu + `token_events` toplamı; turlar `game_rounds` tablosunda.
 - Aldatmaca yok: her turda net sonuç (+/−) gösterilir, kayıp kutlanmaz, "hepsini bas" düğmesi yok, son turların yanında "her tur bağımsızdır" yazar.
-- Gerçeklik uyarısı: oyun ekranında 15 dakikada bir (tur bitince) süre, tur sayısı ve net sonuç gösterilir. Oyunlar sekmesinde oyuncunun gerçekleşen geri dönüş oranı teorik değerle yan yana yazar.
+- Gerçeklik uyarısı (`apps/mobile/src/hooks/use-reality-check.ts`, iki oyunda ortak): oyun ekranında 15 dakikada bir (tur bitince) süre, tur sayısı ve net sonuç gösterilir. Oyunlar sekmesinde oyuncunun gerçekleşen geri dönüş oranı teorik değerle yan yana yazar.
 
 ## Bildirimler
 

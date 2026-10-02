@@ -1,10 +1,14 @@
 // Oyun jetonları ve turları. Jeton satılmaz, paraya çevrilmez; tutarlar birim cinsinden (1 jeton = TOKEN birim).
-import { crashPoint, settleCrash, TOKEN, uniformFromBytes } from '@oran/games-math';
+import {
+  coverage, crashPoint, settleCrash, settleRoulette, spinOutcome, TOKEN, uniformFromBytes, type RouletteBet,
+} from '@oran/games-math';
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 import { getRandomBytes, randomUUID } from 'expo-crypto';
 
 import { db } from './client';
 import { gameRounds, tokenEvents } from './schema';
+
+export type Game = 'crash' | 'roulette';
 
 export const START_TOKENS = 1_000 * TOKEN;
 export const REFILL_TOKENS = 1_000 * TOKEN;
@@ -52,10 +56,48 @@ export function finishCrashRound(id: string, cashout: number | null, now = new D
   return { won, payout };
 }
 
-/** Uygulama tur sırasında kapandıysa: otomatik hedef patlamadan önceyse o hedefte kazanır, yoksa kaybeder */
+/** Yeni rulet dönüşü: bahisler düşülür, kazanan sayı güvenli rastgele sayıyla belirlenip bahislerle birlikte kaydedilir */
+export function startRouletteRound(bets: RouletteBet[], now = new Date()): { id: string; outcome: number } {
+  if (bets.length === 0) throw new RangeError('bahis yok');
+  for (const b of bets) {
+    coverage(b.key); // geçersiz anahtarda hata
+    if (!Number.isInteger(b.amount) || b.amount <= 0 || b.amount % TOKEN !== 0) throw new RangeError(`geçersiz tutar: ${b.amount}`);
+  }
+  const total = bets.reduce((s, b) => s + b.amount, 0);
+  if (total > tokenBalance()) throw new RangeError('yetersiz jeton');
+  const id = randomUUID();
+  const outcome = spinOutcome(uniformFromBytes(getRandomBytes(7)));
+  const createdAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.insert(gameRounds).values({ id, game: 'roulette', createdAt, bet: total, outcome, bets: JSON.stringify(bets), status: 'running' }).run();
+    tx.insert(tokenEvents).values({ createdAt, kind: 'bet', amount: -total, roundId: id }).run();
+  });
+  return { id, outcome };
+}
+
+/** Dönüşü kapatır (çark durunca ya da uygulama dönüş sırasında kapandıysa): sonuç baştan belli olduğu için aynıdır */
+export function finishRouletteRound(id: string, now = new Date()): ReturnType<typeof settleRoulette> | null {
+  const [round] = db.select().from(gameRounds).where(eq(gameRounds.id, id)).all();
+  if (!round || round.status !== 'running') return null;
+  const result = settleRoulette(JSON.parse(round.bets ?? '[]') as RouletteBet[], round.outcome);
+  const endedAt = now.toISOString();
+  db.transaction((tx) => {
+    // Kazandı = toplamda kâr; bir bahis tutsa da toplamda kayıpsa kayıp sayılır
+    tx.update(gameRounds).set({ endedAt, payout: result.returned, status: result.net > 0 ? 'won' : 'lost' })
+      .where(eq(gameRounds.id, id)).run();
+    if (result.returned > 0) tx.insert(tokenEvents).values({ createdAt: endedAt, kind: 'payout', amount: result.returned, roundId: id }).run();
+  });
+  return result;
+}
+
+/** Uygulama tur sırasında kapandıysa turlar kurala göre kapanır.
+ * Crash: otomatik hedef patlamadan önceyse o hedefte kazanır, yoksa kaybeder. Rulet: kayıtlı sonuçla. */
 export function closeInterruptedRounds(): void {
   const running = db.select().from(gameRounds).where(eq(gameRounds.status, 'running')).all();
-  for (const r of running) finishCrashRound(r.id, r.target !== null && r.target <= r.outcome ? r.target : null);
+  for (const r of running) {
+    if (r.game === 'roulette') finishRouletteRound(r.id);
+    else finishCrashRound(r.id, r.target !== null && r.target <= r.outcome ? r.target : null);
+  }
 }
 
 export interface GameReport {
@@ -67,8 +109,8 @@ export interface GameReport {
 }
 
 /** Biten turların özeti; since verilirse o andan sonrası (gerçeklik uyarısı için) */
-export function crashReport(since?: string): GameReport {
-  const filters = [eq(gameRounds.game, 'crash'), sql`${gameRounds.status} != 'running'`];
+export function gameReport(game: Game, since?: string): GameReport {
+  const filters = [eq(gameRounds.game, game), sql`${gameRounds.status} != 'running'`];
   if (since) filters.push(gte(gameRounds.createdAt, since));
   const [row] = db.select({
     rounds: sql<number>`count(*)`,
@@ -80,9 +122,9 @@ export function crashReport(since?: string): GameReport {
   return { rounds: Number(row?.rounds ?? 0), staked, returned, rtp: staked > 0 ? returned / staked : null };
 }
 
-/** Son turların patlama noktaları (yeniden eskiye) */
-export function recentCrashes(limit = 10): number[] {
+/** Son turların sonuçları (Crash: patlama noktası, rulet: sayı), yeniden eskiye */
+export function recentOutcomes(game: Game, limit = 10): number[] {
   return db.select({ outcome: gameRounds.outcome }).from(gameRounds)
-    .where(and(eq(gameRounds.game, 'crash'), sql`${gameRounds.status} != 'running'`))
+    .where(and(eq(gameRounds.game, game), sql`${gameRounds.status} != 'running'`))
     .orderBy(desc(gameRounds.createdAt)).limit(limit).all().map((r) => r.outcome);
 }

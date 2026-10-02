@@ -67,14 +67,16 @@ export const tokenEvents = sqliteTable('token_events', {
 /** Oyun turları. Sonuç (outcome) tur başında belirlenir ve kaydedilir; uygulama kapansa da tur aynı sonuçla kapanır. */
 export const gameRounds = sqliteTable('game_rounds', {
   id: text('id').primaryKey(),
-  game: text('game', { enum: ['crash'] }).notNull(),
+  game: text('game', { enum: ['crash', 'roulette'] }).notNull(),
   createdAt: text('created_at').notNull(),
   endedAt: text('ended_at'),
   bet: integer('bet').notNull(),
   /** Otomatik çekme hedefi (çarpan) */
   target: real('target'),
-  /** Crash: patlama noktası */
+  /** Crash: patlama noktası; rulet: kazanan sayı */
   outcome: real('outcome').notNull(),
+  /** Rulet: bahisler, JSON [{ key, amount }] */
+  bets: text('bets'),
   /** Oyuncunun çektiği çarpan; çekmediyse null */
   cashout: real('cashout'),
   payout: integer('payout').notNull().default(0),

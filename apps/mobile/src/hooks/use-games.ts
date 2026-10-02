@@ -2,9 +2,14 @@
 import { addDatabaseChangeListener } from 'expo-sqlite';
 import { useSyncExternalStore } from 'react';
 
-import { crashReport, recentCrashes, tokenBalance, type GameReport } from '@/db/games';
+import { gameReport, recentOutcomes, tokenBalance, type GameReport } from '@/db/games';
 
-interface GamesSnapshot { balance: number; crash: GameReport; recent: number[] }
+interface GamesSnapshot {
+  balance: number;
+  crash: GameReport;
+  roulette: GameReport;
+  recent: { crash: number[]; roulette: number[] };
+}
 
 let version = 0;
 let snapshot: { version: number; value: GamesSnapshot } | null = null;
@@ -16,7 +21,15 @@ function subscribe(onChange: () => void) {
 
 function read(): GamesSnapshot {
   if (snapshot?.version !== version) {
-    snapshot = { version, value: { balance: tokenBalance(), crash: crashReport(), recent: recentCrashes() } };
+    snapshot = {
+      version,
+      value: {
+        balance: tokenBalance(),
+        crash: gameReport('crash'),
+        roulette: gameReport('roulette'),
+        recent: { crash: recentOutcomes('crash'), roulette: recentOutcomes('roulette', 12) },
+      },
+    };
   }
   return snapshot.value;
 }
