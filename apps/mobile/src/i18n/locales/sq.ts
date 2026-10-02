@@ -69,6 +69,10 @@ const sq: Messages = {
     kickoffTitle: '%{match} fillon në %{time}',
     kickoffBody: 'Një ndeshje nga kuponi yt po fillon. Prek për të ndjekur rezultatin live.',
   },
+  ads: {
+    label: 'Reklamë',
+    privacy: 'Zgjedhjet e privatësisë për reklamat',
+  },
   settings: {
     title: 'Cilësimet', language: 'Gjuha', deviceLanguage: 'Gjuha e pajisjes', currency: 'Monedha', automatic: 'Automatik (%{value})',
     oddsFormat: 'Formati i koeficientëve', decimal: 'Dhjetor', fractional: 'Thyesor', american: 'Amerikan',

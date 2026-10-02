@@ -69,6 +69,10 @@ const sl: Messages = {
     kickoffTitle: '%{match} se začne ob %{time}',
     kickoffBody: 'Tekma s tvojega listka se bo kmalu začela. Tapni za spremljanje rezultata v živo.',
   },
+  ads: {
+    label: 'Oglas',
+    privacy: 'Nastavitve zasebnosti oglasov',
+  },
   settings: {
     title: 'Nastavitve', language: 'Jezik', deviceLanguage: 'Jezik naprave', currency: 'Valuta', automatic: 'Samodejno (%{value})',
     oddsFormat: 'Oblika koeficientov', decimal: 'Decimalna', fractional: 'Ulomek', american: 'Ameriška',

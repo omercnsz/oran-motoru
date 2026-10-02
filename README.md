@@ -46,7 +46,7 @@ Uygulama veriyi `apps/mobile/.env` içindeki `EXPO_PUBLIC_DATA_BASE_URL` adresin
 | Kupon sonuçları | ESPN (maç biter bitmez) + sonuç dosyaları | Telefonda | Ekran açıldıkça |
 | Canlı oranlar | — | Telefonda, `odds-engine` ile | Anlık |
 
-GitHub Pages çıktısı: `index.json`, `schedule.json`, `odds/<lig>.json`, `ratings/<lig>.json`, `results/<lig>.json` (biçimler `packages/contracts` içinde).
+GitHub Pages çıktısı: `index.json`, `schedule.json`, `odds/<lig>.json`, `ratings/<lig>.json`, `results/<lig>.json` (biçimler `packages/contracts` içinde). `site/` klasöründeki sabit sayfalar da aynı siteye kopyalanır: gizlilik politikası https://omercnsz.github.io/oran-motoru/privacy.html (mağaza sayfalarında bu adres verilir).
 
 ## GitHub kurulumu
 
@@ -83,6 +83,21 @@ Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm
 - İzin ilk kupon kaydedilince bir kez sorulur; Ayarlar'dan kapatılıp açılabilir.
 - iOS: `expo-notifications` sunucudan bildirim (push) yetkisini her zaman ekler, bu yetkiyle uygulama ücretsiz Apple kimliğiyle kurulamaz. `apps/mobile/plugins/without-push-entitlement.js` onu siler; sunucudan bildirim eklenince bu eklenti kaldırılmalı.
 - Android 14 ve üstünde tam zamanlı alarm izni varsayılan olarak kapalı; hatırlatma birkaç dakika gecikebilir. Başlıkta maçın saati yazdığı için gecikse de doğru kalır.
+
+## Reklamlar (Google AdMob)
+
+Kurallar (`apps/mobile/src/ads.ts`):
+- Afiş sadece özet ekranlarında (Kuponlar, Kumbara). Maç, oran ve kupon ekranlarında, yani bahis kararı anında reklam yok.
+- Sadece kişiselleştirilmemiş reklam istenir; iOS'ta izleme izni (ATT) sorulmaz. Bahis eğilimli kullanıcıların profillenmesini istemiyoruz.
+- Uygulama, kullanıcının gerçek parayı kaybetmesinden asla kazanç sağlamaz: kumar, kripto ve kredi reklamları engellenir, uygulama içi satın alma yoktur.
+- Ödüllü reklam, oyunlar (Faz 3) gelince jeton için kullanılacak.
+
+Şu an Google'ın **test** kimlikleri kullanılıyor (örnek reklam, gelir yok). AdMob hesabı açılınca:
+1. AdMob'da Android ve iOS uygulamalarını ekleyin; uygulama kimliklerini `apps/mobile/app.json` içindeki `react-native-google-mobile-ads` eklentisine yazın (`androidAppId`, `iosAppId`).
+2. Birer afiş reklam birimi açın; kimliklerini `apps/mobile/.env` dosyasına `EXPO_PUBLIC_ADMOB_BANNER_ANDROID` ve `EXPO_PUBLIC_ADMOB_BANNER_IOS` olarak ekleyin. Geliştirme derlemesinde her zaman test reklamı gösterilir.
+3. **Engelleme denetimleri → Hassas kategoriler**: kumar ve bahis, kripto para ve kredi/borç kategorilerini engelleyin. Gizlilik politikası bunu taahhüt ediyor.
+4. **Privacy & messaging**: AB/İngiltere için GDPR izin mesajını oluşturun. Uygulama izin formunu kendisi gösterir; Ayarlar'da "Reklam gizlilik tercihleri" bu ülkelerde görünür.
+5. `app-ads.txt`: mağazada yazan geliştirici sitesinin kök adresinde olmalı (ör. `omercnsz.github.io/app-ads.txt`, bunun için ayrı bir `omercnsz.github.io` deposu gerekir).
 
 ## İkon ve açılış ekranı
 

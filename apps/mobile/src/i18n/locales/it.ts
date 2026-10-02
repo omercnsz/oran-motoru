@@ -69,6 +69,10 @@ const it: Messages = {
     kickoffTitle: '%{match} inizia alle %{time}',
     kickoffBody: 'Una partita della tua schedina sta per iniziare. Tocca per seguire il punteggio live.',
   },
+  ads: {
+    label: 'Pubblicità',
+    privacy: 'Scelte sulla privacy degli annunci',
+  },
   settings: {
     title: 'Impostazioni', language: 'Lingua', deviceLanguage: 'Lingua del dispositivo', currency: 'Valuta', automatic: 'Automatico (%{value})',
     oddsFormat: 'Formato quote', decimal: 'Decimale', fractional: 'Frazionario', american: 'Americano',

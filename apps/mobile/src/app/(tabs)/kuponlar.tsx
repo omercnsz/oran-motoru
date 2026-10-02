@@ -1,6 +1,7 @@
 import { formatMoney, potentialReturn, type SelectionStatus } from '@oran/betting';
 import { StyleSheet, View } from 'react-native';
 
+import { AdBanner } from '@/components/ad-banner';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -11,6 +12,9 @@ import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { describeBet, formatShort } from '@/lib/format';
 
+/** Reklam afişi bu kadar kupondan sonra (en son kuponlar her zaman üstte, reklamsız) */
+const AD_AFTER = 2;
+
 const SELECTION_MARK: Record<SelectionStatus, string> = { open: '•', won: '✓', lost: '✕', void: '↺' };
 
 export default function KuponlarScreen() {
@@ -20,7 +24,9 @@ export default function KuponlarScreen() {
   return (
     <Screen title={t('coupons.title')} subtitle={t('coupons.subtitle')}>
       {coupons.length === 0 ? <ThemedText themeColor="textSecondary">{t('coupons.none')}</ThemedText> : null}
-      {coupons.map((c) => <CouponCard key={c.id} coupon={c} />)}
+      {coupons.slice(0, AD_AFTER).map((c) => <CouponCard key={c.id} coupon={c} />)}
+      <AdBanner />
+      {coupons.slice(AD_AFTER).map((c) => <CouponCard key={c.id} coupon={c} />)}
     </Screen>
   );
 }

@@ -121,6 +121,10 @@ const en = {
     kickoffTitle: 'Kickoff %{time}: %{match}',
     kickoffBody: 'A match on your coupon is about to start. Tap to follow the live score.',
   },
+  ads: {
+    label: 'Advertisement',
+    privacy: 'Ad privacy choices',
+  },
   settings: {
     title: 'Settings',
     language: 'Language',

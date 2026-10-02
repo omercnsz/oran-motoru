@@ -69,6 +69,10 @@ const nl: Messages = {
     kickoffTitle: '%{match} begint om %{time}',
     kickoffBody: 'Een wedstrijd op je wedbon begint zo. Tik om de livestand te volgen.',
   },
+  ads: {
+    label: 'Advertentie',
+    privacy: 'Privacykeuzes voor advertenties',
+  },
   settings: {
     title: 'Instellingen', language: 'Taal', deviceLanguage: 'Taal van het apparaat', currency: 'Valuta', automatic: 'Automatisch (%{value})',
     oddsFormat: 'Oddsnotatie', decimal: 'Decimaal', fractional: 'Breuk', american: 'Amerikaans',

@@ -68,6 +68,10 @@ const ja: Messages = {
     kickoffTitle: '%{match} は %{time} にキックオフ',
     kickoffBody: 'ベットスリップの試合がまもなく始まります。タップしてライブスコアを確認しましょう。',
   },
+  ads: {
+    label: '広告',
+    privacy: '広告のプライバシー設定',
+  },
   settings: {
     title: '設定', language: '言語', deviceLanguage: '端末の言語', currency: '通貨', automatic: '自動（%{value}）',
     oddsFormat: 'オッズの表示形式', decimal: '小数', fractional: '分数', american: 'アメリカ式',

@@ -68,6 +68,10 @@ const th: Messages = {
     kickoffTitle: '%{match} เริ่มเวลา %{time}',
     kickoffBody: 'แมตช์ในบิลของคุณกำลังจะเริ่ม แตะเพื่อติดตามผลสด',
   },
+  ads: {
+    label: 'โฆษณา',
+    privacy: 'ตัวเลือกความเป็นส่วนตัวของโฆษณา',
+  },
   settings: {
     title: 'การตั้งค่า', language: 'ภาษา', deviceLanguage: 'ภาษาของอุปกรณ์', currency: 'สกุลเงิน', automatic: 'อัตโนมัติ (%{value})',
     oddsFormat: 'รูปแบบราคา', decimal: 'ทศนิยม', fractional: 'เศษส่วน', american: 'แบบอเมริกัน',

@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { CURRENCIES, deviceDefaults, LANGUAGES, useT, type Preferences } from '@/i18n';
+import { showAdPrivacyOptions, useAds } from '@/ads';
 import { syncReminders, useReminders } from '@/notifications';
 
 const ODDS_FORMATS: OddsFormat[] = ['decimal', 'fractional', 'american'];
@@ -24,6 +25,7 @@ export default function AyarlarScreen() {
   return (
     <Screen title={t('settings.title')} compact>
       <NotificationsSection />
+      <AdPrivacyRow />
 
       <Section title={t('settings.language')}>
         <Option label={t('settings.automatic', { value: languageName(auto.language) })} selected={prefs.language === 'auto'} onPress={() => setPreference('language', 'auto')} />
@@ -73,6 +75,19 @@ function NotificationsSection() {
         </View>
       ) : null}
     </Section>
+  );
+}
+
+/** Sadece reklam izni gereken ülkelerde (AB, İngiltere…) görünür */
+function AdPrivacyRow() {
+  const { t } = useT();
+  const theme = useTheme();
+  const visible = useAds((s) => s.privacyOptions);
+  if (!visible) return null;
+  return (
+    <Pressable accessibilityRole="button" onPress={() => void showAdPrivacyOptions()}>
+      <ThemedText type="smallBold" style={{ color: theme.accent }}>{t('ads.privacy')}</ThemedText>
+    </Pressable>
   );
 }
 

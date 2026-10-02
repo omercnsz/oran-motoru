@@ -1,6 +1,7 @@
 import { summarize, type Summary } from '@oran/betting';
 import { StyleSheet, View } from 'react-native';
 
+import { AdBanner } from '@/components/ad-banner';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -39,6 +40,7 @@ export default function KumbaraScreen() {
         </ThemedText>
       ) : null}
       <ThemedText type="small" themeColor="textSecondary">{t('savings.help', helpline)}</ThemedText>
+      <AdBanner />
     </Screen>
   );
 }

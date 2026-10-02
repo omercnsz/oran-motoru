@@ -69,6 +69,10 @@ const hi: Messages = {
     kickoffTitle: '%{match} %{time} बजे शुरू होगा',
     kickoffBody: 'आपकी बेट स्लिप का मैच शुरू होने वाला है। लाइव स्कोर देखने के लिए टैप करें।',
   },
+  ads: {
+    label: 'विज्ञापन',
+    privacy: 'विज्ञापन गोपनीयता विकल्प',
+  },
   settings: {
     title: 'सेटिंग्स', language: 'भाषा', deviceLanguage: 'डिवाइस की भाषा', currency: 'मुद्रा', automatic: 'स्वचालित (%{value})',
     oddsFormat: 'ऑड्स का प्रारूप', decimal: 'दशमलव', fractional: 'भिन्न', american: 'अमेरिकी',

@@ -69,6 +69,10 @@ const id: Messages = {
     kickoffTitle: '%{match} dimulai pukul %{time}',
     kickoffBody: 'Pertandingan di kuponmu akan segera dimulai. Ketuk untuk mengikuti skor langsung.',
   },
+  ads: {
+    label: 'Iklan',
+    privacy: 'Pilihan privasi iklan',
+  },
   settings: {
     title: 'Pengaturan', language: 'Bahasa', deviceLanguage: 'Bahasa perangkat', currency: 'Mata uang', automatic: 'Otomatis (%{value})',
     oddsFormat: 'Format odds', decimal: 'Desimal', fractional: 'Pecahan', american: 'Amerika',

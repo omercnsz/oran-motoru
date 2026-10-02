@@ -121,6 +121,10 @@ const es: Messages = {
     kickoffTitle: '%{match} empieza a las %{time}',
     kickoffBody: 'Un partido de tu cupón está por empezar. Toca para seguir el marcador en vivo.',
   },
+  ads: {
+    label: 'Publicidad',
+    privacy: 'Opciones de privacidad de anuncios',
+  },
   settings: {
     title: 'Ajustes',
     language: 'Idioma',

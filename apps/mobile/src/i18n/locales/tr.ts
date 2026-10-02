@@ -121,6 +121,10 @@ const tr: Messages = {
     kickoffTitle: 'Maç saati %{time}: %{match}',
     kickoffBody: 'Kuponundaki maç başlamak üzere. Canlı skoru takip etmek için dokun.',
   },
+  ads: {
+    label: 'Reklam',
+    privacy: 'Reklam gizlilik tercihleri',
+  },
   settings: {
     title: 'Ayarlar',
     language: 'Dil',

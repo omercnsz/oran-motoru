@@ -69,6 +69,10 @@ const el: Messages = {
     kickoffTitle: 'Ο αγώνας %{match} ξεκινά στις %{time}',
     kickoffBody: 'Ένας αγώνας του δελτίου σου ξεκινά σε λίγο. Πάτησε για να δεις το ζωντανό σκορ.',
   },
+  ads: {
+    label: 'Διαφήμιση',
+    privacy: 'Επιλογές απορρήτου διαφημίσεων',
+  },
   settings: {
     title: 'Ρυθμίσεις', language: 'Γλώσσα', deviceLanguage: 'Γλώσσα συσκευής', currency: 'Νόμισμα', automatic: 'Αυτόματα (%{value})',
     oddsFormat: 'Μορφή αποδόσεων', decimal: 'Δεκαδική', fractional: 'Κλασματική', american: 'Αμερικανική',

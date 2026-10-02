@@ -69,6 +69,10 @@ const hr: Messages = {
     kickoffTitle: '%{match} počinje u %{time}',
     kickoffBody: 'Utakmica s tvog listića uskoro počinje. Dodirni za praćenje rezultata uživo.',
   },
+  ads: {
+    label: 'Oglas',
+    privacy: 'Postavke privatnosti oglasa',
+  },
   settings: {
     title: 'Postavke', language: 'Jezik', deviceLanguage: 'Jezik uređaja', currency: 'Valuta', automatic: 'Automatski (%{value})',
     oddsFormat: 'Format koeficijenata', decimal: 'Decimalni', fractional: 'Razlomački', american: 'Američki',

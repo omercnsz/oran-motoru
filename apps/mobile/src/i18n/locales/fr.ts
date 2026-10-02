@@ -69,6 +69,10 @@ const fr: Messages = {
     kickoffTitle: '%{match} commence à %{time}',
     kickoffBody: 'Un match de ton ticket va commencer. Touche pour suivre le score en direct.',
   },
+  ads: {
+    label: 'Publicité',
+    privacy: 'Choix de confidentialité des annonces',
+  },
   settings: {
     title: 'Réglages', language: 'Langue', deviceLanguage: 'Langue de l’appareil', currency: 'Devise', automatic: 'Automatique (%{value})',
     oddsFormat: 'Format des cotes', decimal: 'Décimal', fractional: 'Fractionnaire', american: 'Américain',

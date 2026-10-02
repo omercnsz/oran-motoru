@@ -121,6 +121,10 @@ const ru: Messages = {
     kickoffTitle: '%{match} начнётся в %{time}',
     kickoffBody: 'Матч из вашего купона скоро начнётся. Нажмите, чтобы следить за счётом.',
   },
+  ads: {
+    label: 'Реклама',
+    privacy: 'Настройки конфиденциальности рекламы',
+  },
   settings: {
     title: 'Настройки',
     language: 'Язык',

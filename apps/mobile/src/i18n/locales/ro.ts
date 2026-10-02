@@ -69,6 +69,10 @@ const ro: Messages = {
     kickoffTitle: '%{match} începe la %{time}',
     kickoffBody: 'Un meci de pe biletul tău începe în curând. Atinge pentru a urmări scorul live.',
   },
+  ads: {
+    label: 'Reclamă',
+    privacy: 'Opțiuni de confidențialitate pentru reclame',
+  },
   settings: {
     title: 'Setări', language: 'Limbă', deviceLanguage: 'Limba dispozitivului', currency: 'Monedă', automatic: 'Automat (%{value})',
     oddsFormat: 'Formatul cotelor', decimal: 'Zecimal', fractional: 'Fracționar', american: 'American',

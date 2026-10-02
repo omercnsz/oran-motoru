@@ -69,6 +69,10 @@ const zh: Messages = {
     kickoffTitle: '%{match} 将于 %{time} 开始',
     kickoffBody: '你投注单中的比赛即将开始。点按查看实时比分。',
   },
+  ads: {
+    label: '广告',
+    privacy: '广告隐私选项',
+  },
   settings: {
     title: '设置', language: '语言', deviceLanguage: '设备语言', currency: '货币', automatic: '自动（%{value}）',
     oddsFormat: '赔率格式', decimal: '小数', fractional: '分数', american: '美式',

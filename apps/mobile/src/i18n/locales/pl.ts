@@ -69,6 +69,10 @@ const pl: Messages = {
     kickoffTitle: '%{match} zaczyna się o %{time}',
     kickoffBody: 'Mecz z twojego kuponu zaraz się zacznie. Stuknij, aby śledzić wynik na żywo.',
   },
+  ads: {
+    label: 'Reklama',
+    privacy: 'Ustawienia prywatności reklam',
+  },
   settings: {
     title: 'Ustawienia', language: 'Język', deviceLanguage: 'Język urządzenia', currency: 'Waluta', automatic: 'Automatycznie (%{value})',
     oddsFormat: 'Format kursów', decimal: 'Dziesiętny', fractional: 'Ułamkowy', american: 'Amerykański',

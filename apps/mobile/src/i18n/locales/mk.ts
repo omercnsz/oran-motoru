@@ -69,6 +69,10 @@ const mk: Messages = {
     kickoffTitle: '%{match} почнува во %{time}',
     kickoffBody: 'Натпревар од твојот тикет наскоро почнува. Допри за да го следиш резултатот во живо.',
   },
+  ads: {
+    label: 'Реклама',
+    privacy: 'Поставки за приватност на рекламите',
+  },
   settings: {
     title: 'Поставки', language: 'Јазик', deviceLanguage: 'Јазик на уредот', currency: 'Валута', automatic: 'Автоматски (%{value})',
     oddsFormat: 'Формат на коефициенти', decimal: 'Децимален', fractional: 'Дропка', american: 'Американски',

@@ -122,6 +122,10 @@ const ar: Messages = {
     kickoffTitle: 'تبدأ %{match} الساعة %{time}',
     kickoffBody: 'مباراة في قسيمتك على وشك البدء. اضغط لمتابعة النتيجة المباشرة.',
   },
+  ads: {
+    label: 'إعلان',
+    privacy: 'خيارات خصوصية الإعلانات',
+  },
   settings: {
     title: 'الإعدادات',
     language: 'اللغة',

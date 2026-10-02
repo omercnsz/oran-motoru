@@ -68,6 +68,10 @@ const ko: Messages = {
     kickoffTitle: '%{match} 경기가 %{time}에 시작됩니다',
     kickoffBody: '베팅 슬립의 경기가 곧 시작됩니다. 눌러서 실시간 스코어를 확인하세요.',
   },
+  ads: {
+    label: '광고',
+    privacy: '광고 개인정보 보호 선택',
+  },
   settings: {
     title: '설정', language: '언어', deviceLanguage: '기기 언어', currency: '통화', automatic: '자동 (%{value})',
     oddsFormat: '배당 표시 형식', decimal: '소수', fractional: '분수', american: '미국식',

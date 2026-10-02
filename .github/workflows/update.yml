@@ -8,7 +8,7 @@ on:
   workflow_dispatch: # elle çalıştırma düğmesi
   push:
     branches: [main]
-    paths: ['packages/**', 'apps/pipeline/**', '.github/workflows/update.yml']
+    paths: ['packages/**', 'apps/pipeline/**', 'site/**', '.github/workflows/update.yml']
 
 permissions:
   contents: read
@@ -38,6 +38,8 @@ jobs:
           key: espn-${{ github.run_id }}
           restore-keys: espn-
       - run: npm run build:data
+      # Sabit sayfalar (gizlilik politikası) veriyle aynı sitede yayınlanır
+      - run: cp -R site/. apps/pipeline/public/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/pipeline/public

@@ -69,6 +69,10 @@ const vi: Messages = {
     kickoffTitle: '%{match} bắt đầu lúc %{time}',
     kickoffBody: 'Một trận trong phiếu cược của bạn sắp bắt đầu. Chạm để theo dõi tỷ số trực tiếp.',
   },
+  ads: {
+    label: 'Quảng cáo',
+    privacy: 'Lựa chọn quyền riêng tư quảng cáo',
+  },
   settings: {
     title: 'Cài đặt', language: 'Ngôn ngữ', deviceLanguage: 'Ngôn ngữ của thiết bị', currency: 'Tiền tệ', automatic: 'Tự động (%{value})',
     oddsFormat: 'Định dạng tỷ lệ', decimal: 'Thập phân', fractional: 'Phân số', american: 'Kiểu Mỹ',

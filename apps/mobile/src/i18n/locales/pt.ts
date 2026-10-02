@@ -122,6 +122,10 @@ const pt: Messages = {
     kickoffTitle: '%{match} começa às %{time}',
     kickoffBody: 'Um jogo do seu bilhete está para começar. Toque para acompanhar o placar ao vivo.',
   },
+  ads: {
+    label: 'Publicidade',
+    privacy: 'Opções de privacidade de anúncios',
+  },
   settings: {
     title: 'Configurações',
     language: 'Idioma',

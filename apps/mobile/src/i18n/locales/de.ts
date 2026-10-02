@@ -69,6 +69,10 @@ const de: Messages = {
     kickoffTitle: '%{match} beginnt um %{time}',
     kickoffBody: 'Ein Spiel auf deinem Wettschein beginnt gleich. Tippe, um den Live-Spielstand zu verfolgen.',
   },
+  ads: {
+    label: 'Anzeige',
+    privacy: 'Datenschutzoptionen für Werbung',
+  },
   settings: {
     title: 'Einstellungen', language: 'Sprache', deviceLanguage: 'Gerätesprache', currency: 'Währung', automatic: 'Automatisch (%{value})',
     oddsFormat: 'Quotenformat', decimal: 'Dezimal', fractional: 'Bruch', american: 'Amerikanisch',

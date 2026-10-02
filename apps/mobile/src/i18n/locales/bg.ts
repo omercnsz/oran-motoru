@@ -69,6 +69,10 @@ const bg: Messages = {
     kickoffTitle: '%{match} започва в %{time}',
     kickoffBody: 'Мач от твоя фиш започва скоро. Докосни, за да следиш резултата на живо.',
   },
+  ads: {
+    label: 'Реклама',
+    privacy: 'Настройки за поверителност на рекламите',
+  },
   settings: {
     title: 'Настройки', language: 'Език', deviceLanguage: 'Език на устройството', currency: 'Валута', automatic: 'Автоматично (%{value})',
     oddsFormat: 'Формат на коефициентите', decimal: 'Десетичен', fractional: 'Дробен', american: 'Американски',
