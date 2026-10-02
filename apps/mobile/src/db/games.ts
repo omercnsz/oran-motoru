@@ -1,7 +1,8 @@
 // Oyun jetonları ve turları. Jeton satılmaz, paraya çevrilmez; tutarlar birim cinsinden (1 jeton = TOKEN birim).
 import {
-  coverage, crashPoint, drawSlotRound, resolveSlotRound, roundMultiple, roundPayout, settleCrash, settleRoulette, spinOutcome,
-  TOKEN, uniformFromBytes, type RouletteBet, type SlotDraw,
+  coverage, crashPoint, drawSlotRound, MINES, minesPayout, placeMines, plinkoPath, plinkoPayout, plinkoSlot, resolveSlotRound,
+  roundMultiple, roundPayout, settleCrash, settleRoulette, spinOutcome, TOKEN, uniformFromBytes,
+  type PlinkoRisk, type PlinkoRows, type RouletteBet, type SlotDraw,
 } from '@oran/games-math';
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 import { getRandomBytes, randomUUID } from 'expo-crypto';
@@ -9,7 +10,7 @@ import { getRandomBytes, randomUUID } from 'expo-crypto';
 import { db } from './client';
 import { gameRounds, tokenEvents } from './schema';
 
-export type Game = 'crash' | 'roulette' | 'slot';
+export type Game = 'crash' | 'roulette' | 'slot' | 'mines' | 'plinko';
 
 /** İşletim sisteminin güvenli rastgele sayı üreteci, [0, 1) */
 const secureRandom = () => uniformFromBytes(getRandomBytes(7));
@@ -130,14 +131,115 @@ export function finishSlotRound(id: string, pick: number | null, now = new Date(
   return { payout };
 }
 
+function checkBet(bet: number) {
+  if (bet < MIN_BET || bet % TOKEN !== 0) throw new RangeError(`geçersiz bahis: ${bet}`);
+  if (bet > tokenBalance()) throw new RangeError('yetersiz jeton');
+}
+
+/** Turu ödemeyle kapatır (kazandı = ödeme bahisten fazla) */
+function closeRound(id: string, bet: number, payout: number, detail: unknown, now: Date) {
+  const endedAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.update(gameRounds).set({ endedAt, payout, status: payout > bet ? 'won' : 'lost', detail: JSON.stringify(detail) })
+      .where(eq(gameRounds.id, id)).run();
+    if (payout > 0) tx.insert(tokenEvents).values({ createdAt: endedAt, kind: 'payout', amount: payout, roundId: id }).run();
+  });
+}
+
+export interface MinesState { count: number; mines: number[]; revealed: number[] }
+
+/** Yeni Mines turu: mayınların yeri güvenli rastgele sayıyla çekilip kaydedilir */
+export function startMinesRound(bet: number, count: number, now = new Date()): { id: string } {
+  checkBet(bet);
+  if (count < MINES.minMines || count > MINES.maxMines) throw new RangeError(`geçersiz mayın sayısı: ${count}`);
+  const id = randomUUID();
+  const state: MinesState = { count, mines: placeMines(count, secureRandom), revealed: [] };
+  const createdAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.insert(gameRounds).values({ id, game: 'mines', createdAt, bet, outcome: count, detail: JSON.stringify(state), status: 'running' }).run();
+    tx.insert(tokenEvents).values({ createdAt, kind: 'bet', amount: -bet, roundId: id }).run();
+  });
+  return { id };
+}
+
+function minesRound(id: string) {
+  const [round] = db.select().from(gameRounds).where(eq(gameRounds.id, id)).all();
+  if (!round || round.status !== 'running' || round.game !== 'mines') return null;
+  return { round, state: JSON.parse(round.detail ?? '{}') as MinesState };
+}
+
+/**
+ * Kare açar. Mayınsa tur kaybedilir; bütün güvenli kareler açıldıysa tur kendiliğinden çekilir.
+ * Dönüş: mine, açılan güvenli kare sayısı ve tur bittiyse mayınların yeri ile ödeme.
+ */
+export function revealMinesTile(id: string, tile: number, now = new Date()):
+  { mine: boolean; safe: number; finished: { mines: number[]; payout: number } | null } | null {
+  const r = minesRound(id);
+  if (!r || tile < 0 || tile >= MINES.tiles || r.state.revealed.includes(tile)) return null;
+  const state = { ...r.state, revealed: [...r.state.revealed, tile] };
+  if (state.mines.includes(tile)) {
+    closeRound(id, r.round.bet, 0, state, now);
+    return { mine: true, safe: state.revealed.length - 1, finished: { mines: state.mines, payout: 0 } };
+  }
+  const safe = state.revealed.length;
+  if (safe === MINES.tiles - state.count) {
+    const payout = minesPayout(r.round.bet, state.count, safe);
+    closeRound(id, r.round.bet, payout, state, now);
+    return { mine: false, safe, finished: { mines: state.mines, payout } };
+  }
+  db.update(gameRounds).set({ detail: JSON.stringify(state) }).where(eq(gameRounds.id, id)).run();
+  return { mine: false, safe, finished: null };
+}
+
+/** Çeker: açılan güvenli kare sayısına göre öder. Hiç kare açılmadıysa bahis iade edilir (oynanmamış sayılır). */
+export function cashOutMines(id: string, now = new Date()): { mines: number[]; payout: number } | null {
+  const r = minesRound(id);
+  if (!r) return null;
+  const safe = r.state.revealed.length;
+  const payout = safe === 0 ? r.round.bet : minesPayout(r.round.bet, r.state.count, safe);
+  closeRound(id, r.round.bet, payout, r.state, now);
+  return { mines: r.state.mines, payout };
+}
+
+export interface PlinkoState { rows: PlinkoRows; risk: PlinkoRisk; path: boolean[] }
+
+/** Yeni Plinko atışı: topun yolu güvenli rastgele sayılarla çekilip kaydedilir; ekran bu yolu gösterir */
+export function startPlinkoRound(bet: number, rows: PlinkoRows, risk: PlinkoRisk, now = new Date()): { id: string; path: boolean[]; slot: number } {
+  checkBet(bet);
+  const id = randomUUID();
+  const path = plinkoPath(rows, secureRandom);
+  const slot = plinkoSlot(path);
+  const createdAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.insert(gameRounds).values({
+      id, game: 'plinko', createdAt, bet, outcome: slot, detail: JSON.stringify({ rows, risk, path } satisfies PlinkoState), status: 'running',
+    }).run();
+    tx.insert(tokenEvents).values({ createdAt, kind: 'bet', amount: -bet, roundId: id }).run();
+  });
+  return { id, path, slot };
+}
+
+/** Top cebe düşünce: kayıtlı sonuçla öder */
+export function finishPlinkoRound(id: string, now = new Date()): { payout: number } | null {
+  const [round] = db.select().from(gameRounds).where(eq(gameRounds.id, id)).all();
+  if (!round || round.status !== 'running' || round.game !== 'plinko') return null;
+  const state = JSON.parse(round.detail ?? '{}') as PlinkoState;
+  const payout = plinkoPayout(round.bet, state.rows, state.risk, plinkoSlot(state.path));
+  closeRound(id, round.bet, payout, state, now);
+  return { payout };
+}
+
 /** Uygulama tur sırasında kapandıysa turlar kurala göre kapanır.
  * Crash: otomatik hedef patlamadan önceyse o hedefte kazanır, yoksa kaybeder. Rulet ve slot: kayıtlı sonuçla
- * (slotta penaltı seçilmediyse orta köşe; ödüller köşelere rastgele dağıtıldığı için bu oyuncuyu kayırmaz ya da cezalandırmaz). */
+ * (slotta penaltı seçilmediyse orta köşe; ödüller köşelere rastgele dağıtıldığı için bu oyuncuyu kayırmaz ya da cezalandırmaz).
+ * Mines: açılan karelere göre çekilmiş sayılır (hiç açılmadıysa bahis iade). Plinko: kayıtlı yolla. */
 export function closeInterruptedRounds(): void {
   const running = db.select().from(gameRounds).where(eq(gameRounds.status, 'running')).all();
   for (const r of running) {
     if (r.game === 'roulette') finishRouletteRound(r.id);
     else if (r.game === 'slot') finishSlotRound(r.id, null);
+    else if (r.game === 'mines') cashOutMines(r.id);
+    else if (r.game === 'plinko') finishPlinkoRound(r.id);
     else finishCrashRound(r.id, r.target !== null && r.target <= r.outcome ? r.target : null);
   }
 }
@@ -169,6 +271,13 @@ export function recentOutcomes(game: Game, limit = 10): number[] {
   return db.select({ outcome: gameRounds.outcome }).from(gameRounds)
     .where(and(eq(gameRounds.game, game), sql`${gameRounds.status} != 'running'`))
     .orderBy(desc(gameRounds.createdAt)).limit(limit).all().map((r) => r.outcome);
+}
+
+/** Son turlarda bahsin kaç katı geri döndü (Plinko geçmişi: sıra ve risk değişebildiği için cep değil çarpan) */
+export function recentReturns(game: Game, limit = 10): number[] {
+  return db.select({ bet: gameRounds.bet, payout: gameRounds.payout }).from(gameRounds)
+    .where(and(eq(gameRounds.game, game), sql`${gameRounds.status} != 'running'`))
+    .orderBy(desc(gameRounds.createdAt)).limit(limit).all().map((r) => r.payout / r.bet);
 }
 
 /** Rapor için bütün turlar (biten ve süren) */

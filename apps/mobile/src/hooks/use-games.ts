@@ -2,14 +2,16 @@
 import { addDatabaseChangeListener } from 'expo-sqlite';
 import { useSyncExternalStore } from 'react';
 
-import { gameReport, recentOutcomes, tokenBalance, type GameReport } from '@/db/games';
+import { gameReport, recentOutcomes, recentReturns, tokenBalance, type GameReport } from '@/db/games';
 
 interface GamesSnapshot {
   balance: number;
   crash: GameReport;
   roulette: GameReport;
   slot: GameReport;
-  recent: { crash: number[]; roulette: number[] };
+  mines: GameReport;
+  plinko: GameReport;
+  recent: { crash: number[]; roulette: number[]; plinko: number[] };
 }
 
 let version = 0;
@@ -29,7 +31,9 @@ function read(): GamesSnapshot {
         crash: gameReport('crash'),
         roulette: gameReport('roulette'),
         slot: gameReport('slot'),
-        recent: { crash: recentOutcomes('crash'), roulette: recentOutcomes('roulette', 12) },
+        mines: gameReport('mines'),
+        plinko: gameReport('plinko'),
+        recent: { crash: recentOutcomes('crash'), roulette: recentOutcomes('roulette', 12), plinko: recentReturns('plinko', 12) },
       },
     };
   }

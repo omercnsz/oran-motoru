@@ -41,8 +41,10 @@ export default function RootLayout() {
             <Stack.Screen name="crash" options={{ title: t('games.crash'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="rulet" options={{ title: t('games.roulette'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="slot" options={{ title: t('games.slot'), headerBackTitle: t('tabs.games') }} />
+            <Stack.Screen name="mines" options={{ title: t('games.mines'), headerBackTitle: t('tabs.games') }} />
+            <Stack.Screen name="plinko" options={{ title: t('games.plinko'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="rapor" options={{ title: t('report.title'), headerBackButtonDisplayMode: 'minimal' }} />
-            <Stack.Screen name="ayarlar" options={{ title: t('nav.settings'), headerBackTitle: t('nav.back') }} />
+            <Stack.Screen name="ayarlar" options={{ title: t('nav.settings'), headerBackButtonDisplayMode: 'minimal' }} />
           </Stack>
         </QueryClientProvider>
       )}
