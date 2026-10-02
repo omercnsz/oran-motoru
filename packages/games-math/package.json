@@ -1,0 +1,9 @@
+{
+  "name": "@oran/games-math",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Casino oyunlarının matematiği (gerçek casinolarla aynı kasa avantajı) ve RTP simülasyonları",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "test": "node --test \"test/*.test.ts\"", "typecheck": "tsc -p ." }
+}

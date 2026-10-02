@@ -10,6 +10,7 @@ packages/
 ├── leagues       Turnuvaların tek listesi (63 turnuva: ligler, kupalar, kıta kupaları), kıtaları, ilk favoriler
 ├── teams         Farklı kaynaklardaki takım adlarını eşleştirme (geriye dönük testte kullanılır)
 ├── betting       Gölge kupon kuralları: doğrulama, sonuçlandırma, kumbara raporu
+├── games-math    Casino oyunlarının matematiği (gerçek casinolarla aynı kasa avantajı) ve RTP simülasyonları
 ├── live-sources  ESPN skor tablosu: canlı skor, kırmızı kart, biten maç sonuçları
 └── contracts     Sunucu ile uygulama arasındaki JSON biçimleri (tipler)
 apps/
@@ -76,6 +77,15 @@ Yayına alma (`apps/worker` içinde): `npx wrangler login` (bir kez), sonra `npm
 - Uygulamanın dilleri `app.json`'daki `expo-localization` eklentisinde (`supportedLocales`) listelenir (test, çeviri dosyalarıyla aynı olduğunu denetler). Telefonun dili Arapçaysa sağdan sola düzen ilk açılışta gelir; dil uygulama içinden değişince düzen, uygulama yeniden açıldığında değişir. Expo Go bunu uygulamaz, kendi derlemede çalışır.
 - Yardım hatları `apps/mobile/src/i18n/index.ts` içindedir; yayından önce her numara doğrulanmalı.
 - Lig seçicideki ülke ve kıta adları Unicode CLDR verisinden üretilir (`apps/mobile/src/i18n/regions.ts`); telefondaki JavaScript motoru bu veriyi içermez. Yeni bir ülkenin ligi ya da yeni bir dil eklenince `npm run regions -w @oran/mobile` çalıştırılır.
+
+## Oyunlar (jetonla)
+
+Kurallar: jeton satılmaz ve paraya çevrilmez; bitince ödüllü reklamla dolar (reklam yoksa yine dolar, kullanıcı cezalandırılmaz). Oyunların matematiği gerçek casinolarla aynıdır; aksi hâlde rapor yalan söyler ve sanal oyunda kazanan kullanıcı gerçek siteye dönebilir.
+
+- **Crash** (`packages/games-math/src/crash.ts`): kasa avantajı %3 (geri dönüş %97). Patlama noktası tur başında işletim sisteminin güvenli rastgele sayısıyla belirlenir ve kaydedilir; oyuncu ne yaparsa yapsın beklenen getiri %97'dir (testler 10 milyon turla doğrular: `npm test -w @oran/games-math`). 1,00×'te çekilemez (anında patlamadan kaçmayı önler).
+- Jetonlar yüzde birlik birimlerle tutulur (1 jeton = 100 birim); bahis tam jeton olduğu için ödemede yuvarlama gerekmez. Bakiye = 1.000 başlangıç jetonu + `token_events` toplamı; turlar `game_rounds` tablosunda.
+- Aldatmaca yok: her turda net sonuç (+/−) gösterilir, kayıp kutlanmaz, "hepsini bas" düğmesi yok, son turların yanında "her tur bağımsızdır" yazar.
+- Gerçeklik uyarısı: oyun ekranında 15 dakikada bir (tur bitince) süre, tur sayısı ve net sonuç gösterilir. Oyunlar sekmesinde oyuncunun gerçekleşen geri dönüş oranı teorik değerle yan yana yazar.
 
 ## Bildirimler
 

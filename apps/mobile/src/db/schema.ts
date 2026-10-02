@@ -49,3 +49,34 @@ export const cache = sqliteTable('cache', {
   body: text('body').notNull(),
   fetchedAt: text('fetched_at').notNull(),
 });
+
+// ---------------------------------------------------------------------------
+// Oyunlar (Faz 3). Jetonlar satılmaz ve paraya çevrilmez; tutarlar birim cinsinden (1 jeton = 100 birim).
+// ---------------------------------------------------------------------------
+
+/** Jeton hareketleri; bakiye = başlangıç jetonu + bunların toplamı */
+export const tokenEvents = sqliteTable('token_events', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  createdAt: text('created_at').notNull(),
+  /** refill: ödüllü reklamla dolum; bet: bahis (eksi); payout: ödeme */
+  kind: text('kind', { enum: ['refill', 'bet', 'payout'] }).notNull(),
+  amount: integer('amount').notNull(),
+  roundId: text('round_id'),
+}, (t) => [index('token_events_round_idx').on(t.roundId)]);
+
+/** Oyun turları. Sonuç (outcome) tur başında belirlenir ve kaydedilir; uygulama kapansa da tur aynı sonuçla kapanır. */
+export const gameRounds = sqliteTable('game_rounds', {
+  id: text('id').primaryKey(),
+  game: text('game', { enum: ['crash'] }).notNull(),
+  createdAt: text('created_at').notNull(),
+  endedAt: text('ended_at'),
+  bet: integer('bet').notNull(),
+  /** Otomatik çekme hedefi (çarpan) */
+  target: real('target'),
+  /** Crash: patlama noktası */
+  outcome: real('outcome').notNull(),
+  /** Oyuncunun çektiği çarpan; çekmediyse null */
+  cashout: real('cashout'),
+  payout: integer('payout').notNull().default(0),
+  status: text('status', { enum: ['running', 'won', 'lost'] }).notNull().default('running'),
+}, (t) => [index('game_rounds_game_idx').on(t.game, t.createdAt)]);
