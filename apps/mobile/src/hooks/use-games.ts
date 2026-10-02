@@ -8,6 +8,7 @@ interface GamesSnapshot {
   balance: number;
   crash: GameReport;
   roulette: GameReport;
+  slot: GameReport;
   recent: { crash: number[]; roulette: number[] };
 }
 
@@ -27,6 +28,7 @@ function read(): GamesSnapshot {
         balance: tokenBalance(),
         crash: gameReport('crash'),
         roulette: gameReport('roulette'),
+        slot: gameReport('slot'),
         recent: { crash: recentOutcomes('crash'), roulette: recentOutcomes('roulette', 12) },
       },
     };

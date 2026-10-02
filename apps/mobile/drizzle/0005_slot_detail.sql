@@ -1,0 +1,1 @@
+ALTER TABLE `game_rounds` ADD `detail` text;

@@ -1,6 +1,7 @@
 // Oyun jetonları ve turları. Jeton satılmaz, paraya çevrilmez; tutarlar birim cinsinden (1 jeton = TOKEN birim).
 import {
-  coverage, crashPoint, settleCrash, settleRoulette, spinOutcome, TOKEN, uniformFromBytes, type RouletteBet,
+  coverage, crashPoint, drawSlotRound, resolveSlotRound, roundMultiple, roundPayout, settleCrash, settleRoulette, spinOutcome,
+  TOKEN, uniformFromBytes, type RouletteBet, type SlotDraw,
 } from '@oran/games-math';
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 import { getRandomBytes, randomUUID } from 'expo-crypto';
@@ -8,7 +9,10 @@ import { getRandomBytes, randomUUID } from 'expo-crypto';
 import { db } from './client';
 import { gameRounds, tokenEvents } from './schema';
 
-export type Game = 'crash' | 'roulette';
+export type Game = 'crash' | 'roulette' | 'slot';
+
+/** İşletim sisteminin güvenli rastgele sayı üreteci, [0, 1) */
+const secureRandom = () => uniformFromBytes(getRandomBytes(7));
 
 export const START_TOKENS = 1_000 * TOKEN;
 export const REFILL_TOKENS = 1_000 * TOKEN;
@@ -33,7 +37,7 @@ export function startCrashRound(bet: number, target: number | null, now = new Da
   if (bet < MIN_BET || bet % TOKEN !== 0) throw new RangeError(`geçersiz bahis: ${bet}`);
   if (bet > tokenBalance()) throw new RangeError('yetersiz jeton');
   const id = randomUUID();
-  const outcome = crashPoint(uniformFromBytes(getRandomBytes(7)));
+  const outcome = crashPoint(secureRandom());
   const createdAt = now.toISOString();
   db.transaction((tx) => {
     tx.insert(gameRounds).values({ id, game: 'crash', createdAt, bet, target, outcome, status: 'running' }).run();
@@ -66,7 +70,7 @@ export function startRouletteRound(bets: RouletteBet[], now = new Date()): { id:
   const total = bets.reduce((s, b) => s + b.amount, 0);
   if (total > tokenBalance()) throw new RangeError('yetersiz jeton');
   const id = randomUUID();
-  const outcome = spinOutcome(uniformFromBytes(getRandomBytes(7)));
+  const outcome = spinOutcome(secureRandom());
   const createdAt = now.toISOString();
   db.transaction((tx) => {
     tx.insert(gameRounds).values({ id, game: 'roulette', createdAt, bet: total, outcome, bets: JSON.stringify(bets), status: 'running' }).run();
@@ -90,12 +94,50 @@ export function finishRouletteRound(id: string, now = new Date()): ReturnType<ty
   return result;
 }
 
+/**
+ * Yeni slot turu: bahis düşülür; ana dönüş, varsa 10 bedava dönüş ve penaltı köşelerindeki ödüller tur başında
+ * güvenli rastgele sayılarla çekilip kaydedilir. Ekran sadece bunu gösterir.
+ */
+export function startSlotRound(bet: number, now = new Date()): { id: string; draw: SlotDraw } {
+  if (bet < MIN_BET || bet % TOKEN !== 0) throw new RangeError(`geçersiz bahis: ${bet}`);
+  if (bet > tokenBalance()) throw new RangeError('yetersiz jeton');
+  const id = randomUUID();
+  const draw = drawSlotRound(secureRandom);
+  const createdAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.insert(gameRounds).values({
+      id, game: 'slot', createdAt, bet, outcome: roundMultiple(resolveSlotRound(draw), null) - (draw.prizes ? draw.prizes[1] : 0),
+      detail: JSON.stringify(draw), status: 'running',
+    }).run();
+    tx.insert(tokenEvents).values({ createdAt, kind: 'bet', amount: -bet, roundId: id }).run();
+  });
+  return { id, draw };
+}
+
+/** Slot turunu kapatır; pick: penaltıda seçilen köşe (0 sol, 1 orta, 2 sağ). Seçim yapılmadıysa orta köşe. */
+export function finishSlotRound(id: string, pick: number | null, now = new Date()): { payout: number } | null {
+  const [round] = db.select().from(gameRounds).where(eq(gameRounds.id, id)).all();
+  if (!round || round.status !== 'running') return null;
+  const draw = JSON.parse(round.detail ?? '{}') as SlotDraw;
+  const payout = roundPayout(resolveSlotRound(draw), pick, round.bet);
+  const endedAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.update(gameRounds).set({
+      endedAt, payout, status: payout > round.bet ? 'won' : 'lost', detail: JSON.stringify({ ...draw, pick }),
+    }).where(eq(gameRounds.id, id)).run();
+    if (payout > 0) tx.insert(tokenEvents).values({ createdAt: endedAt, kind: 'payout', amount: payout, roundId: id }).run();
+  });
+  return { payout };
+}
+
 /** Uygulama tur sırasında kapandıysa turlar kurala göre kapanır.
- * Crash: otomatik hedef patlamadan önceyse o hedefte kazanır, yoksa kaybeder. Rulet: kayıtlı sonuçla. */
+ * Crash: otomatik hedef patlamadan önceyse o hedefte kazanır, yoksa kaybeder. Rulet ve slot: kayıtlı sonuçla
+ * (slotta penaltı seçilmediyse orta köşe; ödüller köşelere rastgele dağıtıldığı için bu oyuncuyu kayırmaz ya da cezalandırmaz). */
 export function closeInterruptedRounds(): void {
   const running = db.select().from(gameRounds).where(eq(gameRounds.status, 'running')).all();
   for (const r of running) {
     if (r.game === 'roulette') finishRouletteRound(r.id);
+    else if (r.game === 'slot') finishSlotRound(r.id, null);
     else finishCrashRound(r.id, r.target !== null && r.target <= r.outcome ? r.target : null);
   }
 }

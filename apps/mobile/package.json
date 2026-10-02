@@ -63,7 +63,8 @@
     "typecheck": "tsc --noEmit && tsc -p test",
     "test": "node --test \"test/*.test.ts\"",
     "regions": "node scripts/region-names.mts",
-    "icons": "node scripts/icons.mts"
+    "icons": "node scripts/icons.mts",
+    "slot-symbols": "node scripts/slot-symbols.mts"
   },
   "private": true
 }

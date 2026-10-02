@@ -6,6 +6,7 @@ import m0001 from './0001_live_bets.sql';
 import m0002 from './0002_currency.sql';
 import m0003 from './0003_games.sql';
 import m0004 from './0004_roulette_bets.sql';
+import m0005 from './0005_slot_detail.sql';
 
   export default {
     journal,
@@ -14,7 +15,8 @@ import m0004 from './0004_roulette_bets.sql';
 m0001,
 m0002,
 m0003,
-m0004
+m0004,
+m0005
     }
   }
   

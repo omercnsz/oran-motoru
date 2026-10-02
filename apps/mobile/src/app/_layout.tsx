@@ -40,6 +40,7 @@ export default function RootLayout() {
             <Stack.Screen name="kupon" options={{ title: t('nav.coupon'), presentation: 'modal' }} />
             <Stack.Screen name="crash" options={{ title: t('games.crash'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="rulet" options={{ title: t('games.roulette'), headerBackTitle: t('tabs.games') }} />
+            <Stack.Screen name="slot" options={{ title: t('games.slot'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="ayarlar" options={{ title: t('nav.settings'), headerBackTitle: t('nav.back') }} />
           </Stack>
         </QueryClientProvider>

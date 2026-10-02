@@ -36,6 +36,13 @@
       "when": 1790943015684,
       "tag": "0004_roulette_bets",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1790945449827,
+      "tag": "0005_slot_detail",
+      "breakpoints": true
     }
   ]
 }

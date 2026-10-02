@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useT } from '@/i18n';
 
 /**
  * Ekranların ortak iskeleti: başlık, açıklama, kaydırılabilir içerik.
@@ -35,19 +34,6 @@ export function Screen({ title, subtitle, compact, accessory, children }: {
   );
 }
 
-/** Henüz yapılmamış bölümler için bilgi kartı */
-export function ComingSoon({ phase, items }: { phase: number; items: string[] }) {
-  const { t } = useT();
-  return (
-    <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="smallBold">{t('common.comingSoon', { n: phase })}</ThemedText>
-      {items.map((item) => (
-        <ThemedText key={item} type="small" themeColor="textSecondary">• {item}</ThemedText>
-      ))}
-    </ThemedView>
-  );
-}
-
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   content: {
@@ -63,5 +49,4 @@ const styles = StyleSheet.create({
   title: { flex: 1 },
   compactTitle: { fontWeight: 700 },
   inner: { width: '100%', maxWidth: MaxContentWidth, gap: Spacing.three },
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.one },
 });

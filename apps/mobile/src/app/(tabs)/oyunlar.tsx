@@ -1,11 +1,11 @@
 // Oyunlar: sadece jetonla. Jeton satılmaz, paraya çevrilmez; bitince ödüllü reklamla dolar.
 // Her oyunun yanında oyuncunun kendi sonucu ve oyunun gerçek geri dönüş oranı yazar.
-import { CRASH, ROULETTE } from '@oran/games-math';
+import { CRASH, ROULETTE, slotMath } from '@oran/games-math';
 import { router, type Href } from 'expo-router';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { RefillCard } from '@/components/refill-card';
-import { ComingSoon, Screen } from '@/components/screen';
+import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
@@ -15,16 +15,18 @@ import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { formatPercent, formatTokens } from '@/lib/tokens';
 
+const SLOT_EDGE = 1 - slotMath().rtp;
+
 export default function OyunlarScreen() {
   const { t } = useT();
-  const { balance, crash, roulette } = useGames();
+  const { balance, crash, roulette, slot } = useGames();
   return (
     <Screen title={t('games.title')} subtitle={t('games.subtitle')}>
       <ThemedText type="smallBold">{t('games.balance', { amount: formatTokens(balance) })}</ThemedText>
       {canRefill(balance) ? <RefillCard /> : null}
       <GameCard title={t('games.crash')} description={t('games.crashDesc')} report={crash} houseEdge={CRASH.houseEdge} href="/crash" />
       <GameCard title={t('games.roulette')} description={t('games.rouletteDesc')} report={roulette} houseEdge={ROULETTE.houseEdge} href="/rulet" />
-      <ComingSoon phase={5} items={[t('games.slot')]} />
+      <GameCard title={t('games.slot')} description={t('games.slotDesc')} report={slot} houseEdge={SLOT_EDGE} href="/slot" />
     </Screen>
   );
 }
