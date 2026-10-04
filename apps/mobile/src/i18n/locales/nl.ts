@@ -215,6 +215,7 @@ const nl: Messages = {
     edge: 'Zelfs met perfecte basisstrategie komen op lange termijn ongeveer %{rtp} van elke 100 fiches terug (huisvoordeel %{edge}). Elke fout maakt dat lager.',
     honesty: 'De kaarten worden aan het begin van de hand geschud met een veilig willekeurig getal en samen met je zetten bewaard; elke hand kan opnieuw worden afgespeeld.',
   },
+  celebrate: { small: 'WINST', big: 'GROTE WINST', mega: 'MEGAWINST' },
   notifications: {
     title: 'Meldingen',
     kickoff: 'Herinner me 15 minuten voor een wedstrijd op mijn wedbonnen',

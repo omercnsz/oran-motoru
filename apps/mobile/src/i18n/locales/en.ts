@@ -258,6 +258,7 @@ const en = {
     edge: 'Even with perfect basic strategy, about %{rtp} of every 100 tokens come back in the long run (house edge %{edge}). Every mistake lowers that.',
     honesty: 'The cards are shuffled with a secure random number when the hand starts and saved together with your moves, so every hand can be replayed.',
   },
+  celebrate: { small: 'WIN', big: 'BIG WIN', mega: 'MEGA WIN' },
   notifications: {
     title: 'Notifications',
     kickoff: 'Remind me 15 minutes before a match on my coupons',

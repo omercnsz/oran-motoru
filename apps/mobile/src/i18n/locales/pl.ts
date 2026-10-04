@@ -215,6 +215,7 @@ const pl: Messages = {
     edge: 'Nawet przy idealnej strategii podstawowej na dłuższą metę wraca około %{rtp} na każde 100 żetonów (przewaga kasyna %{edge}). Każdy błąd to pogarsza.',
     honesty: 'Karty są tasowane bezpieczną liczbą losową na początku rozdania i zapisywane razem z twoimi ruchami; każde rozdanie można odtworzyć.',
   },
+  celebrate: { small: 'WYGRANA', big: 'DUŻA WYGRANA', mega: 'MEGA WYGRANA' },
   notifications: {
     title: 'Powiadomienia',
     kickoff: 'Przypominaj 15 minut przed meczem z moich kuponów',

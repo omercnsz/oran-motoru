@@ -258,6 +258,7 @@ const tr: Messages = {
     edge: 'Kusursuz temel stratejiyle bile uzun vadede her 100 jetonun yaklaşık %{rtp} tanesi geri döner (kasa avantajı %{edge}). Her hata bu oranı düşürür.',
     honesty: 'Kartlar el başında güvenli rastgele sayıyla karılır ve hamlelerinle birlikte kaydedilir; her el yeniden oynatılabilir.',
   },
+  celebrate: { small: 'KAZANÇ', big: 'BÜYÜK KAZANÇ', mega: 'DEV KAZANÇ' },
   notifications: {
     title: 'Bildirimler',
     kickoff: 'Kuponumdaki maç başlamadan 15 dakika önce haber ver',

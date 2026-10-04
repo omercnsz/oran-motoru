@@ -6,6 +6,7 @@ import { ActivityIndicator, AppState, Platform, StyleSheet, useColorScheme, View
 import migrations from '../../drizzle/migrations';
 import { ThemedText } from '@/components/themed-text';
 import { db } from '@/db/client';
+import { arenaHeader } from '@/components/arena/kit';
 import { useT } from '@/i18n';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1 } } });
@@ -38,7 +39,7 @@ export default function RootLayout() {
             <Stack.Screen name="canli/[espnId]" options={{ title: t('nav.live'), headerBackTitle: t('nav.back') }} />
             <Stack.Screen name="ligler" options={{ title: t('leagues.title'), presentation: 'modal' }} />
             <Stack.Screen name="kupon" options={{ title: t('nav.coupon'), presentation: 'modal' }} />
-            <Stack.Screen name="crash" options={{ title: t('games.crash'), headerBackTitle: t('tabs.games') }} />
+            <Stack.Screen name="crash" options={{ ...arenaHeader, title: t('games.crash'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="rulet" options={{ title: t('games.roulette'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="slot" options={{ title: t('games.slot'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="mines" options={{ title: t('games.mines'), headerBackTitle: t('tabs.games') }} />

@@ -215,6 +215,7 @@ const bs: Messages = {
     edge: 'Čak i uz savršenu osnovnu strategiju, dugoročno se vraća oko %{rtp} od svakih 100 žetona (prednost kuće %{edge}). Svaka greška to smanjuje.',
     honesty: 'Karte se miješaju sigurnim slučajnim brojem na početku ruke i čuvaju zajedno s tvojim potezima; svaka ruka može ponovo da se odigra.',
   },
+  celebrate: { small: 'DOBITAK', big: 'VELIKI DOBITAK', mega: 'MEGA DOBITAK' },
   notifications: {
     title: 'Obavještenja',
     kickoff: 'Podsjeti me 15 minuta prije utakmice s mojih tiketa',

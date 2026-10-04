@@ -215,6 +215,7 @@ const vi: Messages = {
     edge: 'Ngay cả với chiến lược cơ bản hoàn hảo, về lâu dài chỉ khoảng %{rtp} trên mỗi 100 chip quay lại (lợi thế nhà cái %{edge}). Mỗi sai lầm làm con số này giảm.',
     honesty: 'Bài được xáo bằng số ngẫu nhiên an toàn khi bắt đầu ván và lưu cùng các nước đi của bạn; mỗi ván đều có thể phát lại.',
   },
+  celebrate: { small: 'THẮNG', big: 'THẮNG LỚN', mega: 'THẮNG CỰC LỚN' },
   notifications: {
     title: 'Thông báo',
     kickoff: 'Nhắc tôi 15 phút trước trận đấu trong phiếu cược',

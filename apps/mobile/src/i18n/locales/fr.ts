@@ -215,6 +215,7 @@ const fr: Messages = {
     edge: 'Même avec une stratégie de base parfaite, environ %{rtp} jetons sur 100 reviennent à long terme (avantage de la maison %{edge}). Chaque erreur fait baisser ce chiffre.',
     honesty: 'Les cartes sont mélangées avec un nombre aléatoire sûr au début de la main et enregistrées avec tes coups ; chaque main peut être rejouée.',
   },
+  celebrate: { small: 'GAIN', big: 'GROS GAIN', mega: 'MÉGA GAIN' },
   notifications: {
     title: 'Notifications',
     kickoff: 'Me prévenir 15 minutes avant un match de mes tickets',

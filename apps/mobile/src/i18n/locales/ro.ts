@@ -215,6 +215,7 @@ const ro: Messages = {
     edge: 'Chiar și cu strategia de bază perfectă, pe termen lung se întorc cam %{rtp} din fiecare 100 de jetoane (avantajul casei %{edge}). Fiecare greșeală scade cifra.',
     honesty: 'Cărțile sunt amestecate cu un număr aleator sigur la începutul mâinii și salvate împreună cu mutările tale; fiecare mână poate fi reluată.',
   },
+  celebrate: { small: 'CÂȘTIG', big: 'CÂȘTIG MARE', mega: 'MEGA CÂȘTIG' },
   notifications: {
     title: 'Notificări',
     kickoff: 'Anunță-mă cu 15 minute înainte de un meci de pe biletele mele',

@@ -215,6 +215,7 @@ const sl: Messages = {
     edge: 'Tudi s popolno osnovno strategijo se dolgoročno vrne približno %{rtp} od vsakih 100 žetonov (prednost igralnice %{edge}). Vsaka napaka to zmanjša.',
     honesty: 'Karte so premešane z varnim naključnim številom na začetku roke in shranjene skupaj s tvojimi potezami; vsako roko je mogoče ponoviti.',
   },
+  celebrate: { small: 'DOBITEK', big: 'VELIK DOBITEK', mega: 'MEGA DOBITEK' },
   notifications: {
     title: 'Obvestila',
     kickoff: 'Opomni me 15 minut pred tekmo z mojih listkov',

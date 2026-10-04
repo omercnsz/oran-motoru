@@ -258,6 +258,7 @@ const es: Messages = {
     edge: 'Incluso con una estrategia básica perfecta, a largo plazo vuelven unas %{rtp} de cada 100 fichas (ventaja de la casa %{edge}). Cada error lo empeora.',
     honesty: 'Las cartas se barajan con un número aleatorio seguro al empezar la mano y se guardan junto con tus jugadas; cada mano puede reproducirse.',
   },
+  celebrate: { small: 'PREMIO', big: 'GRAN PREMIO', mega: 'MEGAPREMIO' },
   notifications: {
     title: 'Notificaciones',
     kickoff: 'Avísame 15 minutos antes de un partido de mis cupones',

@@ -215,6 +215,7 @@ const sq: Messages = {
     edge: 'Edhe me strategji bazë të përsosur, në afat të gjatë kthehen rreth %{rtp} nga çdo 100 monedha (avantazhi i kazinosë %{edge}). Çdo gabim e ul këtë.',
     honesty: 'Letrat përzihen me një numër të rastësishëm të sigurt në fillim të dorës dhe ruhen bashkë me lëvizjet e tua; çdo dorë mund të riluhet.',
   },
+  celebrate: { small: 'FITORE', big: 'FITORE E MADHE', mega: 'MEGA FITORE' },
   notifications: {
     title: 'Njoftimet',
     kickoff: 'Më njofto 15 minuta para një ndeshjeje nga kuponët e mi',

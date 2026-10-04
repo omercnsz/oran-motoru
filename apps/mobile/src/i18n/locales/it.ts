@@ -215,6 +215,7 @@ const it: Messages = {
     edge: 'Anche con una strategia base perfetta, nel lungo periodo tornano circa %{rtp} gettoni su 100 (vantaggio del banco %{edge}). Ogni errore lo peggiora.',
     honesty: 'Le carte vengono mescolate con un numero casuale sicuro all’inizio della mano e salvate con le tue mosse; ogni mano può essere rigiocata.',
   },
+  celebrate: { small: 'VINCITA', big: 'GRANDE VINCITA', mega: 'MEGA VINCITA' },
   notifications: {
     title: 'Notifiche',
     kickoff: 'Avvisami 15 minuti prima di una partita delle mie schedine',

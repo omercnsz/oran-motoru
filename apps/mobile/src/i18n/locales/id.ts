@@ -215,6 +215,7 @@ const id: Messages = {
     edge: 'Bahkan dengan strategi dasar sempurna, dalam jangka panjang hanya sekitar %{rtp} dari setiap 100 token yang kembali (keunggulan bandar %{edge}). Setiap kesalahan menurunkannya.',
     honesty: 'Kartu dikocok dengan angka acak yang aman saat tangan dimulai dan disimpan bersama langkahmu; setiap tangan bisa diputar ulang.',
   },
+  celebrate: { small: 'MENANG', big: 'MENANG BESAR', mega: 'MENANG MEGA' },
   notifications: {
     title: 'Notifikasi',
     kickoff: 'Ingatkan 15 menit sebelum pertandingan di kuponku',

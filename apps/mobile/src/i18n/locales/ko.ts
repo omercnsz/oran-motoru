@@ -214,6 +214,7 @@ const ko: Messages = {
     edge: '완벽한 기본 전략으로도 장기적으로 100칩당 약 %{rtp}칩만 돌아옵니다(하우스 엣지 %{edge}). 실수할 때마다 더 낮아집니다.',
     honesty: '카드는 핸드 시작 시 안전한 난수로 셔플되고 당신의 선택과 함께 저장되므로 모든 핸드를 다시 재생할 수 있습니다.',
   },
+  celebrate: { small: '당첨', big: '빅 윈', mega: '메가 윈' },
   notifications: {
     title: '알림',
     kickoff: '내 베팅 슬립의 경기 시작 15분 전에 알림',

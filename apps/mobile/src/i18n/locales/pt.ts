@@ -259,6 +259,7 @@ const pt: Messages = {
     edge: 'Mesmo com estratégia básica perfeita, no longo prazo voltam cerca de %{rtp} de cada 100 fichas (vantagem da casa %{edge}). Cada erro piora isso.',
     honesty: 'As cartas são embaralhadas com um número aleatório seguro no início da mão e salvas junto com suas jogadas; cada mão pode ser reproduzida.',
   },
+  celebrate: { small: 'GANHO', big: 'GRANDE GANHO', mega: 'MEGA GANHO' },
   notifications: {
     title: 'Notificações',
     kickoff: 'Avisar 15 minutos antes de um jogo dos meus bilhetes',

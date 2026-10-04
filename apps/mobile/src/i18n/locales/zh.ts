@@ -215,6 +215,7 @@ const zh: Messages = {
     edge: '即使用完美的基本策略，长期来看每 100 个筹码也只能拿回约 %{rtp} 个（庄家优势 %{edge}）。每一次失误都会让它更低。',
     honesty: '牌在每手开始时用安全的随机数洗好，并与你的操作一起保存；每一手都可以重放。',
   },
+  celebrate: { small: '赢了', big: '大奖', mega: '超级大奖' },
   notifications: {
     title: '通知',
     kickoff: '投注单中的比赛开始前 15 分钟提醒我',

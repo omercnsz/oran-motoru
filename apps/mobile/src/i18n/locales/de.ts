@@ -215,6 +215,7 @@ const de: Messages = {
     edge: 'Selbst mit perfekter Grundstrategie kommen auf lange Sicht etwa %{rtp} von 100 Jetons zurück (Hausvorteil %{edge}). Jeder Fehler senkt das.',
     honesty: 'Die Karten werden zu Beginn der Hand mit einer sicheren Zufallszahl gemischt und zusammen mit deinen Zügen gespeichert; jede Hand lässt sich nachspielen.',
   },
+  celebrate: { small: 'GEWINN', big: 'GROSSER GEWINN', mega: 'MEGA-GEWINN' },
   notifications: {
     title: 'Benachrichtigungen',
     kickoff: '15 Minuten vor einem Spiel auf meinen Wettscheinen erinnern',
