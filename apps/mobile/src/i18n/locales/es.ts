@@ -186,6 +186,12 @@ const es: Messages = {
     tapHint: 'Elige una ficha y toca la mesa',
   },
   slot: {
+    machine: 'ESTADIO',
+    balanceLabel: 'SALDO',
+    betLabel: 'APUESTA',
+    winLabel: 'PREMIO',
+    spinShort: 'GIRAR',
+    goal: '¡GOL!',
     paytable: 'Tabla de pagos',
     spin: 'Girar · apuesta %{amount}',
     lineBet: 'Apuesta por línea %{amount} × 10 líneas',

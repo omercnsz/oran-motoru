@@ -143,6 +143,12 @@ const de: Messages = {
     tapHint: 'Chip wählen und auf den Tisch tippen',
   },
   slot: {
+    machine: 'STADION',
+    balanceLabel: 'GUTHABEN',
+    betLabel: 'EINSATZ',
+    winLabel: 'GEWINN',
+    spinShort: 'DREHEN',
+    goal: 'TOR!',
     paytable: 'Gewinntabelle',
     spin: 'Drehen · Einsatz %{amount}',
     lineBet: 'Linieneinsatz %{amount} × 10 Linien',

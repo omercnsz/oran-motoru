@@ -1,6 +1,8 @@
 // Slot sembolleri ("Stadyum" teması): vektör çizimler → assets/slot/*.svg ve uygulamanın kullandığı PNG'ler (@1x/2x/3x).
 // Tasarım dili: koyu makara zemininde parlak, kalın koyu konturlu, hafif gradyanlı düz çizimler. Marka/kulüp işareti yok.
 // Sarı ve kırmızı kart renk körlüğünde de ayırt edilsin diye farklı yöne eğik ve farklı işaretli.
+// Her sembolün arkasında değerine göre renkli ışık halesi var; makara dönerken kullanılan dikey hareket bulanıklığı
+// uygulanmış kopyalar (*-blur.png) Core Image ile üretilir.
 // Çalıştırma (apps/mobile içinde, macOS): npm run slot-symbols
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -155,15 +157,37 @@ export const SYMBOLS: Record<string, string> = {
      </g>`),
 };
 
+/** Hale renkleri: değerli semboller sıcak ve parlak, düşükler soluk */
+const HALO: Record<string, [string, number]> = {
+  wild: ['#B26BFF', 0.75], bonus: ['#3DD9FF', 0.6], boot: ['#FF5E57', 0.55], gloves: ['#7CFF6B', 0.5],
+  jersey: ['#4C8DFF', 0.5], flag: ['#FF9F43', 0.45], watch: ['#C9D6EA', 0.4], yellow: ['#FFE066', 0.35],
+  red: ['#FF6B7A', 0.35], scarf: ['#2BFFA8', 0.3],
+};
+const withHalo = (name: string, content: string) => {
+  const halo = HALO[name];
+  if (!halo) return content;
+  const [color, alpha] = halo;
+  const def = `<radialGradient id="halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="${color}" stop-opacity="${alpha}"/><stop offset="0.55" stop-color="${color}" stop-opacity="${alpha * 0.45}"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></radialGradient>`;
+  return content.replace('<defs>', `<defs>${def}`).replace('</defs>', '</defs><circle cx="128" cy="128" r="128" fill="url(#halo)"/>');
+};
+
 const root = new URL('../', import.meta.url);
 const path = (p: string) => fileURLToPath(new URL(p, root));
 mkdirSync(path('assets/slot'), { recursive: true });
 const renders: string[] = [];
 for (const [name, content] of Object.entries(SYMBOLS)) {
-  writeFileSync(path(`assets/slot/${name}.svg`), content);
+  writeFileSync(path(`assets/slot/${name}.svg`), withHalo(name, content));
   for (const [suffix, size] of [['', 64], ['@2x', 128], ['@3x', 192]] as const) {
     renders.push(path(`assets/slot/${name}.svg`), path(`assets/slot/${name}${suffix}.png`), String(size));
   }
 }
 execFileSync('swift', [path('scripts/render-svg.swift'), ...renders], { stdio: 'ignore' });
+// Hareket bulanıklığı: piksel boyutuna göre yarıçap
+const blurs: string[] = [];
+for (const name of Object.keys(SYMBOLS)) {
+  for (const [suffix, radius] of [['', 3], ['@2x', 7], ['@3x', 10]] as const) {
+    blurs.push(path(`assets/slot/${name}${suffix}.png`), path(`assets/slot/${name}-blur${suffix}.png`), String(radius));
+  }
+}
+execFileSync('swift', [path('scripts/motion-blur.swift'), ...blurs], { stdio: 'ignore' });
 console.log(`${Object.keys(SYMBOLS).length} sembol → assets/slot`);

@@ -187,6 +187,12 @@ const pt: Messages = {
     tapHint: 'Escolha uma ficha e toque na mesa',
   },
   slot: {
+    machine: 'ESTÁDIO',
+    balanceLabel: 'SALDO',
+    betLabel: 'APOSTA',
+    winLabel: 'GANHO',
+    spinShort: 'GIRAR',
+    goal: 'GOL!',
     paytable: 'Tabela de pagamentos',
     spin: 'Girar · aposta %{amount}',
     lineBet: 'Aposta por linha %{amount} × 10 linhas',

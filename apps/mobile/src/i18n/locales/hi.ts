@@ -143,6 +143,12 @@ const hi: Messages = {
     tapHint: 'चिप चुनें और टेबल पर टैप करें',
   },
   slot: {
+    machine: 'स्टेडियम',
+    balanceLabel: 'बैलेंस',
+    betLabel: 'दांव',
+    winLabel: 'जीत',
+    spinShort: 'घुमाएँ',
+    goal: 'गोल!',
     paytable: 'भुगतान तालिका',
     spin: 'घुमाएँ · दांव %{amount}',
     lineBet: 'प्रति लाइन दांव %{amount} × 10 लाइनें',

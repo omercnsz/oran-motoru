@@ -9,15 +9,16 @@ import {
 import { Image } from 'expo-image';
 import { Stack } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BackHandler, Modal, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
+import { BackHandler, Modal, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { celebrate, Effects, nextWinId, tierOf, WinBanner, type EffectsHandle, type Tier } from '@/components/arena/effects';
-import { AText, ArenaBackground, Balance, ChipRow, Glass, GlassButton, NeonButton, useArena, useShake } from '@/components/arena/kit';
+import { AText, ArenaBackground, Glass, GlassButton, NeonButton, useArena, useShake } from '@/components/arena/kit';
 import { RefillCard } from '@/components/refill-card';
+import { FreeSpinsCard, Led, Marquee, PenaltyGame, RoundButton, SpinButton, type MarqueeMode } from '@/components/slot/machine';
 import { SlotReels, SYMBOL_IMAGES, type ReelsHandle } from '@/components/slot-reels';
-import { Arena, FontFamily, glow } from '@/constants/arena';
+import { Arena, FontFamily } from '@/constants/arena';
 import { canRefill, closeInterruptedRounds, finishSlotRound, startSlotRound } from '@/db/games';
 import { useGames } from '@/hooks/use-games';
 import { useRealityCheck } from '@/hooks/use-reality-check';
@@ -55,7 +56,7 @@ export default function SlotScreen() {
   const { balance } = useGames();
   const reality = useRealityCheck('slot');
   useArena(['whoosh', 'reel', 'coin', 'lose', 'winSmall', 'winBig', 'winMega', 'cashout']);
-  const [bet, setBet] = useState(BETS[0]);
+  const [betIndex, setBetIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
   const [round, setRound] = useState<{ id: string; draw: SlotDraw; data: SlotRound; bet: number } | null>(null);
   const [shown, setShown] = useState<SpinResult | null>(null);
@@ -65,13 +66,14 @@ export default function SlotScreen() {
   const [paytable, setPaytable] = useState(false);
   const [win, setWin] = useState<{ tier: Tier; payout: number; bet: number; id: number } | null>(null);
   const reels = useRef<ReelsHandle>(null);
-  const scroll = useRef<ScrollView>(null);
   const spinSound = useRef<ReturnType<typeof loop> | null>(null);
   const fx = useRef<EffectsHandle>(null);
   const { style: shakeStyle, shake } = useShake();
   const initialStops = useMemo(() => neutralStops(), []);
-  const highlight = useMemo(() => (shown && phase.kind !== 'spinning' ? winningCells(shown) : new Set<string>()), [shown, phase.kind]);
-  const reelsWidth = width - 32;
+  const bet = BETS[betIndex];
+  const settledSpin = shown && phase.kind !== 'spinning' ? shown : null;
+  const highlight = useMemo(() => (settledSpin ? winningCells(settledSpin) : new Set<string>()), [settledSpin]);
+  const winLines = useMemo(() => settledSpin?.lineWins.map((w) => w.line) ?? [], [settledSpin]);
 
   useEffect(() => {
     closeInterruptedRounds();
@@ -82,11 +84,6 @@ export default function SlotScreen() {
   }, []);
 
   const busy = phase.kind !== 'idle' && phase.kind !== 'done';
-  // Penaltı ve bedava dönüş kartları alt panelin altında kalmasın
-  const card = phase.kind === 'penalty' || phase.kind === 'penaltyResult' || phase.kind === 'freeIntro';
-  useEffect(() => {
-    if (card) setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 50);
-  }, [card, phase.kind]);
   useEffect(() => {
     if (!busy) return;
     const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
@@ -128,7 +125,7 @@ export default function SlotScreen() {
       setPhase({ kind: 'freeIntro' });
       sfx('winBig');
       haptic.success();
-      fx.current?.confetti(width / 2, 220, 60);
+      fx.current?.confetti(width / 2, 260, 70);
     } else finish(r, pick);
   }
 
@@ -147,24 +144,27 @@ export default function SlotScreen() {
     setShown(null);
     setPhase({ kind: 'spinning' });
     sfx('whoosh');
-    haptic.medium();
     rollReels(draw.stops, false, () => {
       setShown(r.data.base);
       if (r.data.base.win > 0) sfx('coin');
       if (r.data.prizes) {
-        setPhase({ kind: 'penalty', prizes: r.data.prizes });
-        sfx('winSmall');
-        haptic.success();
+        setTimeout(() => {
+          setPhase({ kind: 'penalty', prizes: r.data.prizes! });
+          sfx('winSmall');
+          haptic.success();
+        }, 700);
       } else afterBase(r, null);
     });
   }
 
   function shoot(pick: number) {
     if (!round || phase.kind !== 'penalty') return;
-    sfx('whoosh');
-    haptic.heavy();
     setPhase({ kind: 'penaltyResult', prizes: phase.prizes, pick });
-    setTimeout(() => { sfx('cashout'); fx.current?.coins(width / 2, 420, 18, 0.8); }, 250);
+    setTimeout(() => {
+      sfx('cashout');
+      haptic.success();
+      fx.current?.coins(width / 2, 300, 22, 0.9);
+    }, 520);
   }
 
   function playFree(index: number, total: number) {
@@ -178,93 +178,43 @@ export default function SlotScreen() {
       if (amount > 0) sfx('coin');
       const sum = total + amount;
       setFreeWon(sum);
-      if (index + 1 < round.data.free.length) setTimeout(() => playFree(index + 1, sum), 700);
+      if (index + 1 < round.data.free.length) setTimeout(() => playFree(index + 1, sum), 800);
       else finish(round, null);
     });
   }
 
   const lineBet = (bet * TOKEN) / SLOT.lines;
-  const baseWin = shown && round ? shown.win * (round.bet / SLOT.lines) * (phase.kind === 'free' ? SLOT.freeSpinMultiplier : 1) : 0;
+  const spinWin = shown && round ? shown.win * (round.bet / SLOT.lines) * (phase.kind === 'free' ? SLOT.freeSpinMultiplier : 1) : 0;
+  const winValue = result ? result.payout : phase.kind === 'free' || freeWon > 0 ? freeWon : spinWin;
   const net = result ? result.payout - result.bet : null;
-  const resultColor = net === null ? Arena.text : net > 0 ? Arena.neon : net < 0 ? Arena.danger : Arena.textDim;
+  const netColor = net === null ? Arena.textDim : net > 0 ? Arena.gold : net < 0 ? Arena.danger : Arena.textDim;
+  const freeMode = phase.kind === 'free' || phase.kind === 'freeIntro';
+  const marquee: MarqueeMode = phase.kind === 'spinning' ? 'spin' : freeMode ? 'free' : result && result.payout > 0 ? 'win' : 'idle';
+  const showPenalty = phase.kind === 'penalty' || phase.kind === 'penaltyResult';
 
   return (
     <ArenaBackground>
       <Stack.Screen options={{ gestureEnabled: !busy, headerBackVisible: !busy }} />
+      {freeMode ? <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.freeTint]} /> : null}
+      <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.lights]} />
       <Animated.View style={[styles.fill, shakeStyle]}>
-        <ScrollView ref={scroll} contentContainerStyle={styles.content}>
-          <View style={styles.topRow}>
-            <Balance units={balance} />
-            <View style={styles.flex} />
-            <GlassButton label={t('slot.paytable')} disabled={busy} onPress={() => setPaytable(true)} />
-          </View>
+        <ScrollView contentContainerStyle={styles.content}>
+          <Marquee mode={marquee} title={t('slot.machine')}
+            sub={phase.kind === 'free' ? `${t('slot.freeSpin', { n: phase.index + 1, total: SLOT.freeSpins })}` : undefined} />
 
-          {phase.kind === 'free' ? (
-            <Animated.View entering={ZoomIn} style={styles.freeBadge}>
-              <AText display style={styles.freeText}>{t('slot.freeSpin', { n: phase.index + 1, total: SLOT.freeSpins })}</AText>
-            </Animated.View>
-          ) : null}
-
-          <SlotReels ref={reels} width={reelsWidth} initialStops={initialStops} highlight={highlight} />
+          <SlotReels ref={reels} width={width - 32} initialStops={initialStops} highlight={highlight} lines={winLines} />
 
           <View style={styles.status}>
-            {shown && shown.win > 0 && phase.kind !== 'done' && phase.kind !== 'spinning' ? (
-              <AText style={styles.spinWin}>{t('slot.spinWin', { amount: formatTokens(baseWin) })}</AText>
-            ) : null}
-            {freeWon > 0 || phase.kind === 'free' ? (
-              <AText style={styles.freeTotal}>{t('slot.freeSpinsTotal', { amount: formatTokens(freeWon) })}</AText>
-            ) : null}
             {result ? (
-              <AText style={[styles.result, { color: resultColor }]}>
+              <Animated.Text entering={FadeIn} style={[styles.result, { color: netColor }]}>
                 {result.payout > 0
                   ? t('slot.result', { amount: formatTokens(result.payout), net: formatNet(net!) })
                   : t('slot.noWin', { net: formatNet(net!) })}
-              </AText>
-            ) : null}
+              </Animated.Text>
+            ) : (
+              <AText dim style={styles.small}>{t('slot.lineBet', { amount: formatTokens(lineBet) })}</AText>
+            )}
           </View>
-
-          {phase.kind === 'penalty' || phase.kind === 'penaltyResult' ? (
-            <Animated.View entering={FadeIn}>
-              <Glass strong style={styles.card}>
-                <AText display style={styles.cardTitle}>{t('slot.penaltyTitle')}</AText>
-                <AText dim style={styles.cardText}>
-                  {phase.kind === 'penalty'
-                    ? t('slot.penaltyPick', { prizes: PENALTY_PRIZES.join(', ') })
-                    : t('slot.penaltyWon', { amount: formatTokens(phase.prizes[phase.pick] * (round?.bet ?? 0)) })}
-                </AText>
-                <View style={styles.goal}>
-                  {[0, 1, 2].map((corner) => {
-                    const revealed = phase.kind === 'penaltyResult';
-                    const chosen = revealed && phase.pick === corner;
-                    return (
-                      <Pressable key={corner} disabled={revealed} onPress={() => shoot(corner)} accessibilityLabel={['◀', '▲', '▶'][corner]}
-                        style={({ pressed }) => [styles.corner, {
-                          borderColor: chosen ? Arena.gold : Arena.glassBorder,
-                          boxShadow: chosen ? glow(Arena.gold, 18, 0.7) : undefined,
-                          opacity: pressed ? 0.7 : revealed && !chosen ? 0.55 : 1,
-                        }]}>
-                        <AText display style={[styles.cornerText, chosen && { color: Arena.gold }]}>
-                          {revealed ? `${phase.prizes[corner]}×` : ['◀', '▲', '▶'][corner]}
-                        </AText>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-                {phase.kind === 'penaltyResult' ? (
-                  <NeonButton label={t('slot.continue')} onPress={() => round && afterBase(round, phase.pick)} />
-                ) : null}
-              </Glass>
-            </Animated.View>
-          ) : null}
-
-          {phase.kind === 'freeIntro' ? (
-            <Animated.View entering={ZoomIn.springify()}>
-              <Glass strong style={[styles.card, { borderColor: Arena.gold, boxShadow: glow(Arena.gold, 28, 0.45) }]}>
-                <AText display style={[styles.cardTitle, { color: Arena.gold }]}>{t('slot.freeSpinsWon', { count: SLOT.freeSpins })}</AText>
-                <NeonButton tone="gold" pulse label={t('slot.freeSpinsStart')} onPress={() => playFree(0, 0)} />
-              </Glass>
-            </Animated.View>
-          ) : null}
 
           {canRefill(balance) && !busy ? <RefillCard /> : null}
 
@@ -273,16 +223,55 @@ export default function SlotScreen() {
           </AText>
         </ScrollView>
 
-        <Glass strong style={[styles.footer, { marginBottom: Math.max(12, insets.bottom) }]}>
-          <AText dim style={styles.lineBet}>{t('slot.lineBet', { amount: formatTokens(lineBet) })}</AText>
-          <ChipRow values={BETS} value={bet} disabled={busy} onChange={setBet} />
+        <Glass strong style={[styles.panel, { marginBottom: Math.max(12, insets.bottom) }]}>
+          <View style={styles.leds}>
+            <Led label={t('slot.balanceLabel')} value={balance} color={Arena.text} format={formatTokens} />
+            <Led label={t('slot.winLabel')} value={winValue} color={Arena.gold} format={formatTokens} />
+          </View>
           {problem ? <AText style={styles.problem}>{problem}</AText> : null}
-          <NeonButton onPress={spin} disabled={busy} label={t('slot.spin', { amount: formatTokens(bet * TOKEN) })} />
+          <View style={styles.controls}>
+            <RoundButton label="i" disabled={busy} onPress={() => setPaytable(true)} />
+            <View style={styles.betBox}>
+              <RoundButton label="−" disabled={busy || betIndex === 0} onPress={() => setBetIndex(betIndex - 1)} />
+              <View style={styles.betValue}>
+                <AText dim style={styles.betLabel}>{t('slot.betLabel')}</AText>
+                <AText display style={styles.betText}>{formatTokens(bet * TOKEN)}</AText>
+              </View>
+              <RoundButton label="+" disabled={busy || betIndex === BETS.length - 1} onPress={() => setBetIndex(betIndex + 1)} />
+            </View>
+            <SpinButton label={t('slot.spinShort')} onPress={spin} disabled={busy} spinning={phase.kind === 'spinning' || phase.kind === 'free'} />
+          </View>
         </Glass>
       </Animated.View>
+
+      {showPenalty || phase.kind === 'freeIntro' ? (
+        <Animated.View entering={FadeIn} exiting={FadeOut} style={[StyleSheet.absoluteFill, styles.overlay]}>
+          {showPenalty && round ? (
+            <View style={styles.overlayInner}>
+              <PenaltyGame prizes={phase.prizes} pick={phase.kind === 'penaltyResult' ? phase.pick : null} bet={round.bet}
+                format={formatTokens} title={t('slot.penaltyTitle')} goal={t('slot.goal')}
+                hint={phase.kind === 'penalty'
+                  ? t('slot.penaltyPick', { prizes: PENALTY_PRIZES.join(', ') })
+                  : t('slot.penaltyWon', { amount: formatTokens(phase.prizes[phase.pick] * round.bet) })}
+                onShoot={shoot} />
+              {phase.kind === 'penaltyResult' ? (
+                <Animated.View entering={FadeIn.delay(900)}>
+                  <NeonButton tone="gold" label={t('slot.continue')} onPress={() => afterBase(round, phase.pick)} />
+                </Animated.View>
+              ) : null}
+            </View>
+          ) : null}
+          {phase.kind === 'freeIntro' ? (
+            <View style={styles.overlayInner}>
+              <FreeSpinsCard title={t('slot.freeSpinsWon', { count: SLOT.freeSpins })} multiplier={`×${SLOT.freeSpinMultiplier}`}
+                button={t('slot.freeSpinsStart')} onStart={() => playFree(0, 0)} />
+            </View>
+          ) : null}
+        </Animated.View>
+      ) : null}
+
       <Effects ref={fx} />
       <WinBanner win={win} onDone={() => setWin(null)} />
-
       <Paytable visible={paytable} lineBet={lineBet} bet={bet * TOKEN} onClose={() => setPaytable(false)} />
     </ArenaBackground>
   );
@@ -296,14 +285,14 @@ function Paytable({ visible, lineBet, bet, onClose }: { visible: boolean; lineBe
       <ArenaBackground>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.topRow}>
-            <AText display style={[styles.flex, styles.cardTitle]}>{t('slot.paytable')}</AText>
+            <AText display style={[styles.fill, styles.payTitle]}>{t('slot.paytable')}</AText>
             <GlassButton label={t('slot.close')} onPress={onClose} />
           </View>
           <AText dim style={styles.small}>{t('slot.paytableIntro', { lineBet: formatTokens(lineBet) })}</AText>
           {LINE_SYMBOLS.map((s) => (
             <Glass key={s} style={styles.payRow}>
               <Image source={SYMBOL_IMAGES[s]} style={styles.payIcon} />
-              <AText style={styles.flex}>{name(s)}</AText>
+              <AText style={styles.fill}>{name(s)}</AText>
               {PAYTABLE[s].map((m, i) => (
                 <View key={i} style={styles.payCell}>
                   <AText dim style={styles.payCount}>{i + 3}×</AText>
@@ -314,7 +303,7 @@ function Paytable({ visible, lineBet, bet, onClose }: { visible: boolean; lineBe
           ))}
           <Glass style={styles.payRow}>
             <Image source={SYMBOL_IMAGES.scatter} style={styles.payIcon} />
-            <AText style={[styles.flex, styles.small]}>
+            <AText style={[styles.fill, styles.small]}>
               {t('slot.scatterRule', {
                 p3: formatTokens(SCATTER_PAY[3] * bet), p4: formatTokens(SCATTER_PAY[4] * bet), p5: formatTokens(SCATTER_PAY[5] * bet),
                 count: SLOT.freeSpins,
@@ -323,7 +312,7 @@ function Paytable({ visible, lineBet, bet, onClose }: { visible: boolean; lineBe
           </Glass>
           <Glass style={styles.payRow}>
             <Image source={SYMBOL_IMAGES.bonus} style={styles.payIcon} />
-            <AText style={[styles.flex, styles.small]}>
+            <AText style={[styles.fill, styles.small]}>
               {t('slot.bonusRule', { prizes: PENALTY_PRIZES.map((p) => formatTokens(p * bet)).join(', ') })}
             </AText>
           </Glass>
@@ -340,31 +329,27 @@ function Paytable({ visible, lineBet, bet, onClose }: { visible: boolean; lineBe
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  flex: { flex: 1 },
-  content: { padding: 16, gap: 14, paddingBottom: 24 },
-  topRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  freeBadge: {
-    alignSelf: 'center', borderRadius: 999, paddingHorizontal: 16, paddingVertical: 6, borderWidth: 1, borderColor: Arena.gold,
-    backgroundColor: 'rgba(255,200,61,0.12)', boxShadow: glow(Arena.gold, 16, 0.4),
+  content: { padding: 16, gap: 12, paddingBottom: 24 },
+  freeTint: { experimental_backgroundImage: 'radial-gradient(circle at 50% 20%, rgba(178,107,255,0.30) 0%, rgba(178,107,255,0) 70%)' },
+  lights: {
+    experimental_backgroundImage:
+      'radial-gradient(circle at 0% 0%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 35%), radial-gradient(circle at 100% 0%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 35%)',
   },
-  freeText: { color: Arena.gold, fontSize: 14 },
-  status: { minHeight: 56, gap: 4, alignItems: 'center', justifyContent: 'center' },
-  spinWin: { color: Arena.gold, fontWeight: '800', fontSize: 16 },
-  freeTotal: { color: Arena.textDim, fontWeight: '700' },
+  status: { minHeight: 30, alignItems: 'center', justifyContent: 'center' },
   result: { fontFamily: FontFamily.display, fontWeight: '700', fontSize: 16, textAlign: 'center' },
-  card: { padding: 16, gap: 14 },
-  cardTitle: { fontSize: 22, lineHeight: 30, textAlign: 'center' },
-  cardText: { fontSize: 14, lineHeight: 20, textAlign: 'center' },
-  goal: { flexDirection: 'row', gap: 10 },
-  corner: {
-    flex: 1, height: 76, borderWidth: 2, borderRadius: 16, alignItems: 'center', justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
-  },
-  cornerText: { fontSize: 20 },
   small: { fontSize: 13, lineHeight: 18 },
-  footer: { marginHorizontal: 8, padding: 12, gap: 10, borderRadius: 24 },
-  lineBet: { fontSize: 13, textAlign: 'center' },
-  problem: { color: Arena.danger, fontSize: 13, fontWeight: '600' },
+  panel: { marginHorizontal: 8, padding: 12, gap: 12, borderRadius: 26 },
+  leds: { flexDirection: 'row', gap: 8 },
+  controls: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
+  betBox: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  betValue: { alignItems: 'center', minWidth: 64 },
+  betLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 1 },
+  betText: { fontSize: 20, lineHeight: 26, fontVariant: ['tabular-nums'] },
+  problem: { color: Arena.danger, fontSize: 13, fontWeight: '600', textAlign: 'center' },
+  overlay: { backgroundColor: 'rgba(3,6,14,0.72)', justifyContent: 'center', padding: 16 },
+  overlayInner: { gap: 14 },
+  topRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  payTitle: { fontSize: 22, lineHeight: 30 },
   payRow: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 8, borderRadius: 14 },
   payIcon: { width: 40, height: 40 },
   payCell: { alignItems: 'center', minWidth: 46 },

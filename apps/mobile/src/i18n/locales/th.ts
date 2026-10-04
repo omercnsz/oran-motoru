@@ -142,6 +142,12 @@ const th: Messages = {
     tapHint: 'เลือกชิปแล้วแตะโต๊ะ',
   },
   slot: {
+    machine: 'สเตเดียม',
+    balanceLabel: 'ยอดคงเหลือ',
+    betLabel: 'เดิมพัน',
+    winLabel: 'รางวัล',
+    spinShort: 'หมุน',
+    goal: 'โกล!',
     paytable: 'ตารางจ่าย',
     spin: 'หมุน · เดิมพัน %{amount}',
     lineBet: 'เดิมพันต่อไลน์ %{amount} × 10 ไลน์',

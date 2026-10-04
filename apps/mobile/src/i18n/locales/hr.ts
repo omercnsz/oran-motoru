@@ -143,6 +143,12 @@ const hr: Messages = {
     tapHint: 'Odaberi žeton i dodirni stol',
   },
   slot: {
+    machine: 'STADION',
+    balanceLabel: 'STANJE',
+    betLabel: 'ULOG',
+    winLabel: 'DOBITAK',
+    spinShort: 'ZAVRTI',
+    goal: 'GOL!',
     paytable: 'Tablica isplata',
     spin: 'Zavrti · ulog %{amount}',
     lineBet: 'Ulog po liniji %{amount} × 10 linija',

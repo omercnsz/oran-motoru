@@ -143,6 +143,12 @@ const el: Messages = {
     tapHint: 'Διάλεξε μάρκα και πάτησε στο τραπέζι',
   },
   slot: {
+    machine: 'ΓΗΠΕΔΟ',
+    balanceLabel: 'ΥΠΟΛΟΙΠΟ',
+    betLabel: 'ΠΟΝΤΑΡΙΣΜΑ',
+    winLabel: 'ΚΕΡΔΟΣ',
+    spinShort: 'ΓΥΡΙΣΕ',
+    goal: 'ΓΚΟΛ!',
     paytable: 'Πίνακας πληρωμών',
     spin: 'Γύρνα · πόνταρισμα %{amount}',
     lineBet: 'Πόνταρισμα ανά γραμμή %{amount} × 10 γραμμές',

@@ -143,6 +143,12 @@ const it: Messages = {
     tapHint: 'Scegli un gettone e tocca il tavolo',
   },
   slot: {
+    machine: 'STADIO',
+    balanceLabel: 'SALDO',
+    betLabel: 'PUNTATA',
+    winLabel: 'VINCITA',
+    spinShort: 'GIRA',
+    goal: 'GOL!',
     paytable: 'Tabella dei pagamenti',
     spin: 'Gira · puntata %{amount}',
     lineBet: 'Puntata per linea %{amount} × 10 linee',

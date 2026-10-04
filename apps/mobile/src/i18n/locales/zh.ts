@@ -143,6 +143,12 @@ const zh: Messages = {
     tapHint: '选择筹码，然后点按桌面',
   },
   slot: {
+    machine: '体育场',
+    balanceLabel: '余额',
+    betLabel: '投注',
+    winLabel: '赢得',
+    spinShort: '旋转',
+    goal: '进球！',
     paytable: '赔付表',
     spin: '旋转 · 投注 %{amount}',
     lineBet: '每线投注 %{amount} × 10 条线',

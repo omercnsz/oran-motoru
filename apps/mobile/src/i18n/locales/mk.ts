@@ -143,6 +143,12 @@ const mk: Messages = {
     tapHint: 'Избери жетон и допри ја масата',
   },
   slot: {
+    machine: 'СТАДИОН',
+    balanceLabel: 'САЛДО',
+    betLabel: 'ВЛОГ',
+    winLabel: 'ДОБИВКА',
+    spinShort: 'ЗАВРТИ',
+    goal: 'ГОЛ!',
     paytable: 'Табела на исплати',
     spin: 'Заврти · влог %{amount}',
     lineBet: 'Влог по линија %{amount} × 10 линии',

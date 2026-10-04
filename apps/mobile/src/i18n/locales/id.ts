@@ -143,6 +143,12 @@ const id: Messages = {
     tapHint: 'Pilih chip lalu ketuk meja',
   },
   slot: {
+    machine: 'STADION',
+    balanceLabel: 'SALDO',
+    betLabel: 'TARUHAN',
+    winLabel: 'MENANG',
+    spinShort: 'PUTAR',
+    goal: 'GOL!',
     paytable: 'Tabel pembayaran',
     spin: 'Putar · taruhan %{amount}',
     lineBet: 'Taruhan per garis %{amount} × 10 garis',

@@ -143,6 +143,12 @@ const nl: Messages = {
     tapHint: 'Kies een fiche en tik op de tafel',
   },
   slot: {
+    machine: 'STADION',
+    balanceLabel: 'SALDO',
+    betLabel: 'INZET',
+    winLabel: 'WINST',
+    spinShort: 'DRAAI',
+    goal: 'GOAL!',
     paytable: 'Uitbetalingstabel',
     spin: 'Draaien · inzet %{amount}',
     lineBet: 'Lijninzet %{amount} × 10 lijnen',

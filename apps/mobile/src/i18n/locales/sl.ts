@@ -143,6 +143,12 @@ const sl: Messages = {
     tapHint: 'Izberi žeton in tapni mizo',
   },
   slot: {
+    machine: 'STADION',
+    balanceLabel: 'STANJE',
+    betLabel: 'VLOŽEK',
+    winLabel: 'DOBITEK',
+    spinShort: 'ZAVRTI',
+    goal: 'GOL!',
     paytable: 'Tabela izplačil',
     spin: 'Zavrti · vložek %{amount}',
     lineBet: 'Vložek na linijo %{amount} × 10 linij',

@@ -142,6 +142,12 @@ const ja: Messages = {
     tapHint: 'チップを選んでテーブルをタップ',
   },
   slot: {
+    machine: 'スタジアム',
+    balanceLabel: '残高',
+    betLabel: 'ベット',
+    winLabel: '勝ち',
+    spinShort: 'スピン',
+    goal: 'ゴール！',
     paytable: '配当表',
     spin: 'スピン · ベット %{amount}',
     lineBet: 'ライン当たり %{amount} × 10 ライン',

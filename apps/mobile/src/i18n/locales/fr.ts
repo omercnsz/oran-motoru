@@ -143,6 +143,12 @@ const fr: Messages = {
     tapHint: 'Choisis un jeton et touche la table',
   },
   slot: {
+    machine: 'STADE',
+    balanceLabel: 'SOLDE',
+    betLabel: 'MISE',
+    winLabel: 'GAIN',
+    spinShort: 'LANCER',
+    goal: 'BUT !',
     paytable: 'Table des gains',
     spin: 'Lancer · mise %{amount}',
     lineBet: 'Mise par ligne %{amount} × 10 lignes',

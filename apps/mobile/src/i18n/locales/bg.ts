@@ -143,6 +143,12 @@ const bg: Messages = {
     tapHint: 'Избери чип и докосни масата',
   },
   slot: {
+    machine: 'СТАДИОН',
+    balanceLabel: 'БАЛАНС',
+    betLabel: 'ЗАЛОГ',
+    winLabel: 'ПЕЧАЛБА',
+    spinShort: 'ЗАВЪРТИ',
+    goal: 'ГОЛ!',
     paytable: 'Таблица на изплащанията',
     spin: 'Завърти · залог %{amount}',
     lineBet: 'Залог на линия %{amount} × 10 линии',

@@ -186,6 +186,12 @@ const tr: Messages = {
     tapHint: 'Jeton seç, masaya dokun',
   },
   slot: {
+    machine: 'STADYUM',
+    balanceLabel: 'BAKİYE',
+    betLabel: 'BAHİS',
+    winLabel: 'KAZANÇ',
+    spinShort: 'ÇEVİR',
+    goal: 'GOL!',
     paytable: 'Ödeme tablosu',
     spin: 'Çevir · bahis %{amount}',
     lineBet: 'Çizgi bahsi %{amount} × 10 çizgi',

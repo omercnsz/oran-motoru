@@ -143,6 +143,12 @@ const vi: Messages = {
     tapHint: 'Chọn chip rồi chạm vào bàn',
   },
   slot: {
+    machine: 'SÂN VẬN ĐỘNG',
+    balanceLabel: 'SỐ DƯ',
+    betLabel: 'CƯỢC',
+    winLabel: 'THẮNG',
+    spinShort: 'QUAY',
+    goal: 'VÀO!',
     paytable: 'Bảng trả thưởng',
     spin: 'Quay · cược %{amount}',
     lineBet: 'Cược mỗi đường %{amount} × 10 đường',

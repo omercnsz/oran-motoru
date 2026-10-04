@@ -186,6 +186,12 @@ const en = {
     tapHint: 'Choose a chip and tap the table',
   },
   slot: {
+    machine: 'STADIUM',
+    balanceLabel: 'BALANCE',
+    betLabel: 'BET',
+    winLabel: 'WIN',
+    spinShort: 'SPIN',
+    goal: 'GOAL!',
     paytable: 'Paytable',
     spin: 'Spin · bet %{amount}',
     lineBet: 'Line bet %{amount} × 10 lines',

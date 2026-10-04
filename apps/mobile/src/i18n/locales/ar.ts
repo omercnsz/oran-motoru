@@ -187,6 +187,12 @@ const ar: Messages = {
     tapHint: 'اختر رمزًا ثم اضغط على الطاولة',
   },
   slot: {
+    machine: 'الملعب',
+    balanceLabel: 'الرصيد',
+    betLabel: 'الرهان',
+    winLabel: 'الربح',
+    spinShort: 'دوّر',
+    goal: 'هدف!',
     paytable: 'جدول الدفع',
     spin: 'أدر · رهان %{amount}',
     lineBet: 'رهان الخط %{amount} × 10 خطوط',

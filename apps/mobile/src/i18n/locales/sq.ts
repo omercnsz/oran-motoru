@@ -143,6 +143,12 @@ const sq: Messages = {
     tapHint: 'Zgjidh një monedhë dhe prek tavolinën',
   },
   slot: {
+    machine: 'STADIUMI',
+    balanceLabel: 'BILANCI',
+    betLabel: 'BASTI',
+    winLabel: 'FITIMI',
+    spinShort: 'RROTULLO',
+    goal: 'GOL!',
     paytable: 'Tabela e pagesave',
     spin: 'Rrotullo · bast %{amount}',
     lineBet: 'Bast për linjë %{amount} × 10 linja',

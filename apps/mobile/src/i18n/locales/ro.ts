@@ -143,6 +143,12 @@ const ro: Messages = {
     tapHint: 'Alege un jeton și atinge masa',
   },
   slot: {
+    machine: 'STADION',
+    balanceLabel: 'SOLD',
+    betLabel: 'MIZĂ',
+    winLabel: 'CÂȘTIG',
+    spinShort: 'ROTEȘTE',
+    goal: 'GOL!',
     paytable: 'Tabel de plăți',
     spin: 'Învârte · miză %{amount}',
     lineBet: 'Miză pe linie %{amount} × 10 linii',

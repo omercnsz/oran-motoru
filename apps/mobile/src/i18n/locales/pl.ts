@@ -143,6 +143,12 @@ const pl: Messages = {
     tapHint: 'Wybierz żeton i stuknij stół',
   },
   slot: {
+    machine: 'STADION',
+    balanceLabel: 'SALDO',
+    betLabel: 'STAWKA',
+    winLabel: 'WYGRANA',
+    spinShort: 'ZAKRĘĆ',
+    goal: 'GOL!',
     paytable: 'Tabela wypłat',
     spin: 'Zakręć · stawka %{amount}',
     lineBet: 'Stawka na linię %{amount} × 10 linii',

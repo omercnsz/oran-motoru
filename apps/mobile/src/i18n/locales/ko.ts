@@ -142,6 +142,12 @@ const ko: Messages = {
     tapHint: '칩을 고르고 테이블을 누르세요',
   },
   slot: {
+    machine: '스타디움',
+    balanceLabel: '잔액',
+    betLabel: '베팅',
+    winLabel: '당첨',
+    spinShort: '스핀',
+    goal: '골!',
     paytable: '배당표',
     spin: '스핀 · 베팅 %{amount}',
     lineBet: '라인당 베팅 %{amount} × 10 라인',

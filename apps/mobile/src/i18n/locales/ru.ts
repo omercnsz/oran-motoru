@@ -186,6 +186,12 @@ const ru: Messages = {
     tapHint: 'Выберите фишку и нажмите на стол',
   },
   slot: {
+    machine: 'СТАДИОН',
+    balanceLabel: 'БАЛАНС',
+    betLabel: 'СТАВКА',
+    winLabel: 'ВЫИГРЫШ',
+    spinShort: 'КРУТИТЬ',
+    goal: 'ГОЛ!',
     paytable: 'Таблица выплат',
     spin: 'Крутить · ставка %{amount}',
     lineBet: 'Ставка на линию %{amount} × 10 линий',
