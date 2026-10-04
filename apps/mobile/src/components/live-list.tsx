@@ -1,15 +1,16 @@
+// Canlı maçlar listesi (koyu stadyum teması): oynanan maçlarda dakika, skor, kırmızı kart ve canlı 1X2 oranları.
 import type { RatingsFile } from '@oran/contracts';
 import { priceMatch } from '@oran/odds-engine';
 import { Link } from 'expo-router';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
+import { AText, Glass } from '@/components/arena/kit';
 import { OddsButton } from '@/components/odds-button';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { LivePill, SectionHead, TimePill } from '@/components/sport/bits';
+import { TeamBadge } from '@/components/sport/team-badge';
+import { Arena, FontFamily } from '@/constants/arena';
 import { useLive, type LiveRow } from '@/data/live';
 import { useRatings } from '@/data/ratings';
-import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { clockLabel, formatTime, outcomeLabel } from '@/lib/format';
 import { toLiveSelection } from '@/lib/selection';
@@ -28,72 +29,79 @@ export function LiveList({ now, leagueNames }: { now: number; leagueNames: Recor
   const live = useLive(now);
   const ratings = useRatings([...new Set(live.matches.map((m) => m.league))]);
 
-  if (live.schedule.isPending || (live.matches.length > 0 && live.isPending)) return <ActivityIndicator />;
+  if (live.schedule.isPending || (live.matches.length > 0 && live.isPending)) return <ActivityIndicator color={Arena.neon} />;
   if (live.matches.length === 0) {
     const next = live.schedule.data?.matches.find((m) => Date.parse(m.kickoff) > now);
     return (
-      <ThemedText themeColor="textSecondary">
-        {t('live.noneNow')}{next ? ` ${t('live.next', { home: next.home, away: next.away, time: formatTime(next.kickoff), league: leagueNames[next.league] ?? next.league })}` : ''}
-      </ThemedText>
+      <Glass style={styles.empty}>
+        <AText style={styles.emptyText}>{t('live.noneNow')}</AText>
+        {next ? (
+          <AText dim style={styles.small}>
+            {t('live.next', { home: next.home, away: next.away, time: formatTime(next.kickoff), league: leagueNames[next.league] ?? next.league })}
+          </AText>
+        ) : null}
+      </Glass>
     );
   }
-  if (live.error) return <ThemedText themeColor="textSecondary">{t('live.error', { message: live.error.message })}</ThemedText>;
+  if (live.error) return <AText dim>{t('live.error', { message: live.error.message })}</AText>;
 
   const rows = live.data?.rows ?? [];
-  const groups: [string, LiveRow[]][] = [
-    [t('live.inPlay'), rows.filter((r) => r.event.state === 'in')],
-    [t('live.soon'), rows.filter((r) => r.event.state === 'pre')],
-    [t('live.finished'), rows.filter((r) => r.event.state === 'post')],
+  const groups: [string, LiveRow[], string][] = [
+    [t('live.inPlay'), rows.filter((r) => r.event.state === 'in'), '#FF8FA3'],
+    [t('live.soon'), rows.filter((r) => r.event.state === 'pre'), Arena.textDim],
+    [t('live.finished'), rows.filter((r) => r.event.state === 'post'), Arena.textDim],
   ];
   return (
     <>
-      {groups.filter(([, g]) => g.length).map(([title, g]) => (
+      {groups.filter(([, g]) => g.length).map(([title, g, color]) => (
         <View key={title} style={styles.group}>
-          <ThemedText type="smallBold" themeColor="textSecondary">{title}</ThemedText>
+          <SectionHead title={title} color={color} />
           {g.map((r) => (
             <LiveCard key={r.match.espnId} row={r} ratings={ratings.get(r.match.league)} leagueName={leagueNames[r.match.league] ?? r.match.league} />
           ))}
         </View>
       ))}
       {live.data ? (
-        <ThemedText type="small" themeColor="textSecondary">
+        <AText dim style={styles.small}>
           {t(live.data.source === 'cache' ? 'live.sourceCache' : 'live.sourceDirect')} · {t('live.updated', { time: formatTime(new Date(live.data.fetchedAt).toISOString()) })}
-        </ThemedText>
+        </AText>
       ) : null}
     </>
   );
 }
 
 function LiveCard({ row, ratings, leagueName }: { row: LiveRow; ratings: RatingsFile | undefined; leagueName: string }) {
-  const theme = useTheme();
   const { t } = useT();
   const slip = useSlip((s) => s.selections);
   const toggle = useSlip((s) => s.toggle);
   const { match: m, event: e } = row;
   const markets = liveMarkets(row, ratings);
   const oneXTwo = markets?.find((mk) => mk.key === '1X2');
-  const red = (n: number) => (n > 0 ? ` ${'▮'.repeat(n)}` : '');
+  const playing = e.state === 'in';
 
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
+    <Glass style={[styles.card, playing && styles.cardLive]}>
       <Link href={{ pathname: '/canli/[espnId]', params: { espnId: m.espnId } }} asChild>
-        <Pressable accessibilityRole="link" style={styles.header}>
-          <ThemedText type="smallBold" style={{ color: e.state === 'in' ? theme.danger : theme.textSecondary, minWidth: 44 }}>
-            {e.state === 'pre' ? formatTime(m.kickoff) : clockLabel(e)}
-          </ThemedText>
-          <View style={styles.teams}>
-            <View style={styles.teamRow}>
-              <ThemedText type="small">{m.home}<ThemedText type="small" style={{ color: theme.danger }}>{red(e.redCards.home)}</ThemedText></ThemedText>
-              <ThemedText type="smallBold">{e.state === 'pre' ? '' : e.score.home}</ThemedText>
-            </View>
-            <View style={styles.teamRow}>
-              <ThemedText type="small">{m.away}<ThemedText type="small" style={{ color: theme.danger }}>{red(e.redCards.away)}</ThemedText></ThemedText>
-              <ThemedText type="smallBold">{e.state === 'pre' ? '' : e.score.away}</ThemedText>
-            </View>
+        <Pressable accessibilityRole="link" style={styles.body}>
+          <View style={styles.meta}>
+            {playing ? <LivePill label={clockLabel(e)} /> : <TimePill label={e.state === 'pre' ? formatTime(m.kickoff) : clockLabel(e)} muted={e.state === 'post'} />}
+            <AText dim style={styles.league} numberOfLines={1}>{leagueName}</AText>
+            {oneXTwo ? <AText style={styles.more}>{t('live.allLiveBets')}</AText> : null}
           </View>
+          {(['home', 'away'] as const).map((side) => (
+            <View key={side} style={styles.teamRow}>
+              <TeamBadge name={m[side]} style={e[`${side}Style`] ?? m[`${side}Style`]} />
+              <AText style={styles.team} numberOfLines={1}>{m[side]}</AText>
+              {e.redCards[side] > 0 ? (
+                <View style={styles.reds}>
+                  {Array.from({ length: e.redCards[side] }, (_, k) => <View key={k} style={styles.redCard} />)}
+                </View>
+              ) : null}
+              <AText display style={[styles.score, !playing && { color: Arena.textDim }]}>{e.state === 'pre' ? '' : e.score[side]}</AText>
+            </View>
+          ))}
         </Pressable>
       </Link>
-      <ThemedText type="small" themeColor="textSecondary">{leagueName}{oneXTwo ? ` · ${t('live.allLiveBets')}` : ''}</ThemedText>
       {oneXTwo ? (
         <View style={styles.oddsRow}>
           {oneXTwo.outcomes.map((o) => (
@@ -107,15 +115,25 @@ function LiveCard({ row, ratings, leagueName }: { row: LiveRow; ratings: Ratings
           ))}
         </View>
       ) : null}
-    </ThemedView>
+    </Glass>
   );
 }
 
 const styles = StyleSheet.create({
-  group: { gap: Spacing.two },
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
-  header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
-  teams: { flex: 1, gap: Spacing.half },
-  teamRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  oddsRow: { flexDirection: 'row', gap: Spacing.two },
+  group: { gap: 10 },
+  empty: { padding: 16, gap: 6 },
+  emptyText: { fontWeight: '700', fontSize: 15, lineHeight: 21 },
+  small: { fontSize: 13, lineHeight: 18 },
+  card: { padding: 14, gap: 12 },
+  cardLive: { borderColor: 'rgba(255,77,109,0.35)' },
+  body: { gap: 9 },
+  meta: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  league: { flex: 1, fontSize: 12, fontWeight: '600' },
+  more: { color: Arena.textDim, fontSize: 12, fontWeight: '600' },
+  teamRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  team: { flex: 1, fontWeight: '700', fontSize: 15 },
+  reds: { flexDirection: 'row', gap: 3 },
+  redCard: { width: 9, height: 12, borderRadius: 2, backgroundColor: Arena.danger },
+  score: { minWidth: 26, textAlign: 'right', fontSize: 20, fontFamily: FontFamily.display, fontVariant: ['tabular-nums'] },
+  oddsRow: { flexDirection: 'row', gap: 8 },
 });

@@ -1,6 +1,6 @@
 // ESPN'in herkese açık (resmî olarak belgelenmemiş) skor tablosu.
 // Anahtar istemez. Bir istek = bir lig × bir gün (YYYYMMDD) ya da bir ay (YYYYMM).
-import type { ResultsFile, ScheduledMatch } from '@oran/contracts';
+import type { ResultsFile, ScheduledMatch, TeamStyle } from '@oran/contracts';
 import { COMPETITIONS } from '@oran/leagues';
 
 /** Turnuva kodu → ESPN adresi (tek kaynak: @oran/leagues) */
@@ -31,7 +31,10 @@ export interface EspnScoreboard {
       type: { name: string; state: 'pre' | 'in' | 'post'; completed: boolean };
     };
     competitions: {
-      competitors: { homeAway: 'home' | 'away'; score?: string; team: { id: string; displayName: string } }[];
+      competitors: {
+        homeAway: 'home' | 'away'; score?: string;
+        team: { id: string; displayName: string; abbreviation?: string; color?: string; alternateColor?: string };
+      }[];
       details?: { redCard?: boolean; team?: { id: string } }[];
     }[];
   }[];
@@ -55,9 +58,18 @@ export interface EspnEvent {
   /** ESPN takım kimlikleri: dünya genelinde benzersiz (aynı adlı farklı takımlar karışmaz) */
   homeId: string;
   awayId: string;
+  /** Kısaltma ve renkler (arma rozeti); ESPN vermezse yok */
+  homeStyle?: TeamStyle;
+  awayStyle?: TeamStyle;
   score: { home: number; away: number };
   redCards: { home: number; away: number };
 }
+
+const hex = (c?: string) => (c && /^[0-9a-f]{6}$/i.test(c) ? c.toLowerCase() : undefined);
+const teamStyle = (t: { abbreviation?: string; color?: string; alternateColor?: string }): TeamStyle | undefined => {
+  const style = { abbr: t.abbreviation || undefined, color: hex(t.color), alt: hex(t.alternateColor) };
+  return style.abbr || style.color ? style : undefined;
+};
 
 export function parseScoreboard(body: EspnScoreboard): EspnEvent[] {
   return (body.events ?? []).map((e) => {
@@ -87,6 +99,8 @@ export function parseScoreboard(body: EspnScoreboard): EspnEvent[] {
       away: away.team.displayName,
       homeId: home.team.id,
       awayId: away.team.id,
+      homeStyle: teamStyle(home.team),
+      awayStyle: teamStyle(away.team),
       score: { home: Number(home.score ?? 0), away: Number(away.score ?? 0) },
       redCards: reds,
     };

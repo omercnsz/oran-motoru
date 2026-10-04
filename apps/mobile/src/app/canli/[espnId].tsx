@@ -1,13 +1,15 @@
+// Canlı maç: skor, dakika, kırmızı kartlar ve maç sürerken hesaplanan canlı oranlar.
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AText, ArenaBackground, Glass } from '@/components/arena/kit';
 import { liveMarkets } from '@/components/live-list';
 import { OddsButton } from '@/components/odds-button';
-import { Screen } from '@/components/screen';
 import { SlipBar } from '@/components/slip-bar';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { LivePill, TimePill } from '@/components/sport/bits';
+import { MatchHero } from '@/components/sport/match-hero';
+import { Arena, FontFamily } from '@/constants/arena';
 import { useLive } from '@/data/live';
 import { useRatings } from '@/data/ratings';
 import { useNow } from '@/hooks/use-now';
@@ -19,6 +21,7 @@ import { isSelected, useSlip } from '@/state/slip';
 export default function CanliScreen() {
   const { espnId } = useLocalSearchParams<{ espnId: string }>();
   const { t } = useT();
+  const insets = useSafeAreaInsets();
   const now = useNow(30_000);
   const live = useLive(now);
   const row = live.data?.rows.find((r) => r.match.espnId === espnId);
@@ -29,26 +32,37 @@ export default function CanliScreen() {
   if (!row) {
     // Şu an canlı penceresinde maç yoksa canlı sorgusu hiç çalışmaz (hep "bekliyor" görünür); bu yüzden ona bakılmaz
     const loading = live.schedule.isPending || (live.matches.length > 0 && live.isPending);
-    return <View style={styles.center}>{loading ? <ActivityIndicator /> : <ThemedText>{t('live.notInList')}</ThemedText>}</View>;
+    return (
+      <ArenaBackground style={styles.center}>
+        {loading ? <ActivityIndicator color={Arena.neon} /> : <AText>{t('live.notInList')}</AText>}
+      </ArenaBackground>
+    );
   }
   const { match: m, event: e } = row;
   const markets = liveMarkets(row, ratings.get(m.league));
-  const score = `${e.score.home}-${e.score.away}`;
-  const status = e.state === 'in' ? `${clockLabel(e)} · ${score}` : e.state === 'post' ? t('live.finishedScore', { score }) : t('live.notStarted');
+  const score = `${e.score.home} – ${e.score.away}`;
 
   return (
-    <View style={styles.fill}>
+    <ArenaBackground>
       <Stack.Screen options={{ title: `${m.home} – ${m.away}` }} />
-      <Screen title={`${m.home} ${e.state === 'pre' ? '–' : `${e.score.home}-${e.score.away}`} ${m.away}`} subtitle={status} compact>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 110 }]}>
+        <MatchHero home={m.home} away={m.away} homeStyle={e.homeStyle ?? m.homeStyle} awayStyle={e.awayStyle ?? m.awayStyle}
+          center={e.state === 'pre' ? '–' : score}
+          below={e.state === 'in' ? <LivePill label={clockLabel(e)} />
+            : <TimePill muted label={e.state === 'post' ? t('live.finishedScore', { score }) : t('live.notStarted')} />} />
         {e.redCards.home + e.redCards.away > 0 ? (
-          <ThemedText type="small" themeColor="textSecondary">{t('live.redCards', { home: m.home, homeCount: e.redCards.home, away: m.away, awayCount: e.redCards.away })}</ThemedText>
+          <AText dim style={styles.small}>
+            {t('live.redCards', { home: m.home, homeCount: e.redCards.home, away: m.away, awayCount: e.redCards.away })}
+          </AText>
         ) : null}
         {!markets ? (
-          <ThemedText themeColor="textSecondary">{t(e.state === 'in' ? 'live.computing' : 'live.onlyInPlay')}</ThemedText>
+          <Glass style={styles.card}>
+            <AText dim>{t(e.state === 'in' ? 'live.computing' : 'live.onlyInPlay')}</AText>
+          </Glass>
         ) : null}
         {markets?.filter((mk) => mk.outcomes.some((o) => o.odds)).map((mk) => (
-          <ThemedView key={mk.key} type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">{marketName(mk.key)}</ThemedText>
+          <Glass key={mk.key} style={styles.card}>
+            <AText style={styles.market}>{marketName(mk.key)}</AText>
             <View style={styles.grid}>
               {mk.outcomes.map((o) => (
                 <View key={o.key} style={mk.outcomes.length > 4 ? styles.cellSmall : styles.cell}>
@@ -61,19 +75,21 @@ export default function CanliScreen() {
                 </View>
               ))}
             </View>
-          </ThemedView>
+          </Glass>
         ))}
-      </Screen>
+      </ScrollView>
       <SlipBar aboveTabs={false} />
-    </View>
+    </ArenaBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  fill: { flex: 1 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
+  center: { alignItems: 'center', justifyContent: 'center' },
+  content: { padding: 16, gap: 12 },
+  small: { fontSize: 13, lineHeight: 18 },
+  card: { padding: 14, gap: 10 },
+  market: { color: Arena.textDim, fontFamily: FontFamily.display, fontWeight: '700', fontSize: 12, letterSpacing: 0.8, textTransform: 'uppercase' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   cell: { flexGrow: 1, flexBasis: '28%', flexDirection: 'row' },
   cellSmall: { flexBasis: '18%', flexGrow: 1, flexDirection: 'row' },
 });

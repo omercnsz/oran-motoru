@@ -1,19 +1,21 @@
+// Kupon: seçimler, tutar, toplam oran ve olası kazanç. Kuponu yapınca tutar kumbaraya gider (gerçek bahis yok).
 import { parseAmount, potentialReturn, totalOdds, validateSlip, type SlipProblem } from '@oran/betting';
 import { espnDateOf, preMatchProblem, type EspnEvent } from '@oran/live-sources';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Screen } from '@/components/screen';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { AText, ArenaBackground, Glass, GlassButton, NeonButton } from '@/components/arena/kit';
+import { Arena, FontFamily } from '@/constants/arena';
 import { fetchEspnEvents } from '@/data/live';
 import { createCoupon } from '@/db/coupons';
-import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
-import { askPermission, syncReminders } from '@/notifications';
+import { haptic } from '@/lib/haptics';
 import { describeBet, formatShort } from '@/lib/format';
+import { sfx } from '@/lib/sound';
+import { askPermission, syncReminders } from '@/notifications';
 import { staleLiveSelection, useSlip, type SlipSelection } from '@/state/slip';
 
 /** Hızlı tutar düğmeleri (tam birim: 50 TL, 50 €, 50 ¥…) */
@@ -49,8 +51,8 @@ async function placeCoupon(selections: SlipSelection[], stake: number | null, cu
 }
 
 export default function KuponScreen() {
-  const theme = useTheme();
   const { t, money, odds, currency, decimalSeparator, minStake, amountExample } = useT();
+  const insets = useSafeAreaInsets();
   const { selections, remove, clear } = useSlip();
   const [text, setText] = useState('100');
   const [problem, setProblem] = useState<Problem | null>(null);
@@ -71,7 +73,12 @@ export default function KuponScreen() {
     setBusy(true);
     const p = await placeCoupon(selections, stake, currency, minStake);
     setBusy(false);
-    if (p) return setProblem(p);
+    if (p) {
+      haptic.error();
+      return setProblem(p);
+    }
+    sfx('cashout');
+    haptic.success();
     // İlk kuponda bildirim izni sorulur; maç başlamadan 15 dk önce hatırlatma kurulur
     void askPermission().finally(syncReminders);
     clear();
@@ -79,83 +86,102 @@ export default function KuponScreen() {
   }
 
   return (
-    <Screen title={t('slip.title')} subtitle={t('slip.subtitle')} compact>
-      {selections.length === 0 ? <ThemedText themeColor="textSecondary">{t('slip.empty')}</ThemedText> : null}
+    <ArenaBackground>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 24 }]} keyboardShouldPersistTaps="handled">
+        <AText dim style={styles.subtitle}>{t('slip.subtitle')}</AText>
+        {selections.length === 0 ? <Glass style={styles.card}><AText dim>{t('slip.empty')}</AText></Glass> : null}
 
-      {selections.map((s) => {
-        const bet = describeBet(s.marketKey, s.outcomeKey);
-        return (
-          <ThemedView key={s.matchId} type="backgroundElement" style={styles.row}>
-            <View style={styles.rowText}>
-              <ThemedText type="smallBold">{s.home} – {s.away}</ThemedText>
-              <ThemedText type="small" themeColor="textSecondary">
-                {s.live ? `${t('slip.live')} · ` : ''}{bet.market}: {bet.outcome}{s.live ? '' : ` · ${formatShort(s.kickoff)}`}
-              </ThemedText>
-            </View>
-            <ThemedText type="smallBold">{odds(s.odds)}</ThemedText>
-            <Pressable accessibilityLabel={t('slip.remove')} hitSlop={12} onPress={() => remove(s.matchId)}>
-              <ThemedText type="smallBold" themeColor="textSecondary">✕</ThemedText>
-            </Pressable>
-          </ThemedView>
-        );
-      })}
-
-      {selections.length > 0 ? (
-        <>
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">{t('slip.stake')}</ThemedText>
-            <View style={[styles.inputRow, { borderColor: theme.backgroundSelected }]}>
-              <TextInput
-                value={text}
-                onChangeText={(v) => { setText(v); setProblem(null); }}
-                keyboardType="decimal-pad"
-                accessibilityLabel={`${t('slip.stake')} (${currency})`}
-                style={[styles.input, { color: theme.text }]}
-              />
-              <ThemedText themeColor="textSecondary">{currency}</ThemedText>
-            </View>
-            <View style={styles.quick}>
-              {QUICK.map((q) => (
-                <Pressable key={q} onPress={() => { setText(String(q)); setProblem(null); }}
-                  style={[styles.quickBtn, { backgroundColor: theme.backgroundSelected }]}>
-                  <ThemedText type="small">{money(q * minStake)}</ThemedText>
+        {selections.map((s, i) => {
+          const bet = describeBet(s.marketKey, s.outcomeKey);
+          return (
+            <Animated.View key={s.matchId} entering={FadeInDown.delay(i * 40)} exiting={FadeOut.duration(150)}>
+              <Glass style={styles.row}>
+                <View style={[styles.accent, s.live && { backgroundColor: Arena.danger }]} />
+                <View style={styles.rowText}>
+                  <AText style={styles.match} numberOfLines={1}>{s.home} – {s.away}</AText>
+                  <AText dim style={styles.bet} numberOfLines={2}>
+                    {s.live ? `${t('slip.live')} · ` : ''}{bet.market}: <Text style={styles.outcome}>{bet.outcome}</Text>{s.live ? '' : ` · ${formatShort(s.kickoff)}`}
+                  </AText>
+                </View>
+                <View style={styles.oddsPill}><AText style={styles.odds}>{odds(s.odds)}</AText></View>
+                <Pressable accessibilityLabel={t('slip.remove')} hitSlop={12} onPress={() => { haptic.light(); remove(s.matchId); }} style={styles.remove}>
+                  <AText style={styles.removeText}>✕</AText>
                 </Pressable>
-              ))}
-            </View>
-            <View style={styles.summary}>
-              <ThemedText type="small" themeColor="textSecondary">{t('slip.totalOdds')}</ThemedText>
-              <ThemedText type="smallBold">{odds(totalOdds(selections))}</ThemedText>
-            </View>
-            <View style={styles.summary}>
-              <ThemedText type="small" themeColor="textSecondary">{t('slip.potential')}</ThemedText>
-              <ThemedText type="smallBold">{stake && stake >= minStake ? money(potentialReturn(selections, stake)) : '–'}</ThemedText>
-            </View>
-          </ThemedView>
+              </Glass>
+            </Animated.View>
+          );
+        })}
 
-          {problem ? <ThemedText type="small" style={{ color: theme.danger }}>{problemText(problem)}</ThemedText> : null}
+        {selections.length > 0 ? (
+          <>
+            <Glass strong style={styles.card}>
+              <AText style={styles.label}>{t('slip.stake')}</AText>
+              <View style={styles.inputRow}>
+                <TextInput
+                  value={text}
+                  onChangeText={(v) => { setText(v); setProblem(null); }}
+                  keyboardType="decimal-pad"
+                  accessibilityLabel={`${t('slip.stake')} (${currency})`}
+                  style={styles.input}
+                />
+                <AText dim style={styles.currency}>{currency}</AText>
+              </View>
+              <View style={styles.quick}>
+                {QUICK.map((q) => (
+                  <GlassButton key={q} style={styles.flex} label={money(q * minStake)} selected={stake === q * minStake}
+                    onPress={() => { setText(String(q)); setProblem(null); }} />
+                ))}
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.summary}>
+                <AText dim>{t('slip.totalOdds')}</AText>
+                <AText display style={styles.total}>{odds(totalOdds(selections))}</AText>
+              </View>
+              <View style={styles.summary}>
+                <AText dim>{t('slip.potential')}</AText>
+                <AText display style={[styles.total, { color: Arena.gold }]}>
+                  {stake && stake >= minStake ? money(potentialReturn(selections, stake)) : '–'}
+                </AText>
+              </View>
+            </Glass>
 
-          <Pressable accessibilityRole="button" accessibilityState={{ busy }} disabled={busy} onPress={submit}
-            style={({ pressed }) => [styles.submit, { backgroundColor: theme.accent, opacity: pressed || busy ? 0.7 : 1 }]}>
-            {busy ? <ActivityIndicator color={theme.accentText} /> : (
-              <ThemedText type="smallBold" style={{ color: theme.accentText }}>
-                {t('slip.create', { amount: stake ? money(stake) : '–' })}
-              </ThemedText>
+            {problem ? <AText style={styles.problem}>{problemText(problem)}</AText> : null}
+
+            {busy ? <ActivityIndicator color={Arena.neon} /> : (
+              <NeonButton onPress={() => void submit()} sound={null} label={t('slip.create', { amount: stake ? money(stake) : '–' })} />
             )}
-          </Pressable>
-        </>
-      ) : null}
-    </Screen>
+          </>
+        ) : null}
+      </ScrollView>
+    </ArenaBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three, borderRadius: Spacing.three, padding: Spacing.three },
-  rowText: { flex: 1, gap: Spacing.half },
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
-  inputRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: Spacing.two, paddingHorizontal: Spacing.three },
-  input: { flex: 1, fontSize: 24, fontWeight: '600', paddingVertical: Spacing.two, textAlign: 'left' },
-  quick: { flexDirection: 'row', gap: Spacing.two },
-  quickBtn: { flex: 1, alignItems: 'center', paddingVertical: Spacing.two, borderRadius: Spacing.two },
-  summary: { flexDirection: 'row', justifyContent: 'space-between' },
-  submit: { alignItems: 'center', paddingVertical: Spacing.three, borderRadius: Spacing.three },
+  flex: { flex: 1 },
+  content: { padding: 16, gap: 12 },
+  subtitle: { fontSize: 14, lineHeight: 20 },
+  card: { padding: 16, gap: 12 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12 },
+  accent: { width: 4, alignSelf: 'stretch', borderRadius: 2, backgroundColor: Arena.neon },
+  rowText: { flex: 1, gap: 2 },
+  match: { fontWeight: '800', fontSize: 14 },
+  bet: { fontSize: 13, lineHeight: 18 },
+  outcome: { color: Arena.neon, fontWeight: '800' },
+  oddsPill: { borderRadius: 10, paddingHorizontal: 9, paddingVertical: 5, backgroundColor: 'rgba(43,255,168,0.12)', borderWidth: 1, borderColor: 'rgba(43,255,168,0.4)' },
+  odds: { color: Arena.neon, fontWeight: '800', fontSize: 14, fontVariant: ['tabular-nums'] },
+  remove: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: Arena.glass },
+  removeText: { color: Arena.textDim, fontWeight: '800', fontSize: 13 },
+  label: { fontWeight: '800', fontSize: 14 },
+  inputRow: {
+    flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: Arena.glassBorder, borderRadius: 14, paddingHorizontal: 14,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
+  input: { flex: 1, fontSize: 26, fontFamily: FontFamily.display, fontWeight: '700', paddingVertical: 10, color: Arena.text, textAlign: 'left' },
+  currency: { fontWeight: '800' },
+  quick: { flexDirection: 'row', gap: 8 },
+  divider: { height: 1, backgroundColor: Arena.glassBorder },
+  summary: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  total: { fontSize: 18, fontVariant: ['tabular-nums'] },
+  problem: { color: Arena.danger, fontSize: 13, fontWeight: '600' },
 });

@@ -4,15 +4,15 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
+import { AText, ArenaBackground, Glass } from '@/components/arena/kit';
 import { ErrorCard } from '@/components/error-card';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { SectionHead } from '@/components/sport/bits';
+import { Arena, FontFamily } from '@/constants/arena';
 import { useLeagueIndex } from '@/data/api';
 import { useSchedule } from '@/data/live';
 import { useNow } from '@/hooks/use-now';
-import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
+import { haptic } from '@/lib/haptics';
 import { dayKey, formatShort, formatTime } from '@/lib/format';
 import { continentName, fold, leagueInfo, type LeagueInfo } from '@/lib/leagues';
 import { useLeagues } from '@/state/leagues';
@@ -21,7 +21,6 @@ interface Section { key: string; title: string; rows: LeagueInfo[] }
 
 export default function LiglerScreen() {
   const { t, language, regionCode } = useT();
-  const theme = useTheme();
   const { selected } = useLocalSearchParams<{ selected?: string }>();
   const index = useLeagueIndex();
   const schedule = useSchedule();
@@ -69,19 +68,20 @@ export default function LiglerScreen() {
   };
 
   const choose = (code: string) => {
+    haptic.select();
     pick(code);
     router.back();
   };
 
   return (
-    <ThemedView style={styles.fill}>
+    <ArenaBackground>
       <View style={styles.searchBar}>
         <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder={t('leagues.search')}
-          placeholderTextColor={theme.textSecondary}
-          style={[styles.search, { backgroundColor: theme.backgroundElement, color: theme.text }]}
+          placeholderTextColor={Arena.textFaint}
+          style={styles.search}
           autoCorrect={false}
           autoCapitalize="none"
           clearButtonMode="while-editing"
@@ -89,29 +89,29 @@ export default function LiglerScreen() {
         />
       </View>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
-        {index.isPending ? <ActivityIndicator /> : null}
+        {index.isPending ? <ActivityIndicator color={Arena.neon} /> : null}
         {index.error ? <ErrorCard message={index.error.message} /> : null}
         {query.trim() && sections[0].rows.length === 0 ? (
-          <ThemedText themeColor="textSecondary">{t('leagues.noResults')}</ThemedText>
+          <AText dim>{t('leagues.noResults')}</AText>
         ) : null}
         {index.data ? sections.map((s) => (s.rows.length === 0 && s.key !== 'favorites' ? null : (
           <View key={s.key} style={styles.section}>
-            {s.title ? <ThemedText type="smallBold" themeColor="textSecondary">{s.title}</ThemedText> : null}
+            {s.title ? <SectionHead title={s.title} color={s.key === 'favorites' ? Arena.gold : Arena.textDim} /> : null}
             {s.rows.length === 0 ? (
-              <ThemedText type="small" themeColor="textSecondary">{t('leagues.favoritesHint')}</ThemedText>
+              <AText dim style={styles.small}>{t('leagues.favoritesHint')}</AText>
             ) : (
-              <ThemedView type="backgroundElement" style={styles.card}>
+              <Glass style={styles.card}>
                 {s.rows.map((l, i) => (
                   <LeagueRow key={l.code} league={l} first={i === 0} selected={l.code === selected}
                     favorite={favorites.includes(l.code)} next={nextLabel(l.code)} hasMatches={next.has(l.code) || !schedule.data}
                     onPress={() => choose(l.code)} />
                 ))}
-              </ThemedView>
+              </Glass>
             )}
           </View>
         ))) : null}
       </ScrollView>
-    </ThemedView>
+    </ArenaBackground>
   );
 }
 
@@ -119,36 +119,42 @@ function LeagueRow({ league, first, selected, favorite, next, hasMatches, onPres
   league: LeagueInfo; first: boolean; selected: boolean; favorite: boolean; next: string; hasMatches: boolean; onPress: () => void;
 }) {
   const { t } = useT();
-  const theme = useTheme();
   const toggleFavorite = useLeagues((s) => s.toggleFavorite);
   return (
     <Pressable accessibilityRole="button" accessibilityState={{ selected }} onPress={onPress}
-      style={({ pressed }) => [styles.row, !first && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.backgroundSelected }, { opacity: pressed ? 0.6 : 1 }]}>
-      <ThemedText style={styles.flag}>{league.flag}</ThemedText>
+      style={({ pressed }) => [styles.row, !first && styles.rowBorder, selected && styles.rowSelected, { opacity: pressed ? 0.6 : 1 }]}>
+      <AText style={styles.flag}>{league.flag}</AText>
       <View style={styles.rowText}>
-        <ThemedText type={selected ? 'smallBold' : 'small'} style={selected ? { color: theme.accent } : undefined}
-          themeColor={hasMatches ? 'text' : 'textSecondary'}>{league.name}</ThemedText>
-        <ThemedText type="small" themeColor="textSecondary">{league.country}</ThemedText>
+        <AText style={[styles.name, selected && { color: Arena.neon }, !hasMatches && { color: Arena.textDim }]} numberOfLines={1}>{league.name}</AText>
+        <AText dim style={styles.country} numberOfLines={1}>{league.country}</AText>
       </View>
-      <ThemedText type="small" themeColor="textSecondary">{next}</ThemedText>
+      <AText style={[styles.next, hasMatches && next ? { color: Arena.cyan } : { color: Arena.textFaint }]}>{next}</AText>
       <Pressable accessibilityRole="button" accessibilityLabel={t(favorite ? 'leagues.removeFavorite' : 'leagues.addFavorite')}
-        accessibilityState={{ selected: favorite }} hitSlop={12} onPress={() => toggleFavorite(league.code)} style={styles.star}>
-        <ThemedText style={[styles.starText, { color: favorite ? theme.accent : theme.textSecondary }]}>{favorite ? '★' : '☆'}</ThemedText>
+        accessibilityState={{ selected: favorite }} hitSlop={12} onPress={() => { haptic.light(); toggleFavorite(league.code); }} style={styles.star}>
+        <AText style={[styles.starText, { color: favorite ? Arena.gold : Arena.textFaint }]}>{favorite ? '★' : '☆'}</AText>
       </Pressable>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  fill: { flex: 1 },
-  searchBar: { paddingHorizontal: Spacing.three, paddingTop: Spacing.three, paddingBottom: Spacing.two },
-  search: { borderRadius: Spacing.three, paddingHorizontal: Spacing.three, paddingVertical: Spacing.two, fontSize: 16, minHeight: 44, textAlign: 'left' },
-  content: { padding: Spacing.three, paddingTop: Spacing.one, gap: Spacing.four, paddingBottom: Spacing.six * 2 },
-  section: { gap: Spacing.two },
-  card: { borderRadius: Spacing.three, paddingHorizontal: Spacing.three },
-  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two, minHeight: 56, paddingVertical: Spacing.two },
+  searchBar: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
+  search: {
+    borderRadius: 16, paddingHorizontal: 16, paddingVertical: 10, fontSize: 16, minHeight: 46, textAlign: 'left',
+    backgroundColor: 'rgba(0,0,0,0.35)', borderWidth: 1, borderColor: Arena.glassBorder, color: Arena.text, fontFamily: FontFamily.ui,
+  },
+  content: { padding: 16, paddingTop: 4, gap: 18, paddingBottom: 128 },
+  section: { gap: 10 },
+  small: { fontSize: 13, lineHeight: 18 },
+  card: { paddingHorizontal: 12 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 58, paddingVertical: 8 },
+  rowBorder: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Arena.glassBorder },
+  rowSelected: { backgroundColor: 'rgba(43,255,168,0.08)', marginHorizontal: -12, paddingHorizontal: 12 },
   flag: { fontSize: 22, lineHeight: 28 },
   rowText: { flex: 1 },
-  star: { paddingHorizontal: Spacing.one },
+  name: { fontWeight: '700', fontSize: 15 },
+  country: { fontSize: 12 },
+  next: { fontSize: 12, fontWeight: '700' },
+  star: { paddingHorizontal: 4 },
   starText: { fontSize: 22, lineHeight: 28 },
 });

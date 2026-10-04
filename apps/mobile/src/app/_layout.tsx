@@ -35,10 +35,10 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="mac/[id]" options={{ title: t('nav.match'), headerBackTitle: t('nav.back') }} />
-            <Stack.Screen name="canli/[espnId]" options={{ title: t('nav.live'), headerBackTitle: t('nav.back') }} />
-            <Stack.Screen name="ligler" options={{ title: t('leagues.title'), presentation: 'modal' }} />
-            <Stack.Screen name="kupon" options={{ title: t('nav.coupon'), presentation: 'modal' }} />
+            <Stack.Screen name="mac/[id]" options={{ ...arenaHeader, title: t('nav.match'), headerBackButtonDisplayMode: 'minimal' }} />
+            <Stack.Screen name="canli/[espnId]" options={{ ...arenaHeader, title: t('nav.live'), headerBackButtonDisplayMode: 'minimal' }} />
+            <Stack.Screen name="ligler" options={{ ...arenaHeader, title: t('leagues.title'), presentation: 'modal' }} />
+            <Stack.Screen name="kupon" options={{ ...arenaHeader, title: t('nav.coupon'), presentation: 'modal' }} />
             <Stack.Screen name="crash" options={{ ...arenaHeader, title: t('games.crash'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="rulet" options={{ ...arenaHeader, title: t('games.roulette'), headerBackTitle: t('tabs.games') }} />
             <Stack.Screen name="slot" options={{ ...arenaHeader, title: t('games.slot'), headerBackTitle: t('tabs.games') }} />

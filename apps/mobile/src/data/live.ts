@@ -10,7 +10,7 @@ import { fetchJson } from '@/data/api';
 
 export interface LiveRow {
   match: ScheduledMatch;
-  event: Pick<EspnEvent, 'state' | 'status' | 'minute' | 'clock' | 'score' | 'redCards' | 'fullTime'>;
+  event: Pick<EspnEvent, 'state' | 'status' | 'minute' | 'clock' | 'score' | 'redCards' | 'fullTime' | 'homeStyle' | 'awayStyle'>;
 }
 
 export interface LiveData {

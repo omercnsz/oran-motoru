@@ -1,20 +1,22 @@
 import { StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { AText, Glass } from '@/components/arena/kit';
+import { Arena } from '@/constants/arena';
 import { useT } from '@/i18n';
 
+/** Veri alınamadı kartı (koyu stadyum teması) */
 export function ErrorCard({ message }: { message: string }) {
   const { t } = useT();
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="smallBold">{t('common.dataError')}</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary">{message}</ThemedText>
-    </ThemedView>
+    <Glass style={styles.card}>
+      <AText style={styles.title}>{t('common.dataError')}</AText>
+      <AText dim style={styles.message}>{message}</AText>
+    </Glass>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
+  card: { padding: 16, gap: 6, borderColor: 'rgba(255,77,109,0.35)' },
+  title: { fontWeight: '800', color: Arena.danger },
+  message: { fontSize: 13, lineHeight: 18 },
 });

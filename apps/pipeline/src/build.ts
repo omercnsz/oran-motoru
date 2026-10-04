@@ -81,7 +81,9 @@ for (const comp of COMPETITIONS) {
     if (t < now.getTime() - 2 * DAY) continue;
     const date = utcToUkDate(e.kickoff);
     const id = `${comp.code}-${e.espnId}`;
-    schedule.push({ league: comp.code, id, espnId: e.espnId, home: e.home, away: e.away, date, kickoff: e.kickoff });
+    schedule.push({
+      league: comp.code, id, espnId: e.espnId, home: e.home, away: e.away, homeStyle: e.homeStyle, awayStyle: e.awayStyle, date, kickoff: e.kickoff,
+    });
     if (e.state !== 'pre' || t <= now.getTime()) continue;
     if ((matchCount.get(e.homeId) ?? 0) < MIN_MATCHES || (matchCount.get(e.awayId) ?? 0) < MIN_MATCHES) {
       skipped++;
@@ -89,7 +91,7 @@ for (const comp of COMPETITIONS) {
     }
     const priced = priceMatch(model, e.homeId, e.awayId);
     odds.push({
-      id, espnId: e.espnId, date, kickoff: e.kickoff, home: e.home, away: e.away,
+      id, espnId: e.espnId, date, kickoff: e.kickoff, home: e.home, away: e.away, homeStyle: e.homeStyle, awayStyle: e.awayStyle,
       xg: { home: round(priced.xg.home, 2), away: round(priced.xg.away, 2) },
       markets: Object.fromEntries(priced.markets.map((mk) => [mk.key, Object.fromEntries(mk.outcomes.map((o) => [o.key, o.odds]))])),
     });

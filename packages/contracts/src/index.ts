@@ -21,6 +21,9 @@ export interface OddsFile {
   matches: UpcomingMatch[];
 }
 
+/** Takımın ESPN kısaltması ve renkleri (altıgen, # olmadan): arma rozeti için. Yoksa uygulama addan üretir. */
+export interface TeamStyle { abbr?: string; color?: string; alt?: string }
+
 export interface UpcomingMatch {
   id: string;
   /** ESPN maç kimliği (canlı skor ve hızlı sonuç için) */
@@ -31,6 +34,8 @@ export interface UpcomingMatch {
   kickoff: string;
   home: string;
   away: string;
+  homeStyle?: TeamStyle;
+  awayStyle?: TeamStyle;
   xg: Score;
   /** market → sonuç → oran (null = kapalı). Örn. markets['1X2']['1'] */
   markets: Record<string, Record<string, number | null>>;
@@ -50,6 +55,8 @@ export interface ScheduledMatch {
   /** Bizim veri setimizdeki adlar */
   home: string;
   away: string;
+  homeStyle?: TeamStyle;
+  awayStyle?: TeamStyle;
   /** İngiltere takvim tarihi (sonuç eşleştirme anahtarı) */
   date: string;
   kickoff: string;

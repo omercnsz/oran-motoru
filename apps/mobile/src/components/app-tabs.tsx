@@ -1,7 +1,5 @@
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
-import { useColorScheme } from 'react-native';
-
-import { Colors } from '@/constants/theme';
+import { Arena } from '@/constants/arena';
 import { useT } from '@/i18n';
 
 // Ana sekmeler. İkonlar: iOS'ta SF Symbols, Android'de Material ikonları.
@@ -12,16 +10,16 @@ const TABS = [
   { name: 'kumbara', label: 'tabs.savings', sf: 'banknote', md: 'savings' },
 ] as const;
 
+// Sekme çubuğu koyu stadyum temasında (maçlar, kuponlar ve oyunlar koyu)
 export default function AppTabs() {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
   const { t } = useT();
 
   return (
     <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}>
+      backgroundColor={Arena.bgBottom}
+      indicatorColor="rgba(43,255,168,0.16)"
+      iconColor={{ default: Arena.textDim, selected: Arena.neon }}
+      labelStyle={{ default: { color: Arena.textDim }, selected: { color: Arena.neon } }}>
       {TABS.map((tab) => (
         <NativeTabs.Trigger key={tab.name} name={tab.name}>
           <NativeTabs.Trigger.Label>{t(tab.label)}</NativeTabs.Trigger.Label>
