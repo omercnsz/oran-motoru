@@ -150,6 +150,21 @@ export function ChipRow({ values, value, onChange, disabled }: { values: number[
   );
 }
 
+/** Masadaki bahis işareti: küçük fiş, rengi tutara göre */
+export function ChipMark({ units, size = 22 }: { units: number; size?: number }) {
+  const tokens = units / TOKEN;
+  const c = CHIP_COLORS[tokens >= 500 ? 500 : tokens >= 100 ? 100 : tokens >= 50 ? 50 : 10];
+  return (
+    <View style={{
+      minWidth: size, height: size, borderRadius: size / 2, paddingHorizontal: 4, backgroundColor: c.face, borderWidth: 2,
+      borderColor: c.edge === '#C9A227' ? c.edge : '#ffffffcc', borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center',
+      boxShadow: '0px 2px 4px rgba(0,0,0,0.5)',
+    }}>
+      <Text numberOfLines={1} style={{ color: c.text, fontFamily: FontFamily.ui, fontWeight: '800', fontSize: size * 0.42 }}>{formatTokens(units)}</Text>
+    </View>
+  );
+}
+
 /** Sayan rakam: değer değişince eskisinden yenisine akar */
 export function useCountUp(target: number, ms = 650) {
   const [shown, setShown] = useState(target);

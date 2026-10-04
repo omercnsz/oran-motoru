@@ -132,6 +132,7 @@ const en = {
     slot: 'Slots',
     balance: 'Tokens: %{amount}',
     play: 'Play',
+    payback: 'Payback %{rtp}',
     crashDesc: 'The multiplier climbs. Cash out before it crashes.',
     rouletteDesc: 'European roulette, single zero. Bet on numbers, colors and more.',
     slotDesc: '5 reels, 10 lines, free spins and a penalty bonus. Football theme.',
@@ -274,6 +275,10 @@ const en = {
   },
   settings: {
     title: 'Settings',
+    feedback: 'Sound and vibration',
+    sound: 'Sound effects',
+    music: 'Music in games',
+    haptics: 'Vibration',
     language: 'Language',
     deviceLanguage: 'Device language',
     currency: 'Currency',

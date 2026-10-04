@@ -133,6 +133,7 @@ const ar: Messages = {
     slot: 'آلات القمار',
     balance: 'الرموز: %{amount}',
     play: 'العب',
+    payback: 'نسبة العائد %{rtp}',
     crashDesc: 'يرتفع المضاعف. اسحب قبل أن ينفجر.',
     rouletteDesc: 'روليت أوروبية بصفر واحد. راهن على الأرقام والألوان وغيرها.',
     slotDesc: '5 بكرات و10 خطوط ودورات مجانية ومكافأة ركلة جزاء. بطابع كرة القدم.',
@@ -275,6 +276,10 @@ const ar: Messages = {
   },
   settings: {
     title: 'الإعدادات',
+    feedback: 'الصوت والاهتزاز',
+    sound: 'المؤثرات الصوتية',
+    music: 'الموسيقى في الألعاب',
+    haptics: 'الاهتزاز',
     language: 'اللغة',
     deviceLanguage: 'لغة الجهاز',
     currency: 'العملة',

@@ -89,6 +89,7 @@ const sl: Messages = {
     slot: 'Igralni avtomati',
     balance: 'Žetoni: %{amount}',
     play: 'Igraj',
+    payback: 'Vračilo %{rtp}',
     crashDesc: 'Množitelj raste. Dvigni, preden poči.',
     rouletteDesc: 'Evropska ruleta, ena ničla. Stavi na številke, barve in drugo.',
     slotDesc: '5 valjev, 10 linij, brezplačni vrtljaji in bonus enajstmetrovka. Nogometna tema.',
@@ -231,6 +232,10 @@ const sl: Messages = {
   },
   settings: {
     title: 'Nastavitve', language: 'Jezik', deviceLanguage: 'Jezik naprave', currency: 'Valuta', automatic: 'Samodejno (%{value})',
+    feedback: 'Zvok in vibriranje',
+    sound: 'Zvočni učinki',
+    music: 'Glasba v igrah',
+    haptics: 'Vibriranje',
     oddsFormat: 'Oblika koeficientov', decimal: 'Decimalna', fractional: 'Ulomek', american: 'Ameriška',
     restartForRtl: 'Znova zaženi aplikacijo, da se spremeni smer besedila.',
     translationNote: 'Prevodi razen angleškega in turškega so nastali s pomočjo strojnega prevajanja in čakajo na pregled naravnih govorcev.',

@@ -89,6 +89,7 @@ const sq: Messages = {
     slot: 'Lojëra me makineri',
     balance: 'Monedhat: %{amount}',
     play: 'Luaj',
+    payback: 'Kthimi %{rtp}',
     crashDesc: 'Shumëzuesi rritet. Tërhiqu para se të shpërthejë.',
     rouletteDesc: 'Ruletë europiane, një zero. Vër bast te numrat, ngjyrat e më shumë.',
     slotDesc: '5 rrotulla, 10 linja, rrotullime falas dhe bonus penallti. Temë futbolli.',
@@ -231,6 +232,10 @@ const sq: Messages = {
   },
   settings: {
     title: 'Cilësimet', language: 'Gjuha', deviceLanguage: 'Gjuha e pajisjes', currency: 'Monedha', automatic: 'Automatik (%{value})',
+    feedback: 'Zëri dhe dridhja',
+    sound: 'Efektet zanore',
+    music: 'Muzika në lojëra',
+    haptics: 'Dridhja',
     oddsFormat: 'Formati i koeficientëve', decimal: 'Dhjetor', fractional: 'Thyesor', american: 'Amerikan',
     restartForRtl: 'Rinise aplikacionin për të ndryshuar drejtimin e tekstit.',
     translationNote: 'Përkthimet përveç anglishtes dhe turqishtes u bënë me ndihmën e përkthimit automatik dhe presin kontrollin e folësve amtarë.',

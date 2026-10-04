@@ -88,6 +88,7 @@ const ja: Messages = {
     slot: 'スロット',
     balance: 'チップ：%{amount}',
     play: 'プレイ',
+    payback: '還元率 %{rtp}',
     crashDesc: '倍率が上がっていきます。クラッシュする前にキャッシュアウトしましょう。',
     rouletteDesc: 'ヨーロピアンルーレット（シングルゼロ）。数字や色などに賭けられます。',
     slotDesc: '5リール、10ライン、フリースピンとPK ボーナス。サッカーテーマ。',
@@ -230,6 +231,10 @@ const ja: Messages = {
   },
   settings: {
     title: '設定', language: '言語', deviceLanguage: '端末の言語', currency: '通貨', automatic: '自動（%{value}）',
+    feedback: 'サウンドと振動',
+    sound: '効果音',
+    music: 'ゲーム中の音楽',
+    haptics: '振動',
     oddsFormat: 'オッズの表示形式', decimal: '小数', fractional: '分数', american: 'アメリカ式',
     restartForRtl: '文字の方向を変えるにはアプリを再起動してください。',
     translationNote: '英語とトルコ語以外の翻訳は機械翻訳の助けを借りて作成されており、ネイティブスピーカーの確認待ちです。',

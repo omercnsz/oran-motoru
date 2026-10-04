@@ -1,79 +1,118 @@
 // Oyunlar: sadece jetonla. Jeton satılmaz, paraya çevrilmez; bitince ödüllü reklamla dolar.
-// Her oyunun yanında oyuncunun kendi sonucu ve oyunun gerçek geri dönüş oranı yazar.
+// Her oyunun yanında oyunun gerçek geri dönüş oranı ve oyuncunun kendi sonucu yazar.
 import { BLACKJACK, CRASH, MINES, PLINKO_ROWS, plinkoRtp, ROULETTE, slotMath } from '@oran/games-math';
-import { Link, router, type Href } from 'expo-router';
-import { Pressable, StyleSheet } from 'react-native';
+import { router, type Href } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { GAME_COLORS, GameArt, type GameKey } from '@/components/arena/game-art';
+import { AText, ArenaBackground, Balance, GlassButton, useArena } from '@/components/arena/kit';
 import { RefillCard } from '@/components/refill-card';
-import { Screen } from '@/components/screen';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { Arena, FontFamily } from '@/constants/arena';
+import { BottomTabInset } from '@/constants/theme';
 import { canRefill, type GameReport } from '@/db/games';
 import { useGames } from '@/hooks/use-games';
-import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
-import { formatPercent, formatTokens } from '@/lib/tokens';
+import { haptic } from '@/lib/haptics';
+import { sfx } from '@/lib/sound';
+import { formatNet, formatPercent } from '@/lib/tokens';
 
-const SLOT_EDGE = 1 - slotMath().rtp;
-// Plinko: tabloların en yüksek kasa avantajı (hepsi %3,0–3,2)
-const PLINKO_EDGE = 1 - Math.min(...PLINKO_ROWS.flatMap((r) => [plinkoRtp(r, 'low'), plinkoRtp(r, 'high')]));
+// Plinko ve slot: tabloların en düşük geri dönüşü
+const RTP: Record<GameKey, number> = {
+  crash: 1 - CRASH.houseEdge,
+  roulette: 1 - ROULETTE.houseEdge,
+  slot: slotMath().rtp,
+  mines: 1 - MINES.houseEdge,
+  plinko: Math.min(...PLINKO_ROWS.flatMap((r) => [plinkoRtp(r, 'low'), plinkoRtp(r, 'high')])),
+  blackjack: BLACKJACK.basicStrategyRtp,
+};
+const GAMES: { key: GameKey; title: string; desc: string; href: Href }[] = [
+  { key: 'crash', title: 'games.crash', desc: 'games.crashDesc', href: '/crash' },
+  { key: 'roulette', title: 'games.roulette', desc: 'games.rouletteDesc', href: '/rulet' },
+  { key: 'slot', title: 'games.slot', desc: 'games.slotDesc', href: '/slot' },
+  { key: 'mines', title: 'games.mines', desc: 'games.minesDesc', href: '/mines' },
+  { key: 'plinko', title: 'games.plinko', desc: 'games.plinkoDesc', href: '/plinko' },
+  { key: 'blackjack', title: 'games.blackjack', desc: 'games.blackjackDesc', href: '/blackjack' },
+];
 
 export default function OyunlarScreen() {
   const { t } = useT();
-  const theme = useTheme();
-  const { balance, crash, roulette, slot, mines, plinko, blackjack } = useGames();
+  const games = useGames();
+  useArena();
   return (
-    <Screen title={t('games.title')} subtitle={t('games.subtitle')}>
-      <ThemedText type="smallBold">{t('games.balance', { amount: formatTokens(balance) })}</ThemedText>
-      <Link href="/rapor" asChild>
-        <Pressable accessibilityRole="link" hitSlop={8}>
-          <ThemedText type="smallBold" style={{ color: theme.accent }}>{t('report.open')}</ThemedText>
-        </Pressable>
-      </Link>
-      {canRefill(balance) ? <RefillCard /> : null}
-      <GameCard title={t('games.crash')} description={t('games.crashDesc')} report={crash} houseEdge={CRASH.houseEdge} href="/crash" />
-      <GameCard title={t('games.roulette')} description={t('games.rouletteDesc')} report={roulette} houseEdge={ROULETTE.houseEdge} href="/rulet" />
-      <GameCard title={t('games.slot')} description={t('games.slotDesc')} report={slot} houseEdge={SLOT_EDGE} href="/slot" />
-      <GameCard title={t('games.mines')} description={t('games.minesDesc')} report={mines} houseEdge={MINES.houseEdge} href="/mines" />
-      <GameCard title={t('games.plinko')} description={t('games.plinkoDesc')} report={plinko} houseEdge={PLINKO_EDGE} href="/plinko" />
-      <GameCard title={t('games.blackjack')} description={t('games.blackjackDesc')} report={blackjack} houseEdge={1 - BLACKJACK.basicStrategyRtp} href="/blackjack" />
-    </Screen>
+    <ArenaBackground>
+      <SafeAreaView edges={['top']} style={styles.fill}>
+        <ScrollView contentContainerStyle={styles.content}>
+          <AText display style={styles.title}>{t('games.title')}</AText>
+          <AText dim style={styles.subtitle}>{t('games.subtitle')}</AText>
+          <View style={styles.topRow}>
+            <Balance units={games.balance} />
+            <GlassButton label={t('report.open')} onPress={() => router.push('/rapor')} />
+          </View>
+          {canRefill(games.balance) ? <RefillCard /> : null}
+          {GAMES.map((g, i) => (
+            <Animated.View key={g.key} entering={FadeInDown.delay(i * 60).duration(300)}>
+              <GameCard game={g.key} title={t(g.title)} description={t(g.desc)} report={games[g.key]} href={g.href} />
+            </Animated.View>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    </ArenaBackground>
   );
 }
 
-function GameCard({ title, description, report, houseEdge, href }: {
-  title: string; description: string; report: GameReport; houseEdge: number; href: Href;
+function GameCard({ game, title, description, report, href }: {
+  game: GameKey; title: string; description: string; report: GameReport; href: Href;
 }) {
   const { t } = useT();
-  const theme = useTheme();
+  const color = GAME_COLORS[game];
+  const net = report.returned - report.staked;
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="subtitle" style={styles.gameTitle}>{title}</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary">{description}</ThemedText>
-      <ThemedText type="smallBold">{t('games.report')}</ThemedText>
-      {report.rounds === 0 ? (
-        <ThemedText type="small" themeColor="textSecondary">{t('games.reportEmpty')}</ThemedText>
-      ) : (
-        <>
-          <ThemedText type="small">
-            {t('games.reportLine', { rounds: report.rounds, staked: formatTokens(report.staked), returned: formatTokens(report.returned) })}
-          </ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {t('games.reportRtp', { actual: formatPercent(report.rtp ?? 0), theory: formatPercent(1 - houseEdge) })}
-          </ThemedText>
-        </>
-      )}
-      <Pressable accessibilityRole="button" onPress={() => router.push(href)}
-        style={({ pressed }) => [styles.button, { backgroundColor: theme.accent, opacity: pressed ? 0.7 : 1 }]}>
-        <ThemedText type="smallBold" style={{ color: theme.accentText }}>{t('games.play')}</ThemedText>
-      </Pressable>
-    </ThemedView>
+    <Pressable accessibilityRole="button" accessibilityLabel={title}
+      onPress={() => { sfx('tap'); haptic.light(); router.push(href); }}
+      style={({ pressed }) => [styles.card, { borderColor: `${color}40`, transform: [{ scale: pressed ? 0.98 : 1 }] }]}>
+      <View style={[styles.art, {
+        experimental_backgroundImage: `radial-gradient(circle at 50% 40%, ${color}40 0%, ${color}08 75%)`,
+        borderColor: `${color}55`,
+      }]}>
+        <GameArt game={game} size={76} />
+      </View>
+      <View style={styles.info}>
+        <AText display style={styles.gameTitle} numberOfLines={1}>{title}</AText>
+        <AText dim style={styles.desc} numberOfLines={2}>{description}</AText>
+        <View style={styles.pills}>
+          <View style={[styles.pill, { borderColor: `${color}66` }]}>
+            <AText style={[styles.pillText, { color }]}>{t('games.payback', { rtp: formatPercent(RTP[game]) })}</AText>
+          </View>
+          {report.rounds > 0 ? (
+            <View style={styles.pill}>
+              <AText style={[styles.pillText, { color: net > 0 ? Arena.gold : net < 0 ? Arena.danger : Arena.textDim }]}>
+                {`${report.rounds} · ${formatNet(net)}`}
+              </AText>
+            </View>
+          ) : null}
+        </View>
+      </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
-  gameTitle: { fontSize: 24, lineHeight: 30 },
-  button: { borderRadius: Spacing.three, paddingVertical: Spacing.three, alignItems: 'center', marginTop: Spacing.one },
+  fill: { flex: 1 },
+  content: { padding: 16, gap: 12, paddingBottom: BottomTabInset + 48 },
+  title: { fontSize: 32, lineHeight: 42, marginTop: 8 },
+  subtitle: { fontSize: 14, lineHeight: 20 },
+  topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 4 },
+  card: {
+    flexDirection: 'row', gap: 14, padding: 12, borderRadius: 22, borderWidth: 1, alignItems: 'center',
+    backgroundColor: Arena.glass,
+  },
+  art: { width: 92, height: 92, borderRadius: 18, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  info: { flex: 1, gap: 4 },
+  gameTitle: { fontSize: 18, lineHeight: 24 },
+  desc: { fontSize: 13, lineHeight: 18 },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 2 },
+  pill: { borderRadius: 999, borderWidth: 1, borderColor: Arena.glassBorder, paddingHorizontal: 8, paddingVertical: 2 },
+  pillText: { fontSize: 12, fontWeight: '800', fontFamily: FontFamily.ui, fontVariant: ['tabular-nums'] },
 });

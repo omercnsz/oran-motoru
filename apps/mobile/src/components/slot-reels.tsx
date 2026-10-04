@@ -27,8 +27,8 @@ const STOP_GAP_MS = 260;
 export const spinDuration = (fast: boolean) => (fast ? 0.6 : 1) * (FIRST_STOP_MS + STOP_GAP_MS * (SLOT.reels - 1));
 
 export interface ReelsHandle {
-  /** Makaraları yeni durma noktalarına çevirir; bitince onDone */
-  spin: (stops: number[], fast: boolean, onDone: () => void) => void;
+  /** Makaraları yeni durma noktalarına çevirir; her makara durunca onReelStop, hepsi bitince onDone */
+  spin: (stops: number[], fast: boolean, onDone: () => void, onReelStop?: (reel: number) => void) => void;
 }
 
 interface ReelState { cells: SlotSymbol[]; key: number }
@@ -57,7 +57,7 @@ export const SlotReels = memo(forwardRef<ReelsHandle, {
   }, []);
 
   useImperativeHandle(ref, () => ({
-    spin: (next, fast, onDone) => {
+    spin: (next, fast, onDone, onReelStop) => {
       const k = fast ? 0.6 : 1;
       setReels(REELS.map((strip, i) => ({ cells: path(strip, stops[i], next[i]), key: Date.now() + i })));
       setStops(next);
@@ -69,6 +69,7 @@ export const SlotReels = memo(forwardRef<ReelsHandle, {
           duration: k * (FIRST_STOP_MS + STOP_GAP_MS * i),
           easing: Easing.out(Easing.back(0.6)),
         }, (finished) => {
+          if (finished && onReelStop) scheduleOnRN(onReelStop, i);
           if (finished && last) scheduleOnRN(settle, next, onDone);
         });
       });
@@ -106,10 +107,17 @@ function ReelStrip({ reel, cell, offset, index, highlight }: {
 const GAP = 4;
 const styles = StyleSheet.create({
   frame: {
-    flexDirection: 'row', gap: GAP, padding: GAP, borderRadius: 16, backgroundColor: '#0F1B33',
-    borderWidth: 3, borderColor: '#D8A933', overflow: 'hidden',
+    flexDirection: 'row', gap: GAP, padding: GAP, borderRadius: 18, backgroundColor: '#0A1226',
+    borderWidth: 3, borderColor: '#E8B93C', overflow: 'hidden',
+    boxShadow: '0px 0px 28px rgba(255,200,61,0.45), inset 0px 0px 18px rgba(0,0,0,0.7)',
   },
-  reel: { overflow: 'hidden', backgroundColor: '#18284A', borderRadius: 10 },
+  reel: {
+    overflow: 'hidden', borderRadius: 10, backgroundColor: '#15234A',
+    experimental_backgroundImage: 'linear-gradient(180deg, #0C1530 0%, #1B2D5C 50%, #0C1530 100%)',
+  },
   cell: { alignItems: 'center', justifyContent: 'center' },
-  win: { backgroundColor: 'rgba(255, 210, 77, 0.28)', borderRadius: 10, borderWidth: 2, borderColor: '#FFD24D' },
+  win: {
+    backgroundColor: 'rgba(255, 210, 77, 0.22)', borderRadius: 10, borderWidth: 2, borderColor: '#FFD24D',
+    boxShadow: '0px 0px 14px rgba(255,200,61,0.8)',
+  },
 });

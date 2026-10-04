@@ -132,6 +132,7 @@ const tr: Messages = {
     slot: 'Slot',
     balance: 'Jeton: %{amount}',
     play: 'Oyna',
+    payback: 'Geri dönüş %{rtp}',
     crashDesc: 'Çarpan yükselir. Patlamadan önce çek.',
     rouletteDesc: 'Avrupa ruleti, tek sıfır. Sayılara, renklere ve daha fazlasına bahis yap.',
     slotDesc: '5 makara, 10 çizgi, bedava dönüşler ve penaltı bonusu. Futbol teması.',
@@ -274,6 +275,10 @@ const tr: Messages = {
   },
   settings: {
     title: 'Ayarlar',
+    feedback: 'Ses ve titreşim',
+    sound: 'Ses efektleri',
+    music: 'Oyunlarda müzik',
+    haptics: 'Titreşim',
     language: 'Dil',
     deviceLanguage: 'Cihazın dili',
     currency: 'Para birimi',

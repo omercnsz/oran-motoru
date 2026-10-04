@@ -88,6 +88,7 @@ const ko: Messages = {
     slot: '슬롯',
     balance: '칩: %{amount}',
     play: '플레이',
+    payback: '환수율 %{rtp}',
     crashDesc: '배수가 올라갑니다. 터지기 전에 캐시아웃하세요.',
     rouletteDesc: '유럽식 룰렛, 싱글 제로. 숫자, 색깔 등에 베팅하세요.',
     slotDesc: '릴 5개, 라인 10개, 무료 스핀과 페널티 보너스. 축구 테마.',
@@ -230,6 +231,10 @@ const ko: Messages = {
   },
   settings: {
     title: '설정', language: '언어', deviceLanguage: '기기 언어', currency: '통화', automatic: '자동 (%{value})',
+    feedback: '소리 및 진동',
+    sound: '효과음',
+    music: '게임 음악',
+    haptics: '진동',
     oddsFormat: '배당 표시 형식', decimal: '소수', fractional: '분수', american: '미국식',
     restartForRtl: '글자 방향을 바꾸려면 앱을 다시 시작하세요.',
     translationNote: '영어와 터키어를 제외한 번역은 기계 번역의 도움을 받아 만들었으며 원어민 검토를 기다리고 있습니다.',

@@ -89,6 +89,7 @@ const vi: Messages = {
     slot: 'Máy đánh bạc',
     balance: 'Chip: %{amount}',
     play: 'Chơi',
+    payback: 'Tỷ lệ hoàn %{rtp}',
     crashDesc: 'Hệ số nhân tăng dần. Rút trước khi nó nổ.',
     rouletteDesc: 'Roulette châu Âu, một số 0. Đặt cược vào số, màu và hơn thế.',
     slotDesc: '5 cuộn, 10 đường, vòng quay miễn phí và thưởng phạt đền. Chủ đề bóng đá.',
@@ -231,6 +232,10 @@ const vi: Messages = {
   },
   settings: {
     title: 'Cài đặt', language: 'Ngôn ngữ', deviceLanguage: 'Ngôn ngữ của thiết bị', currency: 'Tiền tệ', automatic: 'Tự động (%{value})',
+    feedback: 'Âm thanh và rung',
+    sound: 'Hiệu ứng âm thanh',
+    music: 'Nhạc trong trò chơi',
+    haptics: 'Rung',
     oddsFormat: 'Định dạng tỷ lệ', decimal: 'Thập phân', fractional: 'Phân số', american: 'Kiểu Mỹ',
     restartForRtl: 'Khởi động lại ứng dụng để đổi hướng chữ.',
     translationNote: 'Các bản dịch ngoài tiếng Anh và tiếng Thổ Nhĩ Kỳ được thực hiện với sự hỗ trợ của dịch máy và đang chờ người bản ngữ kiểm tra.',

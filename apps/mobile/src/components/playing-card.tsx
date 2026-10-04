@@ -15,7 +15,9 @@ export function PlayingCard({ card, hidden }: { card: Card; hidden?: boolean }) 
   if (hidden) {
     return (
       <View style={[styles.card, styles.back]} accessibilityLabel="?">
-        <View style={styles.backInner} />
+        <View style={styles.backInner}>
+          <View style={styles.backMark} />
+        </View>
       </View>
     );
   }
@@ -40,6 +42,13 @@ const styles = StyleSheet.create({
   rank: { fontSize: 17, lineHeight: 19, fontWeight: 800 },
   corner: { fontSize: 13, lineHeight: 15 },
   center: { position: 'absolute', right: 6, bottom: 2, fontSize: 30, lineHeight: 36 },
-  back: { backgroundColor: '#1F4FA8', padding: 5 },
-  backInner: { flex: 1, borderRadius: 3, borderWidth: 2, borderColor: '#ffffff88', backgroundColor: '#2D63C8' },
+  back: {
+    backgroundColor: '#0D1A3A', padding: 4, borderColor: '#2BFFA866',
+    experimental_backgroundImage: 'linear-gradient(135deg, #13265A 0%, #0A1430 100%)',
+  },
+  backInner: {
+    flex: 1, borderRadius: 4, borderWidth: 1.5, borderColor: '#2BFFA8AA', alignItems: 'center', justifyContent: 'center',
+    experimental_backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(43,255,168,0.25) 0%, rgba(43,255,168,0) 70%)',
+  },
+  backMark: { width: 16, height: 16, borderRadius: 3, borderWidth: 2, borderColor: '#2BFFA8', transform: [{ rotate: '45deg' }] },
 });

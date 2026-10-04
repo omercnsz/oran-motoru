@@ -89,6 +89,7 @@ const it: Messages = {
     slot: 'Slot machine',
     balance: 'Gettoni: %{amount}',
     play: 'Gioca',
+    payback: 'Ritorno %{rtp}',
     crashDesc: 'Il moltiplicatore sale. Incassa prima che esploda.',
     rouletteDesc: 'Roulette europea, uno zero. Punta su numeri, colori e altro.',
     slotDesc: '5 rulli, 10 linee, giri gratis e un bonus rigore. Tema calcio.',
@@ -231,6 +232,10 @@ const it: Messages = {
   },
   settings: {
     title: 'Impostazioni', language: 'Lingua', deviceLanguage: 'Lingua del dispositivo', currency: 'Valuta', automatic: 'Automatico (%{value})',
+    feedback: 'Suono e vibrazione',
+    sound: 'Effetti sonori',
+    music: 'Musica nei giochi',
+    haptics: 'Vibrazione',
     oddsFormat: 'Formato quote', decimal: 'Decimale', fractional: 'Frazionario', american: 'Americano',
     restartForRtl: 'Riavvia l’app per cambiare la direzione del testo.',
     translationNote: 'Le traduzioni diverse da inglese e turco sono state fatte con l’aiuto della traduzione automatica e attendono la revisione di madrelingua.',

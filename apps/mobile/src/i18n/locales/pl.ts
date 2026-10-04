@@ -89,6 +89,7 @@ const pl: Messages = {
     slot: 'Automaty',
     balance: 'Żetony: %{amount}',
     play: 'Graj',
+    payback: 'Zwrot %{rtp}',
     crashDesc: 'Mnożnik rośnie. Wypłać, zanim wybuchnie.',
     rouletteDesc: 'Ruletka europejska, jedno zero. Obstawiaj liczby, kolory i więcej.',
     slotDesc: '5 bębnów, 10 linii, darmowe spiny i bonus karny. Motyw piłkarski.',
@@ -231,6 +232,10 @@ const pl: Messages = {
   },
   settings: {
     title: 'Ustawienia', language: 'Język', deviceLanguage: 'Język urządzenia', currency: 'Waluta', automatic: 'Automatycznie (%{value})',
+    feedback: 'Dźwięk i wibracje',
+    sound: 'Efekty dźwiękowe',
+    music: 'Muzyka w grach',
+    haptics: 'Wibracje',
     oddsFormat: 'Format kursów', decimal: 'Dziesiętny', fractional: 'Ułamkowy', american: 'Amerykański',
     restartForRtl: 'Uruchom aplikację ponownie, aby zmienić kierunek tekstu.',
     translationNote: 'Tłumaczenia inne niż angielskie i tureckie powstały z pomocą tłumaczenia maszynowego i czekają na sprawdzenie przez rodzimych użytkowników języka.',

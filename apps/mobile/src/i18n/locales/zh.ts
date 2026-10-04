@@ -89,6 +89,7 @@ const zh: Messages = {
     slot: '老虎机',
     balance: '筹码：%{amount}',
     play: '开始游戏',
+    payback: '返还率 %{rtp}',
     crashDesc: '倍数不断上升。在爆掉之前兑现。',
     rouletteDesc: '欧式轮盘，单零。可以押数字、颜色等。',
     slotDesc: '5 个转轴、10 条线、免费旋转和点球奖励。足球主题。',
@@ -231,6 +232,10 @@ const zh: Messages = {
   },
   settings: {
     title: '设置', language: '语言', deviceLanguage: '设备语言', currency: '货币', automatic: '自动（%{value}）',
+    feedback: '声音和振动',
+    sound: '音效',
+    music: '游戏音乐',
+    haptics: '振动',
     oddsFormat: '赔率格式', decimal: '小数', fractional: '分数', american: '美式',
     restartForRtl: '重新启动应用以更改文字方向。',
     translationNote: '除英语和土耳其语外的翻译借助了机器翻译，正在等待母语人士审校。',

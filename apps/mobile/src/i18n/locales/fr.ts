@@ -89,6 +89,7 @@ const fr: Messages = {
     slot: 'Machines à sous',
     balance: 'Jetons : %{amount}',
     play: 'Jouer',
+    payback: 'Retour %{rtp}',
     crashDesc: "Le multiplicateur grimpe. Encaisse avant qu'il explose.",
     rouletteDesc: 'Roulette européenne, un seul zéro. Mise sur des numéros, des couleurs et plus.',
     slotDesc: '5 rouleaux, 10 lignes, tours gratuits et un bonus penalty. Thème football.',
@@ -231,6 +232,10 @@ const fr: Messages = {
   },
   settings: {
     title: 'Réglages', language: 'Langue', deviceLanguage: 'Langue de l’appareil', currency: 'Devise', automatic: 'Automatique (%{value})',
+    feedback: 'Son et vibration',
+    sound: 'Effets sonores',
+    music: 'Musique dans les jeux',
+    haptics: 'Vibration',
     oddsFormat: 'Format des cotes', decimal: 'Décimal', fractional: 'Fractionnaire', american: 'Américain',
     restartForRtl: 'Redémarre l’application pour changer le sens d’écriture.',
     translationNote: 'Les traductions autres que l’anglais et le turc ont été réalisées avec une aide automatique et attendent la relecture de locuteurs natifs.',

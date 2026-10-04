@@ -8,7 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { BackHandler, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { useDerivedValue, useSharedValue } from 'react-native-reanimated';
 
-import { celebrate, Effects, tierOf, useFlash, WinBanner, type EffectsHandle, type Tier } from '@/components/arena/effects';
+import { celebrate, Effects, nextWinId, tierOf, useFlash, WinBanner, type EffectsHandle, type Tier } from '@/components/arena/effects';
 import { AText, ArenaBackground, Balance, ChipRow, Glass, GlassButton, NeonButton, useArena, useShake } from '@/components/arena/kit';
 import { RefillCard } from '@/components/refill-card';
 import { Arena, FontFamily } from '@/constants/arena';
@@ -130,7 +130,7 @@ export default function CrashScreen() {
       const tier = tierOf(r.bet, payout);
       if (tier) {
         atBoard(width / 2, BOARD_HEIGHT * 0.4, (p) => celebrate(fx.current, tier, p, shake));
-        setWin({ tier, payout, bet: r.bet, id: Date.now() });
+        setWin({ tier, payout, bet: r.bet, id: nextWinId() });
       }
     } else {
       sfx('boom');

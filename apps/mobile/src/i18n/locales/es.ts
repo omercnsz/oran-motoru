@@ -132,6 +132,7 @@ const es: Messages = {
     slot: 'Tragaperras',
     balance: 'Fichas: %{amount}',
     play: 'Jugar',
+    payback: 'Retorno %{rtp}',
     crashDesc: 'El multiplicador sube. Retira antes de que explote.',
     rouletteDesc: 'Ruleta europea, un solo cero. Apuesta a números, colores y más.',
     slotDesc: '5 rodillos, 10 líneas, giros gratis y un bono de penalti. Temática de fútbol.',
@@ -274,6 +275,10 @@ const es: Messages = {
   },
   settings: {
     title: 'Ajustes',
+    feedback: 'Sonido y vibración',
+    sound: 'Efectos de sonido',
+    music: 'Música en los juegos',
+    haptics: 'Vibración',
     language: 'Idioma',
     deviceLanguage: 'Idioma del dispositivo',
     currency: 'Moneda',

@@ -89,6 +89,7 @@ const de: Messages = {
     slot: 'Spielautomaten',
     balance: 'Chips: %{amount}',
     play: 'Spielen',
+    payback: 'Auszahlung %{rtp}',
     crashDesc: 'Der Multiplikator steigt. Zahl dich aus, bevor er crasht.',
     rouletteDesc: 'Europäisches Roulette, eine Null. Setze auf Zahlen, Farben und mehr.',
     slotDesc: '5 Walzen, 10 Linien, Freispiele und ein Elfmeter-Bonus. Fußball-Thema.',
@@ -231,6 +232,10 @@ const de: Messages = {
   },
   settings: {
     title: 'Einstellungen', language: 'Sprache', deviceLanguage: 'Gerätesprache', currency: 'Währung', automatic: 'Automatisch (%{value})',
+    feedback: 'Ton und Vibration',
+    sound: 'Soundeffekte',
+    music: 'Musik in Spielen',
+    haptics: 'Vibration',
     oddsFormat: 'Quotenformat', decimal: 'Dezimal', fractional: 'Bruch', american: 'Amerikanisch',
     restartForRtl: 'Starte die App neu, um die Schreibrichtung zu ändern.',
     translationNote: 'Übersetzungen außer Englisch und Türkisch wurden maschinell unterstützt erstellt und warten auf Prüfung durch Muttersprachler.',

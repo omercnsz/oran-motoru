@@ -158,6 +158,10 @@ export const Effects = forwardRef<EffectsHandle>(function Effects(_, ref) {
 
 export type Tier = 'small' | 'big' | 'mega';
 
+let winSeq = 0;
+/** Kazanç afişini yeniden tetiklemek için sıra numarası */
+export const nextWinId = () => ++winSeq;
+
 /** Kutlama gücü: ödeme / bahis */
 export const tierOf = (bet: number, payout: number): Tier | null =>
   payout <= 0 ? null : payout >= bet * 10 ? 'mega' : payout >= bet * 2.5 ? 'big' : 'small';

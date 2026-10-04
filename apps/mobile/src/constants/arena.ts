@@ -38,6 +38,7 @@ export const glow = (color: string, radius = 22, alpha = 0.55) => {
 /** Oyun fişleri: değerine göre renk */
 export const CHIP_COLORS: Record<number, { face: string; edge: string; text: string }> = {
   10: { face: '#2D6CDF', edge: '#1B3F86', text: '#FFFFFF' },
+  20: { face: '#8B45E8', edge: '#4E1F8F', text: '#FFFFFF' },
   50: { face: '#E2364F', edge: '#8E1A2C', text: '#FFFFFF' },
   100: { face: '#13A86A', edge: '#0A5E3B', text: '#FFFFFF' },
   500: { face: '#1C1C24', edge: '#C9A227', text: '#FFD45C' },

@@ -1,25 +1,27 @@
 // Mines: 5×5 alan, 1–24 mayın. Mayınların yeri tur başında güvenli rastgele sayıyla çekilip kaydedilir; oyuncunun hangi
 // kareyi seçtiği sonucu değiştirmez. Her adımda sıradaki karenin güvenli olma ihtimali ve çarpanı açıkça yazar.
-// Tur bitince bütün alan (mayınlar ve açılmamış güvenli kareler) gösterilir; net sonuç her zaman gösterilir.
+// Tur bitince bütün alan (mayınlar ve açılmamış güvenli kareler) gösterilir; net sonuç her zaman yazar.
 import { MINES, minesMultiplier, minesSurvival, TOKEN } from '@oran/games-math';
 import { Stack } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BackHandler, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { celebrate, Effects, nextWinId, tierOf, useFlash, WinBanner, type EffectsHandle, type Tier } from '@/components/arena/effects';
+import { AText, ArenaBackground, Balance, ChipRow, Glass, GlassButton, NeonButton, useArena, useShake } from '@/components/arena/kit';
 import { RefillCard } from '@/components/refill-card';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { Arena, FontFamily, glow } from '@/constants/arena';
 import { canRefill, cashOutMines, closeInterruptedRounds, revealMinesTile, startMinesRound } from '@/db/games';
 import { useGames } from '@/hooks/use-games';
 import { useRealityCheck } from '@/hooks/use-reality-check';
-import { useTheme } from '@/hooks/use-theme';
 import { localization, useT } from '@/i18n';
+import { haptic } from '@/lib/haptics';
+import { sfx, type Sfx } from '@/lib/sound';
 import { formatMultiplier, formatNet, formatPercent, formatTokens } from '@/lib/tokens';
 
 const BETS = [10, 50, 100, 500];
-const GAP = Spacing.two;
+const GAP = 8;
 // Satır satır: kesirli genişlikte (Android) 5. kare alt satıra kaymasın
 const ROWS = Array.from({ length: 5 }, (_, r) => Array.from({ length: 5 }, (_, c) => r * 5 + c));
 
@@ -30,14 +32,21 @@ type Phase =
 
 export default function MinesScreen() {
   const { t } = useT();
-  const theme = useTheme();
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const { balance } = useGames();
   const reality = useRealityCheck('mines');
+  useArena(['gem1', 'gem2', 'gem3', 'gem4', 'gem5', 'gem6', 'gem7', 'gem8', 'boom', 'cashout', 'winSmall', 'winBig', 'winMega', 'coin']);
   const [bet, setBet] = useState(BETS[2]);
   const [count, setCount] = useState(3);
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
   const [problem, setProblem] = useState<string | null>(null);
+  const [win, setWin] = useState<{ tier: Tier; payout: number; bet: number; id: number } | null>(null);
+  const fx = useRef<EffectsHandle>(null);
+  const root = useRef<View>(null);
+  const grid = useRef<View>(null);
+  const { style: shakeStyle, shake } = useShake();
+  const { style: flashStyle, flash } = useFlash();
 
   useEffect(() => {
     closeInterruptedRounds();
@@ -51,34 +60,65 @@ export default function MinesScreen() {
     return () => sub.remove();
   }, [running]);
 
+  const tile = (width - 32 - 4 * GAP) / 5;
+  /** Karenin efekt katmanındaki merkezi */
+  function atTile(index: number, cb: (p: { x: number; y: number }) => void) {
+    const x = (index % 5) * (tile + GAP) + tile / 2, y = Math.floor(index / 5) * (tile + GAP) + tile / 2;
+    grid.current?.measureInWindow((gx, gy) => root.current?.measureInWindow((rx, ry) => cb({ x: gx - rx + x, y: gy - ry + y })));
+  }
+
   function start() {
     setProblem(null);
+    setWin(null);
     const units = bet * TOKEN;
     if (units > balance) return setProblem(t('crash.noBalance'));
     const now = new Date();
     reality.begin(now);
     const { id } = startMinesRound(units, count, now);
     setPhase({ kind: 'running', id, bet: units, count, revealed: [] });
+    haptic.medium();
   }
 
-  function reveal(tile: number) {
+  function settle(next: Extract<Phase, { kind: 'ended' }>) {
+    setPhase(next);
+    if (next.hit !== null) {
+      sfx('boom');
+      haptic.error();
+      setTimeout(haptic.heavy, 90);
+      shake(1);
+      flash(0.3);
+      atTile(next.hit, (p) => fx.current?.explode(p.x, p.y));
+    } else if (next.payout > 0) {
+      const tier = tierOf(next.bet, next.payout);
+      sfx('cashout');
+      if (tier && next.revealed.length > 0) {
+        celebrate(fx.current, tier, { x: width / 2, y: 240 }, shake);
+        setWin({ tier, payout: next.payout, bet: next.bet, id: nextWinId() });
+      }
+    }
+    reality.check();
+  }
+
+  function reveal(index: number) {
     if (phase.kind !== 'running') return;
-    const r = revealMinesTile(phase.id, tile);
+    const r = revealMinesTile(phase.id, index);
     // Tur başka yerden kapandıysa (ör. ekran yeniden yüklendi) ekran takılı kalmasın
     if (!r) return setPhase({ kind: 'idle' });
-    const revealed = [...phase.revealed, tile];
-    if (r.finished) {
-      setPhase({ kind: 'ended', bet: phase.bet, count: phase.count, revealed, ...r.finished, hit: r.mine ? tile : null });
-      reality.check();
-    } else setPhase({ ...phase, revealed });
+    const revealed = [...phase.revealed, index];
+    if (!r.mine) {
+      sfx(`gem${Math.min(8, r.safe)}` as Sfx);
+      haptic.light();
+      atTile(index, (p) => fx.current?.sparks(p.x, p.y, 14, [Arena.neon, Arena.cyan, '#ffffff']));
+    }
+    if (r.finished) settle({ kind: 'ended', bet: phase.bet, count: phase.count, revealed, ...r.finished, hit: r.mine ? index : null });
+    else setPhase({ ...phase, revealed });
   }
 
   function cashOut() {
     if (phase.kind !== 'running') return;
     const r = cashOutMines(phase.id);
     if (!r) return setPhase({ kind: 'idle' });
-    setPhase({ kind: 'ended', bet: phase.bet, count: phase.count, revealed: phase.revealed, ...r, hit: null });
-    reality.check();
+    settle({ kind: 'ended', bet: phase.bet, count: phase.count, revealed: phase.revealed, ...r, hit: null });
   }
 
   const shownCount = phase.kind === 'idle' ? count : phase.count;
@@ -88,91 +128,86 @@ export default function MinesScreen() {
   const left = MINES.tiles - safe;
   const nextChance = (left - shownCount) / left;
   const hasNext = safe < MINES.tiles - shownCount;
-  const tile = (width - 2 * Spacing.three - 4 * GAP) / 5;
 
   let status: { text: string; color: string } | null = null;
   if (phase.kind === 'ended') {
     const net = phase.payout - phase.bet;
-    if (phase.hit !== null) status = { text: t('mines.hit', { net: formatNet(net) }), color: theme.danger };
-    else if (safe === 0) status = { text: t('mines.refunded'), color: theme.textSecondary };
+    if (phase.hit !== null) status = { text: t('mines.hit', { net: formatNet(net) }), color: Arena.danger };
+    else if (safe === 0) status = { text: t('mines.refunded'), color: Arena.textDim };
     else status = {
       text: `${t('crash.cashedOut', { multiplier: formatMultiplier(current) })} · ${formatNet(net)}`,
-      color: net > 0 ? theme.success : net < 0 ? theme.danger : theme.textSecondary,
+      color: net > 0 ? Arena.gold : net < 0 ? Arena.danger : Arena.textDim,
     };
   }
+  const multiplierColor = safe === 0 ? Arena.textDim : current >= 5 ? Arena.gold : Arena.neon;
 
   return (
-    <ThemedView style={styles.fill}>
+    <ArenaBackground>
       <Stack.Screen options={{ gestureEnabled: !running, headerBackVisible: !running }} />
-      <ScrollView contentContainerStyle={styles.content}>
-        <ThemedText type="smallBold">{t('games.balance', { amount: formatTokens(balance) })}</ThemedText>
-
-        <View style={styles.grid}>
-          {ROWS.map((row, r) => (
-            <View key={r} style={styles.gridRow}>
-              {row.map((i) => <Tile key={i} size={tile} index={i} phase={phase} onPress={() => reveal(i)} />)}
+      <View ref={root} collapsable={false} style={styles.fill}>
+        <Animated.View style={[styles.fill, shakeStyle]}>
+          <ScrollView contentContainerStyle={styles.content}>
+            <View style={styles.topRow}>
+              <Balance units={balance} />
+              <AText display style={[styles.multiplier, { color: multiplierColor, textShadowColor: multiplierColor }]}>
+                {formatMultiplier(current)}
+              </AText>
             </View>
-          ))}
-        </View>
 
-        <View style={styles.status}>
-          {status ? <ThemedText type="smallBold" style={{ color: status.color }}>{status.text}</ThemedText> : (
-            <ThemedText style={[styles.multiplier, { color: safe > 0 ? theme.success : theme.textSecondary }]}>
-              {formatMultiplier(current)}
-            </ThemedText>
-          )}
-          {phase.kind !== 'ended' && hasNext ? (
-            <ThemedText type="small" themeColor="textSecondary">
-              {t('mines.next', { chance: formatPercent(nextChance), multiplier: formatMultiplier(minesMultiplier(shownCount, safe + 1)) })}
-            </ThemedText>
-          ) : null}
-          {phase.kind === 'idle' ? (
-            <ThemedText type="small" themeColor="textSecondary">
+            <View style={styles.head}>
+              {status ? <AText style={[styles.status, { color: status.color }]}>{status.text}</AText> : null}
+              {phase.kind !== 'ended' && hasNext ? (
+                <AText dim style={styles.small}>
+                  {t('mines.next', { chance: formatPercent(nextChance), multiplier: formatMultiplier(minesMultiplier(shownCount, safe + 1)) })}
+                </AText>
+              ) : null}
+            </View>
+
+            <View ref={grid} collapsable={false} style={styles.grid}>
+              {ROWS.map((row, r) => (
+                <View key={r} style={styles.gridRow}>
+                  {row.map((i) => <Tile key={i} size={tile} index={i} phase={phase} onPress={() => reveal(i)} />)}
+                </View>
+              ))}
+              <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.flash, flashStyle]} />
+            </View>
+
+            {canRefill(balance) && !running ? <RefillCard /> : null}
+
+            <AText dim style={styles.small}>
               {t('mines.allSafe', { chance: formatChance(minesSurvival(shownCount, MINES.tiles - shownCount)) })}
-            </ThemedText>
-          ) : null}
-        </View>
+            </AText>
+            <AText dim style={styles.small}>{t('mines.honesty')}</AText>
+            <AText dim style={styles.small}>
+              {t('games.houseEdge', { edge: formatPercent(MINES.houseEdge), rtp: Math.round((1 - MINES.houseEdge) * 100) })}
+            </AText>
+          </ScrollView>
 
-        {canRefill(balance) && !running ? <RefillCard /> : null}
-
-        <ThemedText type="small" themeColor="textSecondary">{t('mines.honesty')}</ThemedText>
-        <ThemedText type="small" themeColor="textSecondary">
-          {t('games.houseEdge', { edge: formatPercent(MINES.houseEdge), rtp: Math.round((1 - MINES.houseEdge) * 100) })}
-        </ThemedText>
-      </ScrollView>
-
-      <ThemedView type="backgroundElement" style={styles.footer}>
-        <View style={styles.row}>
-          <ThemedText type="smallBold" style={styles.flex}>{t('mines.count')}</ThemedText>
-          <Stepper value={count} min={MINES.minMines} max={MINES.maxMines} disabled={running} onChange={setCount} />
-        </View>
-        <View style={styles.row}>
-          {BETS.map((b) => (
-            <Pressable key={b} accessibilityRole="radio" accessibilityState={{ checked: bet === b }} disabled={running}
-              onPress={() => setBet(b)}
-              style={[styles.chip, { borderColor: bet === b ? theme.accent : theme.backgroundSelected, backgroundColor: theme.background, opacity: running ? 0.5 : 1 }]}>
-              <ThemedText type="smallBold" style={{ color: bet === b ? theme.accent : theme.text }}>{formatTokens(b * TOKEN)}</ThemedText>
-            </Pressable>
-          ))}
-        </View>
-        {problem ? <ThemedText type="small" style={{ color: theme.danger }}>{problem}</ThemedText> : null}
-        {phase.kind === 'running' ? (
-          <Pressable accessibilityRole="button" onPress={cashOut}
-            style={({ pressed }) => [styles.button, { backgroundColor: safe > 0 ? theme.success : theme.textSecondary, opacity: pressed ? 0.7 : 1 }]}>
-            <ThemedText type="smallBold" style={styles.buttonText}>
-              {safe > 0
-                ? t('crash.cashout', { amount: formatNet(Math.round(phase.bet * current) - phase.bet) })
-                : t('mines.cancel')}
-            </ThemedText>
-          </Pressable>
-        ) : (
-          <Pressable accessibilityRole="button" onPress={start}
-            style={({ pressed }) => [styles.button, { backgroundColor: theme.accent, opacity: pressed ? 0.7 : 1 }]}>
-            <ThemedText type="smallBold" style={styles.buttonText}>{t('crash.start', { amount: formatTokens(bet * TOKEN) })}</ThemedText>
-          </Pressable>
-        )}
-      </ThemedView>
-    </ThemedView>
+          <Glass strong style={[styles.footer, { marginBottom: Math.max(12, insets.bottom) }]}>
+            <View style={styles.row}>
+              <AText style={styles.label}>{t('mines.count')}</AText>
+              <GlassButton label="−" disabled={running || count <= MINES.minMines} onPress={() => setCount(count - 1)} />
+              <AText display style={styles.count}>{count}</AText>
+              <GlassButton label="+" disabled={running || count >= MINES.maxMines} onPress={() => setCount(count + 1)} />
+            </View>
+            <ChipRow values={BETS} value={bet} disabled={running} onChange={setBet} />
+            {problem ? <AText style={styles.problem}>{problem}</AText> : null}
+            {phase.kind === 'running' ? (
+              safe > 0 ? (
+                <NeonButton tone="gold" pulse sound={null} onPress={cashOut}
+                  label={t('crash.cashout', { amount: formatNet(Math.round(phase.bet * current) - phase.bet) })} />
+              ) : (
+                <NeonButton tone="glass" onPress={cashOut} label={t('mines.cancel')} />
+              )
+            ) : (
+              <NeonButton onPress={start} label={t('crash.start', { amount: formatTokens(bet * TOKEN) })} />
+            )}
+          </Glass>
+        </Animated.View>
+        <Effects ref={fx} />
+        <WinBanner win={win} onDone={() => setWin(null)} />
+      </View>
+    </ArenaBackground>
   );
 }
 
@@ -181,80 +216,83 @@ const formatChance = (p: number) =>
   p >= 0.01 ? formatPercent(p) : `1 / ${new Intl.NumberFormat(localization().locale).format(Math.round(1 / p))}`;
 
 function Tile({ size, index, phase, onPress }: { size: number; index: number; phase: Phase; onPress: () => void }) {
-  const theme = useTheme();
   const revealed = phase.kind !== 'idle' && phase.revealed.includes(index);
   const ended = phase.kind === 'ended';
   const mine = ended && phase.mines.includes(index);
   const hit = ended && phase.hit === index;
   // Tur bitince açılmamış kareler de soluk gösterilir: alan tamamen ortaya çıkar
   const faded = ended && !revealed;
-  const background = hit ? theme.danger : revealed ? theme.backgroundElement : theme.backgroundSelected;
+  const active = phase.kind === 'running' && !revealed;
   return (
-    <Pressable accessibilityRole="button" disabled={phase.kind !== 'running' || revealed} onPress={onPress}
-      style={({ pressed }) => [styles.tile, { backgroundColor: background, opacity: pressed ? 0.6 : 1 }]}>
+    <Pressable accessibilityRole="button" disabled={!active} onPress={onPress}
+      style={({ pressed }) => [styles.tile, {
+        experimental_backgroundImage: hit
+          ? `linear-gradient(135deg, ${Arena.danger} 0%, ${Arena.dangerDeep} 100%)`
+          : revealed
+            ? 'linear-gradient(135deg, rgba(43,255,168,0.16) 0%, rgba(61,217,255,0.08) 100%)'
+            : active
+              ? 'linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 100%)'
+              : 'linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
+        borderColor: hit ? Arena.danger : revealed ? 'rgba(43,255,168,0.5)' : Arena.glassBorder,
+        boxShadow: hit ? glow(Arena.danger, 22, 0.8) : revealed ? glow(Arena.neon, 14, 0.35) : undefined,
+        transform: [{ scale: pressed ? 0.92 : 1 }],
+      }]}>
       {revealed || ended ? (
-        <Animated.View entering={ZoomIn.duration(160)} style={{ opacity: faded ? 0.35 : 1 }}>
-          {mine ? <Mine size={size * 0.46} color={hit ? '#ffffff' : theme.danger} /> : <Gem size={size * 0.34} color={theme.success} />}
+        <Animated.View entering={ZoomIn.springify().damping(12)} style={{ opacity: faded ? 0.35 : 1 }}>
+          {mine ? <Mine size={size * 0.5} light={hit} /> : <Gem size={size * 0.42} />}
         </Animated.View>
       ) : null}
     </Pressable>
   );
 }
 
-function Gem({ size, color }: { size: number; color: string }) {
-  return <View style={{ width: size, height: size, backgroundColor: color, borderRadius: size * 0.18, transform: [{ rotate: '45deg' }] }} />;
-}
-
-function Mine({ size, color }: { size: number; color: string }) {
-  const spike = { position: 'absolute', backgroundColor: color, borderRadius: 2 } as const;
+function Gem({ size }: { size: number }) {
   return (
-    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-      <View style={[spike, { width: size, height: size * 0.12 }]} />
-      <View style={[spike, { width: size * 0.12, height: size }]} />
-      <View style={[spike, { width: size, height: size * 0.12, transform: [{ rotate: '45deg' }] }]} />
-      <View style={[spike, { width: size, height: size * 0.12, transform: [{ rotate: '-45deg' }] }]} />
-      <View style={{ width: size * 0.66, height: size * 0.66, borderRadius: size, backgroundColor: color }} />
+    <View style={{
+      width: size, height: size, borderRadius: size * 0.16, transform: [{ rotate: '45deg' }],
+      experimental_backgroundImage: `linear-gradient(135deg, #B8FFE4 0%, ${Arena.neon} 45%, ${Arena.cyan} 100%)`,
+      boxShadow: glow(Arena.neon, 14, 0.8), alignItems: 'center', justifyContent: 'center',
+    }}>
+      <View style={{ width: size * 0.42, height: size * 0.42, borderRadius: size * 0.08, backgroundColor: 'rgba(255,255,255,0.55)' }} />
     </View>
   );
 }
 
-function Stepper({ value, min, max, disabled, onChange }: {
-  value: number; min: number; max: number; disabled: boolean; onChange: (v: number) => void;
-}) {
-  const theme = useTheme();
-  const step = (d: number) => onChange(Math.min(max, Math.max(min, value + d)));
-  const button = (d: number, label: string) => (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} disabled={disabled || value + d < min || value + d > max}
-      onPress={() => step(d)} hitSlop={6}
-      style={({ pressed }) => [styles.step, { backgroundColor: theme.background, opacity: disabled || value + d < min || value + d > max ? 0.4 : pressed ? 0.6 : 1 }]}>
-      <ThemedText type="subtitle" style={styles.stepText}>{label}</ThemedText>
-    </Pressable>
-  );
+function Mine({ size, light }: { size: number; light: boolean }) {
+  const color = light ? '#ffffff' : Arena.danger;
+  const spike = { position: 'absolute', backgroundColor: color, borderRadius: 2 } as const;
   return (
-    <View style={styles.stepper}>
-      {button(-1, '−')}
-      <ThemedText type="subtitle" style={styles.stepValue}>{value}</ThemedText>
-      {button(1, '+')}
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={[spike, { width: size, height: size * 0.13 }]} />
+      <View style={[spike, { width: size * 0.13, height: size }]} />
+      <View style={[spike, { width: size, height: size * 0.13, transform: [{ rotate: '45deg' }] }]} />
+      <View style={[spike, { width: size, height: size * 0.13, transform: [{ rotate: '-45deg' }] }]} />
+      <View style={{
+        width: size * 0.68, height: size * 0.68, borderRadius: size, backgroundColor: light ? '#1A0A10' : '#2A0E18',
+        borderWidth: 2, borderColor: color, boxShadow: glow(Arena.danger, 12, 0.7),
+      }} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  flex: { flex: 1 },
-  content: { padding: Spacing.three, gap: Spacing.three, paddingBottom: Spacing.four },
+  content: { padding: 16, gap: 14, paddingBottom: 24 },
+  topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  head: { alignItems: 'center', gap: 2, minHeight: 22, justifyContent: 'center' },
+  multiplier: {
+    fontSize: 32, lineHeight: 42, paddingHorizontal: 14, paddingVertical: 2, marginRight: -14, fontVariant: ['tabular-nums'],
+    textShadowRadius: 16, textShadowOffset: { width: 0, height: 0 },
+  },
+  status: { fontFamily: FontFamily.display, fontWeight: '700', fontSize: 17, textAlign: 'center' },
+  small: { fontSize: 13, lineHeight: 18, textAlign: 'center' },
   grid: { gap: GAP },
   gridRow: { flexDirection: 'row', gap: GAP },
-  tile: { flex: 1, aspectRatio: 1, borderRadius: Spacing.two, alignItems: 'center', justifyContent: 'center' },
-  status: { minHeight: 72, gap: Spacing.one, alignItems: 'center' },
-  multiplier: { fontSize: 32, lineHeight: 40, fontWeight: 800, fontVariant: ['tabular-nums'] },
-  footer: { paddingHorizontal: Spacing.three, paddingTop: Spacing.two, paddingBottom: Spacing.four, gap: Spacing.two },
-  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  chip: { flex: 1, borderWidth: 2, borderRadius: Spacing.four, paddingVertical: Spacing.one, alignItems: 'center' },
-  stepper: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  step: { width: 40, height: 36, borderRadius: Spacing.two, alignItems: 'center', justifyContent: 'center' },
-  stepText: { fontSize: 22, lineHeight: 26 },
-  stepValue: { minWidth: 36, textAlign: 'center', fontSize: 22, lineHeight: 28, fontVariant: ['tabular-nums'] },
-  button: { borderRadius: Spacing.three, paddingVertical: Spacing.three, alignItems: 'center', minHeight: 52, justifyContent: 'center' },
-  buttonText: { color: '#ffffff', fontSize: 17 },
+  tile: { flex: 1, aspectRatio: 1, borderRadius: 14, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  flash: { backgroundColor: Arena.danger, borderRadius: 14 },
+  footer: { marginHorizontal: 8, padding: 12, gap: 10, borderRadius: 24 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  label: { flex: 1, fontWeight: '700' },
+  count: { minWidth: 40, textAlign: 'center', fontSize: 20, fontVariant: ['tabular-nums'] },
+  problem: { color: Arena.danger, fontSize: 13, fontWeight: '600' },
 });

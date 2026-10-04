@@ -1,21 +1,22 @@
 // Plinko tahtası: üstte 3, altta n+2 çivi; cepler alttaki çivilerin arasında. Top, tur başında çekilip kaydedilen yolu
-// birebir izler (her sırada sağa ya da sola). Cepler kayıpsa (1×'in altı) kırmızı, değilse yeşil yazılır.
+// birebir izler (her sırada sağa ya da sola). Bahsin altında ödeyen cepler soğuk, üstünde ödeyenler sıcak renkte.
 import { PLINKO_TABLES, type PlinkoRisk, type PlinkoRows } from '@oran/games-math';
-import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
+import { BlurMask, Canvas, Circle, Group, Path, Skia } from '@shopify/react-native-skia';
 import { forwardRef, memo, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Easing, useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
+import { StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  Easing, useAnimatedStyle, useDerivedValue, useSharedValue, withSequence, withSpring, withTiming,
+} from 'react-native-reanimated';
 
-import { ThemedText } from '@/components/themed-text';
-import { useTheme } from '@/hooks/use-theme';
+import { Arena, FontFamily, glow } from '@/constants/arena';
 import { localization } from '@/i18n';
 
 /** Bir sıradan ötekine düşüş süresi */
-const SEG_MS = 150;
+export const SEG_MS = 150;
 
 export interface PlinkoHandle {
-  /** Topu verilen yoldan bırakır; cebe düşünce onLanded çağrılır */
-  drop(path: boolean[], onLanded: () => void): void;
+  /** Topu verilen yoldan bırakır; her sırada onPeg, cebe düşünce onLanded çağrılır */
+  drop(path: boolean[], onLanded: () => void, onPeg?: (row: number) => void): void;
 }
 
 function geometry(width: number, rows: number) {
@@ -25,36 +26,44 @@ function geometry(width: number, rows: number) {
   return {
     s, rowGap, top, cx: width / 2,
     height: top + (rows - 1) * rowGap + rowGap * 0.9,
-    pegR: Math.max(2.5, s * 0.11),
-    ballR: Math.max(5, s * 0.28),
+    pegR: Math.max(2.5, s * 0.1),
+    ballR: Math.max(5, s * 0.27),
   };
 }
 
-const bucketFormat = () => new Intl.NumberFormat(localization().locale, { maximumFractionDigits: 2 });
+/** Cep rengi: kayıp cepler soğuk, kazanç büyüdükçe sıcak */
+export const bucketColor = (m: number) =>
+  m < 1 ? '#3F5A8C' : m < 2 ? Arena.gold : m < 5 ? '#FF9F43' : m < 20 ? '#FF5E57' : '#FF2E88';
 
 export const PlinkoBoard = memo(forwardRef<PlinkoHandle, { width: number; rows: PlinkoRows; risk: PlinkoRisk; landed: number | null }>(
   function PlinkoBoard({ width, rows, risk, landed }, ref) {
-    const theme = useTheme();
     const g = useMemo(() => geometry(width, rows), [width, rows]);
     const progress = useSharedValue(0);
     const visible = useSharedValue(0);
     const path = useSharedValue<number[]>([]);
-    const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const bounce = useSharedValue(0);
+    const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
     // Sıra sayısı değişince eski top gizlenir
     useEffect(() => { visible.value = 0; }, [rows, visible]);
-    useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+    useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
     useImperativeHandle(ref, () => ({
-      drop(p, onLanded) {
+      drop(p, onLanded, onPeg) {
+        timers.current.forEach(clearTimeout);
+        timers.current = [];
         path.value = p.map(Number);
         progress.value = 0;
         visible.value = 1;
         const duration = (p.length + 1) * SEG_MS;
         progress.value = withTiming(p.length + 1, { duration, easing: Easing.linear });
-        timer.current = setTimeout(onLanded, duration + 60);
+        for (let r = 0; r < p.length; r++) timers.current.push(setTimeout(() => onPeg?.(r), (r + 1) * SEG_MS));
+        timers.current.push(setTimeout(() => {
+          bounce.value = withSequence(withTiming(1, { duration: 90 }), withSpring(0, { damping: 6, stiffness: 220 }));
+          onLanded();
+        }, duration + 40));
       },
-    }), [path, progress, visible]);
+    }), [path, progress, visible, bounce]);
 
     const pegs = useMemo(() => {
       const b = Skia.PathBuilder.Make();
@@ -84,27 +93,41 @@ export const PlinkoBoard = memo(forwardRef<PlinkoHandle, { width: number; rows: 
     }, [g]);
     const bx = useDerivedValue(() => ball.value.x);
     const by = useDerivedValue(() => ball.value.y);
+    const glowOpacity = useDerivedValue(() => visible.value * 0.55);
 
     const table = PLINKO_TABLES[rows][risk];
-    const format = bucketFormat();
-    const fontSize = Math.min(12, Math.max(7, g.s * 0.34));
+    const format = new Intl.NumberFormat(localization().locale, { maximumFractionDigits: 2 });
+    const fontSize = Math.min(12, Math.max(7, g.s * 0.33));
+    const landedStyle = useAnimatedStyle(() => ({ transform: [{ translateY: 6 * bounce.value }] }));
     return (
       <View>
         <Canvas style={{ width, height: g.height }}>
-          <Path path={pegs} color={theme.textSecondary} />
-          <Circle cx={bx} cy={by} r={g.ballR} color={theme.accent} opacity={visible} />
+          <Path path={pegs} color={Arena.cyan} opacity={0.35}>
+            <BlurMask blur={3} style="normal" />
+          </Path>
+          <Path path={pegs} color="#E6F2FF" />
+          <Group opacity={visible}>
+            <Circle cx={bx} cy={by} r={g.ballR * 2.2} color={Arena.gold} opacity={glowOpacity}>
+              <BlurMask blur={8} style="normal" />
+            </Circle>
+            <Circle cx={bx} cy={by} r={g.ballR} color={Arena.gold} />
+            <Circle cx={bx} cy={by} r={g.ballR * 0.45} color="#FFF4C7" />
+          </Group>
         </Canvas>
         <View style={[styles.buckets, { paddingHorizontal: g.s / 2 }]}>
           {table.map((m, k) => {
-            const color = m >= 1 ? theme.success : theme.danger;
+            const color = bucketColor(m);
             const hit = landed === k;
             return (
-              <View key={k} style={[styles.bucket, { backgroundColor: hit ? color : theme.backgroundSelected }]}>
-                <ThemedText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}
-                  style={{ fontSize, lineHeight: fontSize * 1.3, fontWeight: 700, color: hit ? '#ffffff' : color }}>
+              <Animated.View key={k} style={[styles.bucket, hit && landedStyle, {
+                backgroundColor: hit ? color : `${color}33`, borderColor: color,
+                boxShadow: hit ? glow(color, 14, 0.9) : undefined,
+              }]}>
+                <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}
+                  style={[styles.bucketText, { fontSize, lineHeight: fontSize * 1.3, color: hit ? (m < 1 ? '#ffffff' : '#0A0A12') : m < 1 ? '#AFC3EA' : color }]}>
                   {format.format(m)}
-                </ThemedText>
-              </View>
+                </Text>
+              </Animated.View>
             );
           })}
         </View>
@@ -115,5 +138,6 @@ export const PlinkoBoard = memo(forwardRef<PlinkoHandle, { width: number; rows: 
 
 const styles = StyleSheet.create({
   buckets: { flexDirection: 'row' },
-  bucket: { flex: 1, marginHorizontal: 1, borderRadius: 4, paddingVertical: 4, alignItems: 'center' },
+  bucket: { flex: 1, marginHorizontal: 1, borderRadius: 5, paddingVertical: 4, alignItems: 'center', borderWidth: 1 },
+  bucketText: { fontFamily: FontFamily.ui, fontWeight: '800' },
 });

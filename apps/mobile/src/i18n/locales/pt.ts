@@ -133,6 +133,7 @@ const pt: Messages = {
     slot: 'Caça-níqueis',
     balance: 'Fichas: %{amount}',
     play: 'Jogar',
+    payback: 'Retorno %{rtp}',
     crashDesc: 'O multiplicador sobe. Saque antes que ele exploda.',
     rouletteDesc: 'Roleta europeia, um zero. Aposte em números, cores e mais.',
     slotDesc: '5 rolos, 10 linhas, giros grátis e um bônus de pênalti. Tema de futebol.',
@@ -275,6 +276,10 @@ const pt: Messages = {
   },
   settings: {
     title: 'Configurações',
+    feedback: 'Som e vibração',
+    sound: 'Efeitos sonoros',
+    music: 'Música nos jogos',
+    haptics: 'Vibração',
     language: 'Idioma',
     deviceLanguage: 'Idioma do aparelho',
     currency: 'Moeda',

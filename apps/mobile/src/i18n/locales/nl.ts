@@ -89,6 +89,7 @@ const nl: Messages = {
     slot: 'Gokkasten',
     balance: 'Fiches: %{amount}',
     play: 'Spelen',
+    payback: 'Uitbetaling %{rtp}',
     crashDesc: 'De vermenigvuldiger stijgt. Cash uit voordat hij crasht.',
     rouletteDesc: 'Europese roulette, één nul. Zet in op nummers, kleuren en meer.',
     slotDesc: '5 rollen, 10 lijnen, gratis spins en een penaltybonus. Voetbalthema.',
@@ -231,6 +232,10 @@ const nl: Messages = {
   },
   settings: {
     title: 'Instellingen', language: 'Taal', deviceLanguage: 'Taal van het apparaat', currency: 'Valuta', automatic: 'Automatisch (%{value})',
+    feedback: 'Geluid en trillen',
+    sound: 'Geluidseffecten',
+    music: 'Muziek in spellen',
+    haptics: 'Trillen',
     oddsFormat: 'Oddsnotatie', decimal: 'Decimaal', fractional: 'Breuk', american: 'Amerikaans',
     restartForRtl: 'Start de app opnieuw om de schrijfrichting te wijzigen.',
     translationNote: 'Vertalingen behalve Engels en Turks zijn met hulp van machinevertaling gemaakt en wachten op controle door moedertaalsprekers.',

@@ -89,6 +89,7 @@ const ro: Messages = {
     slot: 'Păcănele',
     balance: 'Jetoane: %{amount}',
     play: 'Joacă',
+    payback: 'Randament %{rtp}',
     crashDesc: 'Multiplicatorul crește. Retrage înainte să explodeze.',
     rouletteDesc: 'Ruletă europeană, un singur zero. Pariază pe numere, culori și altele.',
     slotDesc: '5 role, 10 linii, rotiri gratuite și un bonus penalty. Temă fotbal.',
@@ -231,6 +232,10 @@ const ro: Messages = {
   },
   settings: {
     title: 'Setări', language: 'Limbă', deviceLanguage: 'Limba dispozitivului', currency: 'Monedă', automatic: 'Automat (%{value})',
+    feedback: 'Sunet și vibrații',
+    sound: 'Efecte sonore',
+    music: 'Muzică în jocuri',
+    haptics: 'Vibrații',
     oddsFormat: 'Formatul cotelor', decimal: 'Zecimal', fractional: 'Fracționar', american: 'American',
     restartForRtl: 'Repornește aplicația pentru a schimba direcția textului.',
     translationNote: 'Traducerile, în afară de engleză și turcă, au fost făcute cu ajutorul traducerii automate și așteaptă verificarea vorbitorilor nativi.',

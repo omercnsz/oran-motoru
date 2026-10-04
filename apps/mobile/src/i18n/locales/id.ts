@@ -89,6 +89,7 @@ const id: Messages = {
     slot: 'Slot',
     balance: 'Chip: %{amount}',
     play: 'Main',
+    payback: 'Pengembalian %{rtp}',
     crashDesc: 'Pengali terus naik. Tarik sebelum meledak.',
     rouletteDesc: 'Rolet Eropa, satu nol. Pasang taruhan pada angka, warna, dan lainnya.',
     slotDesc: '5 gulungan, 10 garis, putaran gratis, dan bonus penalti. Tema sepak bola.',
@@ -231,6 +232,10 @@ const id: Messages = {
   },
   settings: {
     title: 'Pengaturan', language: 'Bahasa', deviceLanguage: 'Bahasa perangkat', currency: 'Mata uang', automatic: 'Otomatis (%{value})',
+    feedback: 'Suara dan getaran',
+    sound: 'Efek suara',
+    music: 'Musik dalam game',
+    haptics: 'Getaran',
     oddsFormat: 'Format odds', decimal: 'Desimal', fractional: 'Pecahan', american: 'Amerika',
     restartForRtl: 'Mulai ulang aplikasi untuk mengubah arah teks.',
     translationNote: 'Terjemahan selain bahasa Inggris dan Turki dibuat dengan bantuan terjemahan mesin dan menunggu pemeriksaan penutur asli.',

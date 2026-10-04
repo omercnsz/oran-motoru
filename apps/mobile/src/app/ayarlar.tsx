@@ -11,6 +11,7 @@ import { CURRENCIES, deviceDefaults, LANGUAGES, useT, type Preferences } from '@
 import { showAdPrivacyOptions, useAds } from '@/ads';
 import { tokenValueMinor } from '@/hooks/use-report';
 import { syncReminders, useReminders } from '@/notifications';
+import { useFeedback } from '@/state/feedback';
 import { TOKEN_VALUES, useReportSettings } from '@/state/report';
 
 const ODDS_FORMATS: OddsFormat[] = ['decimal', 'fractional', 'american'];
@@ -30,6 +31,7 @@ export default function AyarlarScreen() {
   return (
     <Screen title={t('settings.title')} compact>
       <NotificationsSection />
+      <FeedbackSection />
       <AdPrivacyRow />
 
       <Section title={t('settings.language')}>
@@ -86,6 +88,25 @@ function NotificationsSection() {
           </Pressable>
         </View>
       ) : null}
+    </Section>
+  );
+}
+
+/** Oyunlarda ses efektleri, müzik ve titreşim */
+function FeedbackSection() {
+  const { t } = useT();
+  const theme = useTheme();
+  const prefs = useFeedback();
+  const rows = [['sound', prefs.sound], ['music', prefs.music], ['haptics', prefs.haptics]] as const;
+  return (
+    <Section title={t('settings.feedback')}>
+      {rows.map(([key, value]) => (
+        <View key={key} style={styles.option}>
+          <ThemedText style={styles.optionLabel}>{t(`settings.${key}`)}</ThemedText>
+          <Switch value={value} onValueChange={(on) => prefs.set({ [key]: on })} trackColor={{ true: theme.accent }}
+            accessibilityLabel={t(`settings.${key}`)} />
+        </View>
+      ))}
     </Section>
   );
 }
