@@ -1,6 +1,6 @@
 // Oyunlar: sadece jetonla. Jeton satılmaz, paraya çevrilmez; bitince ödüllü reklamla dolar.
 // Her oyunun yanında oyuncunun kendi sonucu ve oyunun gerçek geri dönüş oranı yazar.
-import { CRASH, MINES, PLINKO_ROWS, plinkoRtp, ROULETTE, slotMath } from '@oran/games-math';
+import { BLACKJACK, CRASH, MINES, PLINKO_ROWS, plinkoRtp, ROULETTE, slotMath } from '@oran/games-math';
 import { Link, router, type Href } from 'expo-router';
 import { Pressable, StyleSheet } from 'react-native';
 
@@ -22,7 +22,7 @@ const PLINKO_EDGE = 1 - Math.min(...PLINKO_ROWS.flatMap((r) => [plinkoRtp(r, 'lo
 export default function OyunlarScreen() {
   const { t } = useT();
   const theme = useTheme();
-  const { balance, crash, roulette, slot, mines, plinko } = useGames();
+  const { balance, crash, roulette, slot, mines, plinko, blackjack } = useGames();
   return (
     <Screen title={t('games.title')} subtitle={t('games.subtitle')}>
       <ThemedText type="smallBold">{t('games.balance', { amount: formatTokens(balance) })}</ThemedText>
@@ -37,6 +37,7 @@ export default function OyunlarScreen() {
       <GameCard title={t('games.slot')} description={t('games.slotDesc')} report={slot} houseEdge={SLOT_EDGE} href="/slot" />
       <GameCard title={t('games.mines')} description={t('games.minesDesc')} report={mines} houseEdge={MINES.houseEdge} href="/mines" />
       <GameCard title={t('games.plinko')} description={t('games.plinkoDesc')} report={plinko} houseEdge={PLINKO_EDGE} href="/plinko" />
+      <GameCard title={t('games.blackjack')} description={t('games.blackjackDesc')} report={blackjack} houseEdge={1 - BLACKJACK.basicStrategyRtp} href="/blackjack" />
     </Screen>
   );
 }

@@ -67,17 +67,17 @@ export const tokenEvents = sqliteTable('token_events', {
 /** Oyun turları. Sonuç (outcome) tur başında belirlenir ve kaydedilir; uygulama kapansa da tur aynı sonuçla kapanır. */
 export const gameRounds = sqliteTable('game_rounds', {
   id: text('id').primaryKey(),
-  game: text('game', { enum: ['crash', 'roulette', 'slot', 'mines', 'plinko'] }).notNull(),
+  game: text('game', { enum: ['crash', 'roulette', 'slot', 'mines', 'plinko', 'blackjack'] }).notNull(),
   createdAt: text('created_at').notNull(),
   endedAt: text('ended_at'),
   bet: integer('bet').notNull(),
   /** Otomatik çekme hedefi (çarpan) */
   target: real('target'),
-  /** Crash: patlama noktası; rulet: kazanan sayı; slot: penaltı hariç ödeme, bahsin katı; mines: mayın sayısı; plinko: cep */
+  /** Crash: patlama noktası; rulet: kazanan sayı; slot: penaltı hariç ödeme, bahsin katı; mines: mayın sayısı; plinko: cep; blackjack: krupiyenin son toplamı */
   outcome: real('outcome').notNull(),
   /** Rulet: bahisler, JSON [{ key, amount }] */
   bets: text('bets'),
-  /** Turun çekilişi (JSON). Slot: { stops, freeStops, prizes, pick }; mines: { count, mines, revealed }; plinko: { rows, risk, path } */
+  /** Turun çekilişi (JSON). Slot: { stops, freeStops, prizes, pick }; mines: { count, mines, revealed }; plinko: { rows, risk, path }; blackjack: { base, shoe, actions } */
   detail: text('detail'),
   /** Oyuncunun çektiği çarpan; çekmediyse null */
   cashout: real('cashout'),

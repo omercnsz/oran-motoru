@@ -1,8 +1,9 @@
 // Oyun jetonları ve turları. Jeton satılmaz, paraya çevrilmez; tutarlar birim cinsinden (1 jeton = TOKEN birim).
 import {
+  bjAct, bjActions, bjExtraBet, bjPayout, bjStaked, dealBlackjack, drawShoe, handTotal, replayBlackjack,
   coverage, crashPoint, drawSlotRound, MINES, minesPayout, placeMines, plinkoPath, plinkoPayout, plinkoSlot, resolveSlotRound,
   roundMultiple, roundPayout, settleCrash, settleRoulette, spinOutcome, TOKEN, uniformFromBytes,
-  type PlinkoRisk, type PlinkoRows, type RouletteBet, type SlotDraw,
+  type BjAction, type BjState, type Card, type PlinkoRisk, type PlinkoRows, type RouletteBet, type SlotDraw,
 } from '@oran/games-math';
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 import { getRandomBytes, randomUUID } from 'expo-crypto';
@@ -10,7 +11,7 @@ import { getRandomBytes, randomUUID } from 'expo-crypto';
 import { db } from './client';
 import { gameRounds, tokenEvents } from './schema';
 
-export type Game = 'crash' | 'roulette' | 'slot' | 'mines' | 'plinko';
+export type Game = 'crash' | 'roulette' | 'slot' | 'mines' | 'plinko' | 'blackjack';
 
 /** İşletim sisteminin güvenli rastgele sayı üreteci, [0, 1) */
 const secureRandom = () => uniformFromBytes(getRandomBytes(7));
@@ -137,10 +138,10 @@ function checkBet(bet: number) {
 }
 
 /** Turu ödemeyle kapatır (kazandı = ödeme bahisten fazla) */
-function closeRound(id: string, bet: number, payout: number, detail: unknown, now: Date) {
+function closeRound(id: string, bet: number, payout: number, detail: unknown, now: Date, outcome?: number) {
   const endedAt = now.toISOString();
   db.transaction((tx) => {
-    tx.update(gameRounds).set({ endedAt, payout, status: payout > bet ? 'won' : 'lost', detail: JSON.stringify(detail) })
+    tx.update(gameRounds).set({ endedAt, payout, status: payout > bet ? 'won' : 'lost', detail: JSON.stringify(detail), ...(outcome === undefined ? {} : { outcome }) })
       .where(eq(gameRounds.id, id)).run();
     if (payout > 0) tx.insert(tokenEvents).values({ createdAt: endedAt, kind: 'payout', amount: payout, roundId: id }).run();
   });
@@ -229,10 +230,72 @@ export function finishPlinkoRound(id: string, now = new Date()): { payout: numbe
   return { payout };
 }
 
+export interface BlackjackRecord { base: number; shoe: Card[]; actions: BjAction[] }
+
+/** El bitince: ödeme, krupiyenin son toplamı sonuç olarak */
+function settleBlackjack(id: string, state: BjState, record: BlackjackRecord, now: Date): number {
+  const payout = bjPayout(state);
+  closeRound(id, bjStaked(state), payout, record, now, handTotal(state.dealer).total);
+  return payout;
+}
+
+/** Yeni blackjack eli: 6 deste güvenli rastgele sayıyla karılır, kullanılabilecek ilk kartlar kaydedilir. Blackjack varsa el hemen biter. */
+export function startBlackjackRound(bet: number, now = new Date()): { id: string; state: BjState; payout: number | null } {
+  checkBet(bet);
+  const id = randomUUID();
+  const record: BlackjackRecord = { base: bet, shoe: drawShoe(secureRandom), actions: [] };
+  const state = dealBlackjack(record.shoe, bet);
+  const createdAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.insert(gameRounds).values({ id, game: 'blackjack', createdAt, bet, outcome: 0, detail: JSON.stringify(record), status: 'running' }).run();
+    tx.insert(tokenEvents).values({ createdAt, kind: 'bet', amount: -bet, roundId: id }).run();
+  });
+  return { id, state, payout: state.done ? settleBlackjack(id, state, record, now) : null };
+}
+
+function blackjackRound(id: string) {
+  const [round] = db.select().from(gameRounds).where(eq(gameRounds.id, id)).all();
+  if (!round || round.status !== 'running' || round.game !== 'blackjack') return null;
+  const record = JSON.parse(round.detail ?? '{}') as BlackjackRecord;
+  return { round, record, state: replayBlackjack(record.shoe, record.base, record.actions) };
+}
+
+/**
+ * Hamle. İkiye katlama ve bölme oynanan elin bahsi kadar ek bahis ister (jeton yetmezse null).
+ * Bütün eller bitince krupiye oynar ve el ödenir. Hamleler kaydedilir: el desteden yeniden oynatılabilir.
+ */
+export function blackjackAction(id: string, action: BjAction, now = new Date()): { state: BjState; payout: number | null } | null {
+  const r = blackjackRound(id);
+  if (!r || !bjActions(r.state).includes(action)) return null;
+  const extra = bjExtraBet(r.state, action);
+  if (extra > tokenBalance()) return null;
+  const state = bjAct(r.state, action);
+  const record = { ...r.record, actions: [...r.record.actions, action] };
+  const createdAt = now.toISOString();
+  db.transaction((tx) => {
+    tx.update(gameRounds).set({ bet: r.round.bet + extra, detail: JSON.stringify(record) }).where(eq(gameRounds.id, id)).run();
+    if (extra > 0) tx.insert(tokenEvents).values({ createdAt, kind: 'bet', amount: -extra, roundId: id }).run();
+  });
+  return { state, payout: state.done ? settleBlackjack(id, state, record, now) : null };
+}
+
+/** Yarıda kalan el: kalan eller "dur" ile oynanır */
+function standOutBlackjack(id: string, now = new Date()) {
+  const r = blackjackRound(id);
+  if (!r) return;
+  let state = r.state;
+  const actions = [...r.record.actions];
+  while (!state.done) {
+    state = bjAct(state, 'stand');
+    actions.push('stand');
+  }
+  settleBlackjack(id, state, { ...r.record, actions }, now);
+}
+
 /** Uygulama tur sırasında kapandıysa turlar kurala göre kapanır.
  * Crash: otomatik hedef patlamadan önceyse o hedefte kazanır, yoksa kaybeder. Rulet ve slot: kayıtlı sonuçla
  * (slotta penaltı seçilmediyse orta köşe; ödüller köşelere rastgele dağıtıldığı için bu oyuncuyu kayırmaz ya da cezalandırmaz).
- * Mines: açılan karelere göre çekilmiş sayılır (hiç açılmadıysa bahis iade). Plinko: kayıtlı yolla. */
+ * Mines: açılan karelere göre çekilmiş sayılır (hiç açılmadıysa bahis iade). Plinko: kayıtlı yolla. Blackjack: kalan eller durur. */
 export function closeInterruptedRounds(): void {
   const running = db.select().from(gameRounds).where(eq(gameRounds.status, 'running')).all();
   for (const r of running) {
@@ -240,6 +303,7 @@ export function closeInterruptedRounds(): void {
     else if (r.game === 'slot') finishSlotRound(r.id, null);
     else if (r.game === 'mines') cashOutMines(r.id);
     else if (r.game === 'plinko') finishPlinkoRound(r.id);
+    else if (r.game === 'blackjack') standOutBlackjack(r.id);
     else finishCrashRound(r.id, r.target !== null && r.target <= r.outcome ? r.target : null);
   }
 }

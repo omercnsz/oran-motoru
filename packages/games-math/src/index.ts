@@ -4,3 +4,4 @@ export * from './roulette.ts';
 export * from './slot.ts';
 export * from './mines.ts';
 export * from './plinko.ts';
+export * from './blackjack.ts';

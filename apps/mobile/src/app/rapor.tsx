@@ -1,7 +1,7 @@
 // Genel rapor: spor kuponları ve casino oyunları bir arada. "Gerçek parayla oynasaydın" sonucu, birikim grafiği,
 // oyun başına geri dönüş oranı (gerçekleşen ve teorik), oyunlarda geçen süre ve jetonun kaç kez bittiği.
 import { localDay, tokensToMoney, type Period, type Report } from '@oran/betting';
-import { CRASH, MINES, PLINKO_RISKS, PLINKO_ROWS, plinkoRtp, ROULETTE, slotMath } from '@oran/games-math';
+import { BLACKJACK, CRASH, MINES, PLINKO_RISKS, PLINKO_ROWS, plinkoRtp, ROULETTE, slotMath } from '@oran/games-math';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -18,13 +18,14 @@ import { formatPercent, formatTokens } from '@/lib/tokens';
 import { useReportSettings } from '@/state/report';
 
 const PERIODS: Period[] = ['month', 'lastMonth', 'all'];
-// Mines: çarpan aşağı yuvarlandığı için en fazla %97; Plinko: tabloların en düşüğü (hepsi %96,8–97,0)
+// Mines: çarpan aşağı yuvarlandığı için en fazla %97; Plinko: tabloların en düşüğü (hepsi %96,8–97,0); blackjack: temel stratejiyle
 const THEORY: Record<string, number> = {
   crash: 1 - CRASH.houseEdge, roulette: 1 - ROULETTE.houseEdge, slot: slotMath().rtp, mines: 1 - MINES.houseEdge,
   plinko: Math.min(...PLINKO_ROWS.flatMap((r) => PLINKO_RISKS.map((k) => plinkoRtp(r, k)))),
+  blackjack: BLACKJACK.basicStrategyRtp,
 };
 const GAME_TITLE: Record<string, string> = {
-  crash: 'games.crash', roulette: 'games.roulette', slot: 'games.slot', mines: 'games.mines', plinko: 'games.plinko',
+  crash: 'games.crash', roulette: 'games.roulette', slot: 'games.slot', mines: 'games.mines', plinko: 'games.plinko', blackjack: 'games.blackjack',
 };
 
 export function useDuration() {

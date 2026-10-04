@@ -11,6 +11,7 @@ interface GamesSnapshot {
   slot: GameReport;
   mines: GameReport;
   plinko: GameReport;
+  blackjack: GameReport;
   recent: { crash: number[]; roulette: number[]; plinko: number[] };
 }
 
@@ -33,6 +34,7 @@ function read(): GamesSnapshot {
         slot: gameReport('slot'),
         mines: gameReport('mines'),
         plinko: gameReport('plinko'),
+        blackjack: gameReport('blackjack'),
         recent: { crash: recentOutcomes('crash'), roulette: recentOutcomes('roulette', 12), plinko: recentReturns('plinko', 12) },
       },
     };

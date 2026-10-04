@@ -99,7 +99,7 @@ export const localDay = (iso: string) => {
 /** Oyun birimini (1 jeton = 100) paraya çevirir */
 export const tokensToMoney = (units: number, tokenValue: number) => Math.round((units / TOKEN) * tokenValue);
 
-const GAME_ORDER = ['crash', 'roulette', 'slot', 'mines', 'plinko'];
+const GAME_ORDER = ['crash', 'roulette', 'slot', 'mines', 'plinko', 'blackjack'];
 
 export function buildReport(input: ReportInput, period: Period, now: Date): Report {
   const { from, to } = periodRange(period, now);
