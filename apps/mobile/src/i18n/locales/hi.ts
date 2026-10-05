@@ -231,7 +231,7 @@ const hi: Messages = {
   notifications: {
     title: 'सूचनाएँ',
     kickoff: 'मेरी बेट स्लिप के मैच से 15 मिनट पहले याद दिलाएँ',
-    denied: 'फ़ोन की सेटिंग में Oran की सूचनाएँ बंद हैं।',
+    denied: 'फ़ोन की सेटिंग में StashOdds की सूचनाएँ बंद हैं।',
     openSettings: 'सेटिंग खोलें',
     channel: 'मैच रिमाइंडर',
     kickoffTitle: '%{match} %{time} बजे शुरू होगा',

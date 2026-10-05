@@ -275,7 +275,7 @@ const ar: Messages = {
   notifications: {
     title: 'الإشعارات',
     kickoff: 'نبّهني قبل 15 دقيقة من مباراة في قسائمي',
-    denied: 'إشعارات Oran متوقفة في إعدادات الهاتف.',
+    denied: 'إشعارات StashOdds متوقفة في إعدادات الهاتف.',
     openSettings: 'فتح الإعدادات',
     channel: 'تذكيرات المباريات',
     kickoffTitle: 'تبدأ %{match} الساعة %{time}',

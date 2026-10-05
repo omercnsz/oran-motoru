@@ -231,7 +231,7 @@ const bg: Messages = {
   notifications: {
     title: 'Известия',
     kickoff: 'Напомняй ми 15 минути преди мач от моите фишове',
-    denied: 'Известията на Oran са изключени в настройките на телефона.',
+    denied: 'Известията на StashOdds са изключени в настройките на телефона.',
     openSettings: 'Отвори настройките',
     channel: 'Напомняния за мачове',
     kickoffTitle: '%{match} започва в %{time}',

@@ -274,7 +274,7 @@ const ru: Messages = {
   notifications: {
     title: 'Уведомления',
     kickoff: 'Напоминать за 15 минут до матча из моих купонов',
-    denied: 'Уведомления Oran отключены в настройках телефона.',
+    denied: 'Уведомления StashOdds отключены в настройках телефона.',
     openSettings: 'Открыть настройки',
     channel: 'Напоминания о матчах',
     kickoffTitle: '%{match} начнётся в %{time}',

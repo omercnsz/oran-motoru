@@ -231,7 +231,7 @@ const ro: Messages = {
   notifications: {
     title: 'Notificări',
     kickoff: 'Anunță-mă cu 15 minute înainte de un meci de pe biletele mele',
-    denied: 'Notificările Oran sunt dezactivate în setările telefonului.',
+    denied: 'Notificările StashOdds sunt dezactivate în setările telefonului.',
     openSettings: 'Deschide setările',
     channel: 'Mementouri pentru meciuri',
     kickoffTitle: '%{match} începe la %{time}',

@@ -231,7 +231,7 @@ const zh: Messages = {
   notifications: {
     title: '通知',
     kickoff: '投注单中的比赛开始前 15 分钟提醒我',
-    denied: '手机设置中已关闭 Oran 的通知。',
+    denied: '手机设置中已关闭 StashOdds 的通知。',
     openSettings: '打开设置',
     channel: '比赛提醒',
     kickoffTitle: '%{match} 将于 %{time} 开始',

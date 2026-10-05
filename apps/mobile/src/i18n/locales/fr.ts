@@ -231,7 +231,7 @@ const fr: Messages = {
   notifications: {
     title: 'Notifications',
     kickoff: 'Me prévenir 15 minutes avant un match de mes tickets',
-    denied: "Les notifications d'Oran sont désactivées dans les réglages du téléphone.",
+    denied: "Les notifications de StashOdds sont désactivées dans les réglages du téléphone.",
     openSettings: 'Ouvrir les réglages',
     channel: 'Rappels de matchs',
     kickoffTitle: '%{match} commence à %{time}',

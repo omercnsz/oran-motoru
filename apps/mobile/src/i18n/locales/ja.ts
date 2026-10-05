@@ -230,7 +230,7 @@ const ja: Messages = {
   notifications: {
     title: '通知',
     kickoff: 'ベットスリップの試合開始15分前に知らせる',
-    denied: 'スマートフォンの設定で Oran の通知がオフになっています。',
+    denied: 'スマートフォンの設定で StashOdds の通知がオフになっています。',
     openSettings: '設定を開く',
     channel: '試合リマインダー',
     kickoffTitle: '%{match} は %{time} にキックオフ',

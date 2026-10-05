@@ -231,7 +231,7 @@ const it: Messages = {
   notifications: {
     title: 'Notifiche',
     kickoff: 'Avvisami 15 minuti prima di una partita delle mie schedine',
-    denied: 'Le notifiche di Oran sono disattivate nelle impostazioni del telefono.',
+    denied: 'Le notifiche di StashOdds sono disattivate nelle impostazioni del telefono.',
     openSettings: 'Apri impostazioni',
     channel: 'Promemoria partite',
     kickoffTitle: '%{match} inizia alle %{time}',

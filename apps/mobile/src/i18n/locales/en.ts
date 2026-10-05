@@ -274,7 +274,7 @@ const en = {
   notifications: {
     title: 'Notifications',
     kickoff: 'Remind me 15 minutes before a match on my coupons',
-    denied: 'Notifications for Oran are turned off in your phone settings.',
+    denied: 'Notifications for StashOdds are turned off in your phone settings.',
     openSettings: 'Open settings',
     channel: 'Match reminders',
     kickoffTitle: 'Kickoff %{time}: %{match}',

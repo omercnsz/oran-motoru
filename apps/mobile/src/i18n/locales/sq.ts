@@ -231,7 +231,7 @@ const sq: Messages = {
   notifications: {
     title: 'Njoftimet',
     kickoff: 'Më njofto 15 minuta para një ndeshjeje nga kuponët e mi',
-    denied: 'Njoftimet e Oran janë të çaktivizuara në cilësimet e telefonit.',
+    denied: 'Njoftimet e StashOdds janë të çaktivizuara në cilësimet e telefonit.',
     openSettings: 'Hap cilësimet',
     channel: 'Kujtesa për ndeshjet',
     kickoffTitle: '%{match} fillon në %{time}',

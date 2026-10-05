@@ -231,7 +231,7 @@ const nl: Messages = {
   notifications: {
     title: 'Meldingen',
     kickoff: 'Herinner me 15 minuten voor een wedstrijd op mijn wedbonnen',
-    denied: 'Meldingen voor Oran staan uit in de instellingen van je telefoon.',
+    denied: 'Meldingen voor StashOdds staan uit in de instellingen van je telefoon.',
     openSettings: 'Instellingen openen',
     channel: 'Wedstrijdherinneringen',
     kickoffTitle: '%{match} begint om %{time}',

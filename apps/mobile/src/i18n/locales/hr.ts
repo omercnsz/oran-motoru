@@ -231,7 +231,7 @@ const hr: Messages = {
   notifications: {
     title: 'Obavijesti',
     kickoff: 'Podsjeti me 15 minuta prije utakmice s mojih listića',
-    denied: 'Obavijesti za Oran isključene su u postavkama telefona.',
+    denied: 'Obavijesti za StashOdds isključene su u postavkama telefona.',
     openSettings: 'Otvori postavke',
     channel: 'Podsjetnici za utakmice',
     kickoffTitle: '%{match} počinje u %{time}',

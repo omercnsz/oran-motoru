@@ -274,7 +274,7 @@ const es: Messages = {
   notifications: {
     title: 'Notificaciones',
     kickoff: 'Avísame 15 minutos antes de un partido de mis cupones',
-    denied: 'Las notificaciones de Oran están desactivadas en los ajustes del teléfono.',
+    denied: 'Las notificaciones de StashOdds están desactivadas en los ajustes del teléfono.',
     openSettings: 'Abrir ajustes',
     channel: 'Recordatorios de partidos',
     kickoffTitle: '%{match} empieza a las %{time}',

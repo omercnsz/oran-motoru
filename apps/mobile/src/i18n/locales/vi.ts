@@ -231,7 +231,7 @@ const vi: Messages = {
   notifications: {
     title: 'Thông báo',
     kickoff: 'Nhắc tôi 15 phút trước trận đấu trong phiếu cược',
-    denied: 'Thông báo của Oran đang tắt trong cài đặt điện thoại.',
+    denied: 'Thông báo của StashOdds đang tắt trong cài đặt điện thoại.',
     openSettings: 'Mở cài đặt',
     channel: 'Nhắc lịch trận đấu',
     kickoffTitle: '%{match} bắt đầu lúc %{time}',

@@ -231,7 +231,7 @@ const pl: Messages = {
   notifications: {
     title: 'Powiadomienia',
     kickoff: 'Przypominaj 15 minut przed meczem z moich kuponów',
-    denied: 'Powiadomienia Oran są wyłączone w ustawieniach telefonu.',
+    denied: 'Powiadomienia StashOdds są wyłączone w ustawieniach telefonu.',
     openSettings: 'Otwórz ustawienia',
     channel: 'Przypomnienia o meczach',
     kickoffTitle: '%{match} zaczyna się o %{time}',

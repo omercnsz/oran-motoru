@@ -231,7 +231,7 @@ const bs: Messages = {
   notifications: {
     title: 'Obavještenja',
     kickoff: 'Podsjeti me 15 minuta prije utakmice s mojih tiketa',
-    denied: 'Obavještenja za Oran su isključena u postavkama telefona.',
+    denied: 'Obavještenja za StashOdds su isključena u postavkama telefona.',
     openSettings: 'Otvori postavke',
     channel: 'Podsjetnici za utakmice',
     kickoffTitle: '%{match} počinje u %{time}',

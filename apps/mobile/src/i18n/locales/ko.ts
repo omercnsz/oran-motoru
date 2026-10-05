@@ -230,7 +230,7 @@ const ko: Messages = {
   notifications: {
     title: '알림',
     kickoff: '내 베팅 슬립의 경기 시작 15분 전에 알림',
-    denied: '휴대폰 설정에서 Oran 알림이 꺼져 있습니다.',
+    denied: '휴대폰 설정에서 StashOdds 알림이 꺼져 있습니다.',
     openSettings: '설정 열기',
     channel: '경기 알림',
     kickoffTitle: '%{match} 경기가 %{time}에 시작됩니다',

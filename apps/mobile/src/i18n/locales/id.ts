@@ -231,7 +231,7 @@ const id: Messages = {
   notifications: {
     title: 'Notifikasi',
     kickoff: 'Ingatkan 15 menit sebelum pertandingan di kuponku',
-    denied: 'Notifikasi Oran dimatikan di pengaturan ponsel.',
+    denied: 'Notifikasi StashOdds dimatikan di pengaturan ponsel.',
     openSettings: 'Buka pengaturan',
     channel: 'Pengingat pertandingan',
     kickoffTitle: '%{match} dimulai pukul %{time}',

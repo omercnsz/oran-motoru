@@ -230,7 +230,7 @@ const th: Messages = {
   notifications: {
     title: 'การแจ้งเตือน',
     kickoff: 'เตือนก่อนแมตช์ในบิลของฉันเริ่ม 15 นาที',
-    denied: 'การแจ้งเตือนของ Oran ถูกปิดในการตั้งค่าโทรศัพท์',
+    denied: 'การแจ้งเตือนของ StashOdds ถูกปิดในการตั้งค่าโทรศัพท์',
     openSettings: 'เปิดการตั้งค่า',
     channel: 'เตือนการแข่งขัน',
     kickoffTitle: '%{match} เริ่มเวลา %{time}',

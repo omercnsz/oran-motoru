@@ -1,4 +1,6 @@
-# Oran
+# StashOdds
+
+Kod adı Oran: depo, paketler (`@oran/*`) ve uygulama kimliği (`com.omercnsz.oran`) bu adı kullanır; kullanıcının gördüğü ad StashOdds.
 
 Kumar bağımlılığında zarar azaltma uygulaması: gerçek maçlara ve casino oyunlarına **sanal parayla** oynanır, yatırılmayan gerçek para kumbarada birikir. Veriler kullanıcının telefonunda kalır.
 

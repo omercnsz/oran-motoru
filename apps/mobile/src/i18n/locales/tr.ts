@@ -274,7 +274,7 @@ const tr: Messages = {
   notifications: {
     title: 'Bildirimler',
     kickoff: 'Kuponumdaki maç başlamadan 15 dakika önce haber ver',
-    denied: "Oran'ın bildirimleri telefon ayarlarında kapalı.",
+    denied: "StashOdds'un bildirimleri telefon ayarlarında kapalı.",
     openSettings: 'Ayarları aç',
     channel: 'Maç hatırlatmaları',
     kickoffTitle: 'Maç saati %{time}: %{match}',
