@@ -5,6 +5,11 @@ const hi: Messages = {
   nav: { match: 'मैच', live: 'लाइव', coupon: 'बेट स्लिप', settings: 'सेटिंग्स', back: 'मैच' },
   common: { dataError: 'डेटा लोड नहीं हो सका', dbError: 'डेटाबेस तैयार नहीं हो सका: %{message}' },
   matches: {
+    featured: 'ख़ास मैच',
+    liveNow: 'अभी लाइव',
+    search: 'टीम या लीग खोजें',
+    noResults: 'कोई नतीजा नहीं',
+    betsCount: '+%{count} दांव',
     title: 'मैच', subtitle: 'असली मैच, असली ऑड्स। पैसा नकली है।', preMatch: 'मैच से पहले', live: 'लाइव',
     none14: 'इस प्रतियोगिता में अगले 14 दिनों में कोई मैच नहीं है।',
     notSoon: '%{league} में आज और कल कोई मैच नहीं है; अगले मैच %{date} को हैं।',

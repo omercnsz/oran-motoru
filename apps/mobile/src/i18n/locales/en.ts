@@ -8,6 +8,11 @@ const en = {
     dbError: "The database couldn't be prepared: %{message}",
   },
   matches: {
+    featured: 'Featured matches',
+    liveNow: 'Live now',
+    search: 'Search teams or leagues',
+    noResults: 'No results',
+    betsCount: '+%{count} bets',
     title: 'Matches',
     subtitle: 'Real matches, real odds. Play money.',
     preMatch: 'Pre-match',

@@ -6,6 +6,11 @@ const sr: Messages = {
   nav: { match: 'Utakmica', live: 'Uživo', coupon: 'Tiket', settings: 'Podešavanja', back: 'Utakmice' },
   common: { dataError: 'Podaci nisu mogli da se učitaju', dbError: 'Baza podataka nije mogla da se pripremi: %{message}' },
   matches: {
+    featured: 'Istaknute utakmice',
+    liveNow: 'Uživo sada',
+    search: 'Pretraži timove ili lige',
+    noResults: 'Nema rezultata',
+    betsCount: '+%{count} opklada',
     title: 'Utakmice', subtitle: 'Prave utakmice, prave kvote. Novac je virtuelni.', preMatch: 'Pre utakmice', live: 'Uživo',
     none14: 'U ovom takmičenju nema utakmica u narednih 14 dana.',
     notSoon: '%{league} nema utakmica danas ni sutra; sledeće su %{date}.',

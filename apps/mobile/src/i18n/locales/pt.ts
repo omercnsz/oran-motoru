@@ -9,6 +9,11 @@ const pt: Messages = {
     dbError: 'Não foi possível preparar o banco de dados: %{message}',
   },
   matches: {
+    featured: 'Jogos em destaque',
+    liveNow: 'Ao vivo agora',
+    search: 'Buscar times ou ligas',
+    noResults: 'Nenhum resultado',
+    betsCount: '+%{count} apostas',
     title: 'Jogos',
     subtitle: 'Jogos reais, odds reais. Dinheiro de mentira.',
     preMatch: 'Pré-jogo',

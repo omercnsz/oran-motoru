@@ -5,6 +5,11 @@ const id: Messages = {
   nav: { match: 'Pertandingan', live: 'Live', coupon: 'Kupon', settings: 'Pengaturan', back: 'Pertandingan' },
   common: { dataError: 'Data tidak dapat dimuat', dbError: 'Basis data tidak dapat disiapkan: %{message}' },
   matches: {
+    featured: 'Pertandingan unggulan',
+    liveNow: 'Live sekarang',
+    search: 'Cari tim atau liga',
+    noResults: 'Tidak ada hasil',
+    betsCount: '+%{count} taruhan',
     title: 'Pertandingan', subtitle: 'Pertandingan nyata, odds nyata. Uangnya virtual.', preMatch: 'Sebelum laga', live: 'Live',
     none14: 'Tidak ada pertandingan di kompetisi ini dalam 14 hari ke depan.',
     notSoon: '%{league} tidak ada pertandingan hari ini dan besok; pertandingan berikutnya %{date}.',

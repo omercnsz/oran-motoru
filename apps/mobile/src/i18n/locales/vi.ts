@@ -5,6 +5,11 @@ const vi: Messages = {
   nav: { match: 'Trận đấu', live: 'Trực tiếp', coupon: 'Phiếu cược', settings: 'Cài đặt', back: 'Trận đấu' },
   common: { dataError: 'Không thể tải dữ liệu', dbError: 'Không thể chuẩn bị cơ sở dữ liệu: %{message}' },
   matches: {
+    featured: 'Trận nổi bật',
+    liveNow: 'Đang trực tiếp',
+    search: 'Tìm đội hoặc giải đấu',
+    noResults: 'Không có kết quả',
+    betsCount: '+%{count} kèo',
     title: 'Trận đấu', subtitle: 'Trận đấu thật, tỷ lệ thật. Tiền ảo.', preMatch: 'Trước trận', live: 'Trực tiếp',
     none14: 'Giải đấu này không có trận nào trong 14 ngày tới.',
     notSoon: '%{league} không có trận hôm nay và ngày mai; các trận tiếp theo vào %{date}.',

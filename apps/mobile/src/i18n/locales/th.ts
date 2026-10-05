@@ -5,6 +5,11 @@ const th: Messages = {
   nav: { match: 'การแข่งขัน', live: 'สด', coupon: 'บิล', settings: 'การตั้งค่า', back: 'การแข่งขัน' },
   common: { dataError: 'โหลดข้อมูลไม่ได้', dbError: 'เตรียมฐานข้อมูลไม่ได้: %{message}' },
   matches: {
+    featured: 'แมตช์เด่น',
+    liveNow: 'กำลังถ่ายทอดสด',
+    search: 'ค้นหาทีมหรือลีก',
+    noResults: 'ไม่พบผลลัพธ์',
+    betsCount: '+%{count} เดิมพัน',
     title: 'การแข่งขัน', subtitle: 'แมตช์จริง ราคาจริง เงินปลอม', preMatch: 'ก่อนแข่ง', live: 'สด',
     none14: 'รายการนี้ไม่มีแมตช์ใน 14 วันข้างหน้า', notSoon: '%{league} ไม่มีแมตช์วันนี้และพรุ่งนี้ แมตช์ถัดไปคือ %{date}',
     soonLeagues: 'รายการที่มีแมตช์วันนี้และพรุ่งนี้:', allBets: 'การเดิมพันทั้งหมด ›', notFound: 'ไม่พบแมตช์',

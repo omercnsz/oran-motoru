@@ -5,6 +5,11 @@ const pl: Messages = {
   nav: { match: 'Mecz', live: 'Na żywo', coupon: 'Kupon', settings: 'Ustawienia', back: 'Mecze' },
   common: { dataError: 'Nie udało się wczytać danych', dbError: 'Nie udało się przygotować bazy danych: %{message}' },
   matches: {
+    featured: 'Wyróżnione mecze',
+    liveNow: 'Teraz na żywo',
+    search: 'Szukaj drużyn lub lig',
+    noResults: 'Brak wyników',
+    betsCount: '+%{count} zakładów',
     title: 'Mecze', subtitle: 'Prawdziwe mecze, prawdziwe kursy. Wirtualne pieniądze.', preMatch: 'Przed meczem', live: 'Na żywo',
     none14: 'W tych rozgrywkach nie ma meczów w ciągu najbliższych 14 dni.',
     notSoon: 'W rozgrywkach %{league} nie ma meczów dziś ani jutro; następne: %{date}.',

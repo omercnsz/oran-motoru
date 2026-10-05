@@ -5,6 +5,11 @@ const hr: Messages = {
   nav: { match: 'Utakmica', live: 'Uživo', coupon: 'Listić', settings: 'Postavke', back: 'Utakmice' },
   common: { dataError: 'Podaci se nisu mogli učitati', dbError: 'Baza podataka nije se mogla pripremiti: %{message}' },
   matches: {
+    featured: 'Istaknute utakmice',
+    liveNow: 'Uživo sada',
+    search: 'Pretraži momčadi ili lige',
+    noResults: 'Nema rezultata',
+    betsCount: '+%{count} oklada',
     title: 'Utakmice', subtitle: 'Prave utakmice, prave koeficijenti. Virtualni novac.', preMatch: 'Prije utakmice', live: 'Uživo',
     none14: 'U ovom natjecanju nema utakmica u sljedećih 14 dana.',
     notSoon: '%{league} nema utakmica danas ni sutra; sljedeće su %{date}.',

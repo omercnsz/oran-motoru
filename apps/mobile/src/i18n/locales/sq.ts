@@ -5,6 +5,11 @@ const sq: Messages = {
   nav: { match: 'Ndeshja', live: 'Live', coupon: 'Kuponi', settings: 'Cilësimet', back: 'Ndeshjet' },
   common: { dataError: 'Të dhënat nuk u ngarkuan', dbError: 'Baza e të dhënave nuk u përgatit: %{message}' },
   matches: {
+    featured: 'Ndeshjet kryesore',
+    liveNow: 'Live tani',
+    search: 'Kërko skuadra ose liga',
+    noResults: 'Asnjë rezultat',
+    betsCount: '+%{count} baste',
     title: 'Ndeshjet', subtitle: 'Ndeshje të vërteta, koeficientë të vërtetë. Para virtuale.', preMatch: 'Para ndeshjes', live: 'Live',
     none14: 'Nuk ka ndeshje në këtë kompeticion në 14 ditët e ardhshme.',
     notSoon: '%{league} nuk ka ndeshje sot as nesër; ndeshjet e radhës janë më %{date}.',

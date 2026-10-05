@@ -4,7 +4,7 @@ import type { UpcomingMatch } from '@oran/contracts';
 import { Link, router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -13,6 +13,7 @@ import { ErrorCard } from '@/components/error-card';
 import { LiveList } from '@/components/live-list';
 import { OddsButton } from '@/components/odds-button';
 import { SlipBar } from '@/components/slip-bar';
+import { betsCount, FeaturedCarousel, LiveTicker, ProbabilityBar, SearchResults } from '@/components/sport/home';
 import { TeamBadge } from '@/components/sport/team-badge';
 import { Arena, FontFamily, glow } from '@/constants/arena';
 import { BottomTabInset } from '@/constants/theme';
@@ -38,6 +39,10 @@ export default function MaclarScreen() {
   const current = useLeagues((s) => s.current);
   const pick = useLeagues((s) => s.pick);
   const [mode, setMode] = useState<'pre' | 'live'>('pre');
+  const [query, setQuery] = useState('');
+  // Kontrolsüz alan: hızlı yazarken harf kaybolmasın (ekran yeniden çizilirken yazılanı ezmez)
+  const searchRef = useRef<TextInput>(null);
+  const searching = query.trim().length >= 2;
   const leagueNames = useMemo(() => Object.fromEntries((index.data?.leagues ?? []).map((l) => [l.code, l.name])), [index.data]);
   const infos = useMemo(() => Object.fromEntries((index.data?.leagues ?? []).map((l) => [l.code, leagueInfo(l, language)])), [index.data, language]);
   // Son seçilen turnuva; hiç seçilmediyse maçı olan ilk favori, o da yoksa maçı olan ilk turnuva
@@ -109,14 +114,27 @@ export default function MaclarScreen() {
             <SettingsButton />
           </View>
 
-          <Segmented mode={mode} onChange={setMode} />
+          <View style={styles.searchBox}>
+            <SymbolView name={{ ios: 'magnifyingglass', android: 'search' }} size={18} tintColor={Arena.textDim}
+              fallback={<Text style={styles.searchIcon}>⌕</Text>} />
+            <TextInput ref={searchRef} defaultValue="" onChangeText={setQuery} placeholder={t('matches.search')} placeholderTextColor={Arena.textFaint}
+              style={styles.searchInput} autoCorrect={false} autoCapitalize="none" returnKeyType="search" clearButtonMode="while-editing" />
+          </View>
+
+          {searching ? (
+            <SearchResults query={query} schedule={schedule.data?.matches ?? []} infos={infos} now={now}
+              onLeague={(code) => { searchRef.current?.clear(); searchRef.current?.blur(); setQuery(''); setMode('pre'); pick(code); }} />
+          ) : <Segmented mode={mode} onChange={setMode} />}
 
           {index.isPending ? <ActivityIndicator color={Arena.neon} /> : null}
           {index.error ? <ErrorCard message={index.error.message} /> : null}
 
-          {mode === 'live' ? <LiveList now={now} leagueNames={leagueNames} /> : null}
+          {!searching && mode === 'live' ? <LiveList now={now} leagueNames={leagueNames} /> : null}
 
-          {mode === 'pre' ? <>
+          {!searching && mode === 'pre' ? <>
+            <LiveTicker now={now} />
+            <FeaturedCarousel favorites={favorites} infos={infos} now={now} />
+
             <ScrollView ref={chipsRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}
               style={styles.chipsScroll} scrollEventThrottle={32}
               onScroll={(e) => { chipsView.current.offset = e.nativeEvent.contentOffset.x; }}
@@ -198,10 +216,11 @@ function MatchCard({ league, match }: { league: string; match: UpcomingMatch }) 
             <View style={styles.timePill}>
               <AText style={styles.time}>{formatTime(match.kickoff)}</AText>
             </View>
-            <AText style={styles.more}>{t('matches.allBets')}</AText>
+            <AText style={styles.more}>{t('matches.betsCount', { count: betsCount(match) })} ›</AText>
           </View>
         </Pressable>
       </Link>
+      <ProbabilityBar match={match} labels={false} />
       <View style={styles.oddsRow}>
         {ONE_X_TWO.map(([key, label]) => (
           <OddsButton
@@ -282,6 +301,12 @@ const styles = StyleSheet.create({
     backgroundColor: Arena.glassStrong, borderWidth: 1, borderColor: Arena.glassBorder,
   },
   gear: { color: Arena.text, fontSize: 20 },
+  searchBox: {
+    flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, borderRadius: 16, minHeight: 46,
+    backgroundColor: 'rgba(0,0,0,0.35)', borderWidth: 1, borderColor: Arena.glassBorder,
+  },
+  searchIcon: { color: Arena.textDim, fontSize: 18 },
+  searchInput: { flex: 1, color: Arena.text, fontFamily: FontFamily.ui, fontSize: 16, paddingVertical: 10, textAlign: 'left' },
   segmented: {
     flexDirection: 'row', padding: 4, borderRadius: 16, backgroundColor: 'rgba(0,0,0,0.35)', borderWidth: 1, borderColor: Arena.glassBorder,
   },

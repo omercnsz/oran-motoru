@@ -5,6 +5,11 @@ const ko: Messages = {
   nav: { match: '경기', live: '라이브', coupon: '베팅 슬립', settings: '설정', back: '경기' },
   common: { dataError: '데이터를 불러올 수 없습니다', dbError: '데이터베이스를 준비할 수 없습니다: %{message}' },
   matches: {
+    featured: '주요 경기',
+    liveNow: '지금 라이브',
+    search: '팀 또는 리그 검색',
+    noResults: '결과 없음',
+    betsCount: '+%{count}개 베팅',
     title: '경기', subtitle: '진짜 경기, 진짜 배당. 돈은 가상입니다.', preMatch: '경기 전', live: '라이브',
     none14: '이 대회에는 앞으로 14일 동안 경기가 없습니다.', notSoon: '%{league}는 오늘과 내일 경기가 없습니다. 다음 경기는 %{date}입니다.',
     soonLeagues: '오늘과 내일 경기가 있는 대회:', allBets: '전체 베팅 ›', notFound: '경기를 찾을 수 없습니다',

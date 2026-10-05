@@ -8,6 +8,11 @@ const tr: Messages = {
     dbError: 'Veritabanı hazırlanamadı: %{message}',
   },
   matches: {
+    featured: 'Öne çıkan maçlar',
+    liveNow: 'Şu an canlı',
+    search: 'Takım ya da lig ara',
+    noResults: 'Sonuç yok',
+    betsCount: '+%{count} bahis',
     title: 'Maçlar',
     subtitle: 'Gerçek maçlar, gerçek oranlar. Para sanal.',
     preMatch: 'Maç öncesi',

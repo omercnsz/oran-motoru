@@ -5,6 +5,11 @@ const fr: Messages = {
   nav: { match: 'Match', live: 'En direct', coupon: 'Ticket', settings: 'Réglages', back: 'Matchs' },
   common: { dataError: 'Impossible de charger les données', dbError: 'Impossible de préparer la base de données : %{message}' },
   matches: {
+    featured: 'Matchs à la une',
+    liveNow: 'En direct',
+    search: 'Rechercher une équipe ou une ligue',
+    noResults: 'Aucun résultat',
+    betsCount: '+%{count} paris',
     title: 'Matchs', subtitle: 'De vrais matchs, de vraies cotes. De l’argent fictif.', preMatch: 'Avant-match', live: 'En direct',
     none14: 'Aucun match dans cette compétition dans les 14 prochains jours.',
     notSoon: '%{league} n’a pas de match aujourd’hui ni demain ; prochains matchs le %{date}.',

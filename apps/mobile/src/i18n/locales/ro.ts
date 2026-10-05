@@ -5,6 +5,11 @@ const ro: Messages = {
   nav: { match: 'Meci', live: 'Live', coupon: 'Bilet', settings: 'Setări', back: 'Meciuri' },
   common: { dataError: 'Datele nu au putut fi încărcate', dbError: 'Baza de date nu a putut fi pregătită: %{message}' },
   matches: {
+    featured: 'Meciuri recomandate',
+    liveNow: 'Live acum',
+    search: 'Caută echipe sau ligi',
+    noResults: 'Niciun rezultat',
+    betsCount: '+%{count} pariuri',
     title: 'Meciuri', subtitle: 'Meciuri reale, cote reale. Bani de joacă.', preMatch: 'Înainte de meci', live: 'Live',
     none14: 'Nu există meciuri în această competiție în următoarele 14 zile.',
     notSoon: '%{league} nu are meciuri azi sau mâine; următoarele meciuri: %{date}.',

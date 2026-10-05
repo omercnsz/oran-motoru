@@ -8,6 +8,11 @@ const es: Messages = {
     dbError: 'No se pudo preparar la base de datos: %{message}',
   },
   matches: {
+    featured: 'Partidos destacados',
+    liveNow: 'En directo',
+    search: 'Buscar equipos o ligas',
+    noResults: 'Sin resultados',
+    betsCount: '+%{count} apuestas',
     title: 'Partidos',
     subtitle: 'Partidos reales, cuotas reales. Dinero ficticio.',
     preMatch: 'Prepartido',

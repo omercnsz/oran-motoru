@@ -6,6 +6,11 @@ const zh: Messages = {
   nav: { match: '比赛', live: '滚球', coupon: '投注单', settings: '设置', back: '比赛' },
   common: { dataError: '无法加载数据', dbError: '无法准备数据库：%{message}' },
   matches: {
+    featured: '焦点比赛',
+    liveNow: '正在直播',
+    search: '搜索球队或联赛',
+    noResults: '没有结果',
+    betsCount: '+%{count} 个投注',
     title: '比赛', subtitle: '真实的比赛，真实的赔率。虚拟的钱。', preMatch: '赛前', live: '滚球',
     none14: '该赛事未来 14 天内没有比赛。', notSoon: '%{league} 今明两天没有比赛；下一场在 %{date}。',
     soonLeagues: '今明两天有比赛的赛事：', allBets: '全部投注 ›', notFound: '找不到这场比赛',

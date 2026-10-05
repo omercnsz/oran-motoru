@@ -5,6 +5,11 @@ const ja: Messages = {
   nav: { match: '試合', live: 'ライブ', coupon: 'ベットスリップ', settings: '設定', back: '試合' },
   common: { dataError: 'データを読み込めませんでした', dbError: 'データベースを準備できませんでした: %{message}' },
   matches: {
+    featured: '注目の試合',
+    liveNow: 'ライブ中',
+    search: 'チームやリーグを検索',
+    noResults: '結果なし',
+    betsCount: '+%{count} ベット',
     title: '試合', subtitle: '本物の試合、本物のオッズ。お金は仮想です。', preMatch: '試合前', live: 'ライブ',
     none14: 'この大会では今後14日間に試合がありません。', notSoon: '%{league} は今日と明日は試合がありません。次の試合は %{date} です。',
     soonLeagues: '今日と明日に試合がある大会:', allBets: 'すべてのベット ›', notFound: '試合が見つかりません',

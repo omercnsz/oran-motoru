@@ -1,7 +1,7 @@
 // Sunucu verisi (GitHub Pages / geliştirmede yerel veri sunucusu).
 // Her başarılı indirme SQLite'a da yazılır; internet yokken son kopya kullanılır.
 import type { IndexFile, OddsFile, ResultsFile } from '@oran/contracts';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { eq } from 'drizzle-orm';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
@@ -49,3 +49,14 @@ export const useOdds = (league: string | undefined) =>
 
 export const fetchResults = (leagues: string[]) =>
   Promise.all(leagues.map((l) => fetchJson<ResultsFile>(`results/${l}.json`)));
+
+/** Birden fazla ligin maç öncesi oranları (öne çıkan maçlar için) */
+export function useOddsMany(leagues: string[]) {
+  return useQueries({
+    queries: leagues.map((league) => ({
+      queryKey: ['odds', league],
+      queryFn: () => fetchJson<OddsFile>(`odds/${league}.json`),
+      staleTime: 30 * 60_000,
+    })),
+  });
+}

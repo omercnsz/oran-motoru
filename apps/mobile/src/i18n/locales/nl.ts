@@ -5,6 +5,11 @@ const nl: Messages = {
   nav: { match: 'Wedstrijd', live: 'Live', coupon: 'Wedbon', settings: 'Instellingen', back: 'Wedstrijden' },
   common: { dataError: 'Gegevens konden niet worden geladen', dbError: 'De database kon niet worden voorbereid: %{message}' },
   matches: {
+    featured: 'Uitgelichte wedstrijden',
+    liveNow: 'Nu live',
+    search: 'Zoek teams of competities',
+    noResults: 'Geen resultaten',
+    betsCount: '+%{count} weddenschappen',
     title: 'Wedstrijden', subtitle: 'Echte wedstrijden, echte odds. Speelgeld.', preMatch: 'Voor de wedstrijd', live: 'Live',
     none14: 'Geen wedstrijden in deze competitie in de komende 14 dagen.',
     notSoon: '%{league} speelt vandaag en morgen niet; de volgende wedstrijden zijn op %{date}.',

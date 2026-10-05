@@ -8,6 +8,11 @@ const ru: Messages = {
     dbError: 'Не удалось подготовить базу данных: %{message}',
   },
   matches: {
+    featured: 'Главные матчи',
+    liveNow: 'Сейчас в эфире',
+    search: 'Поиск команд или лиг',
+    noResults: 'Ничего не найдено',
+    betsCount: '+%{count} ставок',
     title: 'Матчи',
     subtitle: 'Настоящие матчи, настоящие коэффициенты. Деньги игровые.',
     preMatch: 'До матча',

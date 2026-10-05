@@ -5,6 +5,11 @@ const it: Messages = {
   nav: { match: 'Partita', live: 'Live', coupon: 'Schedina', settings: 'Impostazioni', back: 'Partite' },
   common: { dataError: 'Impossibile caricare i dati', dbError: 'Impossibile preparare il database: %{message}' },
   matches: {
+    featured: 'Partite in evidenza',
+    liveNow: 'Live ora',
+    search: 'Cerca squadre o campionati',
+    noResults: 'Nessun risultato',
+    betsCount: '+%{count} scommesse',
     title: 'Partite', subtitle: 'Partite vere, quote vere. Soldi finti.', preMatch: 'Prepartita', live: 'Live',
     none14: 'Nessuna partita in questa competizione nei prossimi 14 giorni.',
     notSoon: '%{league} non ha partite oggi né domani; le prossime sono %{date}.',

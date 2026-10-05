@@ -5,6 +5,11 @@ const sl: Messages = {
   nav: { match: 'Tekma', live: 'V živo', coupon: 'Listek', settings: 'Nastavitve', back: 'Tekme' },
   common: { dataError: 'Podatkov ni bilo mogoče naložiti', dbError: 'Podatkovne zbirke ni bilo mogoče pripraviti: %{message}' },
   matches: {
+    featured: 'Izpostavljene tekme',
+    liveNow: 'V živo zdaj',
+    search: 'Išči ekipe ali lige',
+    noResults: 'Ni rezultatov',
+    betsCount: '+%{count} stav',
     title: 'Tekme', subtitle: 'Prave tekme, pravi koeficienti. Navidezni denar.', preMatch: 'Pred tekmo', live: 'V živo',
     none14: 'V tem tekmovanju v naslednjih 14 dneh ni tekem.',
     notSoon: '%{league} danes in jutri nima tekem; naslednje so %{date}.',

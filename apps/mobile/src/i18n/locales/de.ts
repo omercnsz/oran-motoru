@@ -5,6 +5,11 @@ const de: Messages = {
   nav: { match: 'Spiel', live: 'Live', coupon: 'Wettschein', settings: 'Einstellungen', back: 'Spiele' },
   common: { dataError: 'Daten konnten nicht geladen werden', dbError: 'Die Datenbank konnte nicht vorbereitet werden: %{message}' },
   matches: {
+    featured: 'Top-Spiele',
+    liveNow: 'Jetzt live',
+    search: 'Teams oder Ligen suchen',
+    noResults: 'Keine Ergebnisse',
+    betsCount: '+%{count} Wetten',
     title: 'Spiele', subtitle: 'Echte Spiele, echte Quoten. Spielgeld.', preMatch: 'Vor dem Spiel', live: 'Live',
     none14: 'In diesem Wettbewerb gibt es in den nächsten 14 Tagen keine Spiele.',
     notSoon: '%{league} hat heute und morgen keine Spiele; die nächsten Spiele sind am %{date}.',

@@ -9,6 +9,11 @@ const ar: Messages = {
     dbError: 'تعذّر تجهيز قاعدة البيانات: %{message}',
   },
   matches: {
+    featured: 'مباريات مميزة',
+    liveNow: 'مباشر الآن',
+    search: 'ابحث عن فريق أو دوري',
+    noResults: 'لا نتائج',
+    betsCount: '+%{count} رهان',
     title: 'المباريات',
     subtitle: 'مباريات حقيقية، احتمالات حقيقية. المال وهمي.',
     preMatch: 'قبل المباراة',
