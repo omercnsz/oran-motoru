@@ -7,28 +7,30 @@ import '@/global.css';
 
 import { Platform } from 'react-native';
 
+// Sade bölümler (Kumbara, Rapor, Ayarlar): telefonun açık/koyu ayarını izler. Marka yeşili vurgu, yumuşak gölgeli kartlar.
+// Oyunlar ve maçlar her zaman koyu "arena" temasındadır (constants/arena.ts).
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-    accent: '#1F6FEB',
+    text: '#0B1220',
+    background: '#F4F6F9',
+    backgroundElement: '#FFFFFF',
+    backgroundSelected: '#E7EBF1',
+    textSecondary: '#5B6475',
+    accent: '#0E7C55',
     accentText: '#ffffff',
-    success: '#1A7F37',
-    danger: '#CF222E',
+    success: '#12965A',
+    danger: '#D93A45',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-    accent: '#4C8DFF',
-    accentText: '#ffffff',
-    success: '#3FB950',
-    danger: '#F85149',
+    text: '#F2F5F9',
+    background: '#0A0E14',
+    backgroundElement: '#141A23',
+    backgroundSelected: '#212A36',
+    textSecondary: '#8C97A8',
+    accent: '#22C38E',
+    accentText: '#03140D',
+    success: '#3DD68C',
+    danger: '#FF6369',
   },
 } as const;
 

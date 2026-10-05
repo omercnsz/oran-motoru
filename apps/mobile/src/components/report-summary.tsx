@@ -2,11 +2,11 @@
 // Rapor ekranında ve Kumbara sekmesinde kullanılır.
 import { formatMoney, type Report } from '@oran/betting';
 import { Link } from 'expo-router';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
+import { Card } from '@/components/card';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { FontFamily } from '@/constants/arena';
 import { tokenValueMinor } from '@/hooks/use-report';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
@@ -24,12 +24,14 @@ export function ReportSummary({ report, link }: { report: Report; link?: boolean
   const theme = useTheme();
   const signed = useSignedMoney();
   const tokenValue = useReportSettings((s) => s.tokenValue);
-  const color = report.ifReal < 0 ? theme.danger : report.ifReal > 0 ? theme.success : theme.text;
+  const tone = (v: number) => (v < 0 ? theme.danger : v > 0 ? theme.success : theme.text);
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
+    <Card>
       <ThemedText type="small" themeColor="textSecondary">{t('savings.ifReal')}</ThemedText>
-      <ThemedText style={[styles.big, { color }]}>{signed(report.ifReal)}</ThemedText>
-      <ThemedText type="small">{t('report.breakdown', { sports: signed(report.sportsMoney), games: signed(report.gamesMoney) })}</ThemedText>
+      <ThemedText style={[styles.big, { color: tone(report.ifReal) }]}>{signed(report.ifReal)}</ThemedText>
+      <View style={[styles.split, { backgroundColor: theme.backgroundSelected }]}>
+        <ThemedText type="small" style={styles.splitText}>{t('report.breakdown', { sports: signed(report.sportsMoney), games: signed(report.gamesMoney) })}</ThemedText>
+      </View>
       {report.gamesRounds > 0 ? (
         <ThemedText type="small" themeColor="textSecondary">
           {t('report.tokenNote', { value: formatMoney(tokenValueMinor(tokenValue, currency), currency, locale) })}
@@ -42,11 +44,12 @@ export function ReportSummary({ report, link }: { report: Report; link?: boolean
           </Pressable>
         </Link>
       ) : null}
-    </ThemedView>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
-  big: { fontSize: 36, lineHeight: 44, fontWeight: 700 },
+  big: { fontFamily: FontFamily.display, fontSize: 34, lineHeight: 44, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  split: { borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8 },
+  splitText: { fontWeight: '600' },
 });

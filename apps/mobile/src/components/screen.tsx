@@ -21,10 +21,13 @@ export function Screen({ title, subtitle, compact, accessory, children }: {
       <SafeAreaView style={styles.fill} edges={compact ? [] : ['top']}>
         <ScrollView contentContainerStyle={[styles.content, compact && styles.compact]}>
           <View style={styles.inner}>
-            <View style={styles.titleRow}>
-              <ThemedText type={compact ? 'default' : 'subtitle'} style={[styles.title, compact && styles.compactTitle]}>{title}</ThemedText>
-              {accessory}
-            </View>
+            {/* Gezinme çubuklu ekranlarda başlık zaten üstte yazar; tekrarlanmaz */}
+            {compact ? null : (
+              <View style={styles.titleRow}>
+                <ThemedText type="title" style={styles.title}>{title}</ThemedText>
+                {accessory}
+              </View>
+            )}
             {subtitle ? <ThemedText themeColor="textSecondary">{subtitle}</ThemedText> : null}
             {children}
           </View>
@@ -46,7 +49,6 @@ const styles = StyleSheet.create({
   },
   compact: { paddingTop: Spacing.three },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  title: { flex: 1 },
-  compactTitle: { fontWeight: 700 },
+  title: { flex: 1, fontSize: 32, lineHeight: 42 },
   inner: { width: '100%', maxWidth: MaxContentWidth, gap: Spacing.three },
 });

@@ -9,7 +9,8 @@ import { ReportSummary, useSignedMoney } from '@/components/report-summary';
 import { ResultChart } from '@/components/result-chart';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { Card } from '@/components/card';
+import { FontFamily } from '@/constants/arena';
 import { Spacing } from '@/constants/theme';
 import { tokenValueMinor, useReport } from '@/hooks/use-report';
 import { useTheme } from '@/hooks/use-theme';
@@ -48,11 +49,11 @@ export default function RaporScreen() {
 
   return (
     <Screen title={t('report.title')} compact>
-      <View style={styles.chips}>
+      <View style={[styles.chips, { backgroundColor: theme.backgroundSelected }]}>
         {PERIODS.map((p) => (
           <Pressable key={p} accessibilityRole="tab" accessibilityState={{ selected: period === p }} onPress={() => setPeriod(p)}
-            style={[styles.chip, { backgroundColor: period === p ? theme.text : theme.backgroundElement }]}>
-            <ThemedText type="small" style={{ color: period === p ? theme.background : theme.text }}>{t(`report.${p}`)}</ThemedText>
+            style={[styles.chip, period === p && { backgroundColor: theme.backgroundElement, boxShadow: '0px 2px 6px rgba(15,23,42,0.12)' }]}>
+            <ThemedText type="smallBold" style={{ color: period === p ? theme.text : theme.textSecondary }}>{t(`report.${p}`)}</ThemedText>
           </Pressable>
         ))}
       </View>
@@ -61,13 +62,13 @@ export default function RaporScreen() {
         <>
           <ReportSummary report={report} />
 
-          <ThemedView type="backgroundElement" style={styles.card}>
+          <Card>
             <ThemedText type="smallBold">{t('report.chart')}</ThemedText>
             <ResultChart series={report.series} start={report.from ? localDay(report.from.toISOString()) : undefined} format={signed} />
             <ThemedText type="small" themeColor="textSecondary">{t('report.chartNote')}</ThemedText>
-          </ThemedView>
+          </Card>
 
-          <ThemedView type="backgroundElement" style={styles.card}>
+          <Card>
             <ThemedText type="smallBold">{t('report.sports')}</ThemedText>
             <Row label={t('savings.coupons')} value={t('savings.couponsValue', { count: report.sports.coupons, open: report.sports.open })} />
             <Row label={t('savings.staked')} value={money(report.sports.staked)} />
@@ -78,7 +79,7 @@ export default function RaporScreen() {
               </>
             ) : <ThemedText type="small" themeColor="textSecondary">{t('savings.noSettled')}</ThemedText>}
             {report.otherCurrencyCoupons > 0 ? <ThemedText type="small" themeColor="textSecondary">{t('savings.otherCurrencies')}</ThemedText> : null}
-          </ThemedView>
+          </Card>
 
           <GamesCard report={report} />
         </>
@@ -99,13 +100,13 @@ function GamesCard({ report }: { report: Report }) {
   const value = tokenValueMinor(tokenValue, currency);
   if (report.gamesRounds === 0 && report.refills === 0) return null;
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
+    <Card>
       <ThemedText type="smallBold">{t('report.games')}</ThemedText>
       {report.games.map((g) => (
         <View key={g.game} style={styles.game}>
           <View style={styles.row}>
             <ThemedText type="small" style={styles.label}>{t(GAME_TITLE[g.game] ?? g.game)}</ThemedText>
-            <ThemedText type="smallBold" style={{ color: g.net < 0 ? theme.danger : g.net > 0 ? theme.success : theme.text }}>
+            <ThemedText type="smallBold" style={{ fontFamily: FontFamily.display, color: g.net < 0 ? theme.danger : g.net > 0 ? theme.success : theme.text }}>
               {`${g.net > 0 ? '+' : g.net < 0 ? '−' : ''}${formatTokens(Math.abs(g.net))}`}
             </ThemedText>
           </View>
@@ -124,7 +125,7 @@ function GamesCard({ report }: { report: Report }) {
         </>
       ) : null}
       {report.refills > 0 ? <Row label={t('report.refills')} value={String(report.refills)} /> : null}
-    </ThemedView>
+    </Card>
   );
 }
 
@@ -138,9 +139,8 @@ function Row({ label, value, color }: { label: string; value: string; color?: st
 }
 
 const styles = StyleSheet.create({
-  chips: { flexDirection: 'row', gap: Spacing.two },
-  chip: { paddingVertical: Spacing.two, paddingHorizontal: Spacing.three, borderRadius: Spacing.four },
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
+  chips: { flexDirection: 'row', padding: 4, borderRadius: 14 },
+  chip: { flex: 1, alignItems: 'center', paddingVertical: 9, borderRadius: 11 },
   row: { flexDirection: 'row', justifyContent: 'space-between', gap: Spacing.two },
   label: { flexShrink: 1 },
   game: { gap: 2 },

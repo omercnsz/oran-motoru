@@ -1,19 +1,18 @@
 // Jeton bitince: kısa bir ödüllü reklamla jeton yüklenir. Jeton satılmaz. Reklam yoksa kullanıcı cezalandırılmaz.
+// Oyun ekranlarında ve Oyunlar sekmesinde görünür (arena teması).
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { showRewarded } from '@/ads';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { AText, Coin, Glass, NeonButton } from '@/components/arena/kit';
+import { Arena, glow } from '@/constants/arena';
 import { REFILL_TOKENS, refillTokens } from '@/db/games';
-import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
+import { sfx } from '@/lib/sound';
 import { formatTokens } from '@/lib/tokens';
 
 export function RefillCard() {
   const { t } = useT();
-  const theme = useTheme();
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
 
@@ -24,6 +23,7 @@ export function RefillCard() {
     if (result === 'closed') setNote(t('games.refillClosed'));
     else {
       refillTokens();
+      sfx('coins');
       if (result === 'unavailable') setNote(t('games.refillNoAd'));
     }
     setBusy(false);
@@ -31,20 +31,22 @@ export function RefillCard() {
 
   const amount = formatTokens(REFILL_TOKENS);
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="small">{t('games.refill', { amount })}</ThemedText>
-      <Pressable accessibilityRole="button" disabled={busy} onPress={() => void watch()}
-        style={({ pressed }) => [styles.button, { backgroundColor: theme.accent, opacity: pressed || busy ? 0.7 : 1 }]}>
-        {busy ? <ActivityIndicator color={theme.accentText} /> : (
-          <ThemedText type="smallBold" style={{ color: theme.accentText }}>{t('games.refillButton', { amount })}</ThemedText>
-        )}
-      </Pressable>
-      {note ? <ThemedText type="small" themeColor="textSecondary">{note}</ThemedText> : null}
-    </ThemedView>
+    <Glass strong style={styles.card}>
+      <View style={styles.row}>
+        <Coin size={34} />
+        <AText style={styles.text}>{t('games.refill', { amount })}</AText>
+      </View>
+      {busy ? <ActivityIndicator color={Arena.gold} /> : (
+        <NeonButton tone="gold" sound={null} onPress={() => void watch()} label={t('games.refillButton', { amount })} />
+      )}
+      {note ? <AText dim style={styles.note}>{note}</AText> : null}
+    </Glass>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
-  button: { borderRadius: Spacing.three, paddingVertical: Spacing.three, alignItems: 'center', minHeight: 48, justifyContent: 'center' },
+  card: { padding: 14, gap: 12, borderColor: 'rgba(255,200,61,0.45)', boxShadow: glow(Arena.gold, 18, 0.25) },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  text: { flex: 1, fontSize: 14, lineHeight: 20, fontWeight: '600' },
+  note: { fontSize: 13, lineHeight: 18 },
 });

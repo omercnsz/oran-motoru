@@ -1,5 +1,6 @@
 import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
 
+import { FontFamily } from '@/constants/arena';
 import { Fonts, ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -34,7 +35,7 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
 const styles = StyleSheet.create({
   // Satır başına hizala. React Native sağdan sola düzende 'left' değerini sağa çevirir; hiç belirtilmezse iOS
   // metni telefonun diline göre hizalar ve dil uygulama içinden Arapça seçildiğinde metinler sola yaslanır.
-  start: { textAlign: 'left' },
+  start: { textAlign: 'left', fontFamily: FontFamily.ui },
   small: {
     fontSize: 14,
     lineHeight: 20,
@@ -51,14 +52,16 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   title: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
+    fontFamily: FontFamily.display,
+    fontSize: 40,
+    fontWeight: 800,
+    lineHeight: 50,
   },
   subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
+    fontFamily: FontFamily.display,
+    fontSize: 30,
+    lineHeight: 40,
+    fontWeight: 700,
   },
   link: {
     lineHeight: 30,

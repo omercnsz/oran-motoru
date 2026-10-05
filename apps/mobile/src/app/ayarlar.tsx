@@ -4,7 +4,7 @@ import { Linking, Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { Card } from '@/components/card';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { CURRENCIES, deviceDefaults, LANGUAGES, useT, type Preferences } from '@/i18n';
@@ -127,8 +127,8 @@ function AdPrivacyRow() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View style={styles.section}>
-      <ThemedText type="smallBold" themeColor="textSecondary">{title}</ThemedText>
-      <ThemedView type="backgroundElement" style={styles.card}>{children}</ThemedView>
+      <ThemedText type="smallBold" themeColor="textSecondary" style={styles.sectionTitle}>{title}</ThemedText>
+      <Card style={styles.card}>{children}</Card>
     </View>
   );
 }
@@ -151,7 +151,8 @@ function Notice({ text }: { text: string }) {
 
 const styles = StyleSheet.create({
   section: { gap: Spacing.two },
-  card: { borderRadius: Spacing.three, paddingHorizontal: Spacing.three },
+  sectionTitle: { letterSpacing: 0.6, textTransform: 'uppercase', fontSize: 12 },
+  card: { paddingVertical: 4, paddingHorizontal: Spacing.three, gap: 0 },
   option: { flexDirection: 'row', alignItems: 'center', minHeight: 48, gap: Spacing.two },
   optionLabel: { flex: 1 },
   denied: { gap: Spacing.one, paddingBottom: Spacing.three },
