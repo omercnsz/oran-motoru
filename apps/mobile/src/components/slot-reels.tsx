@@ -96,6 +96,9 @@ export const SlotReels = memo(forwardRef<ReelsHandle, {
   const innerWidth = cell * SLOT.reels + GAP * (SLOT.reels - 1);
   const [stops, setStops] = useState(initialStops);
   const images = useSymbolImages();
+  // Resimler yüklenince çizim yenilensin diye paylaşılan değerde tutulur
+  const imagesSV = useSharedValue<{ sharp: SkImage[]; blur: SkImage[] } | null>(null);
+  useEffect(() => { imagesSV.set(images); }, [images, imagesSV]);
   const strips = useSharedValue<number[][]>(REELS.map((strip, i) => windowAt(strip, initialStops[i])));
   const hl = useSharedValue<boolean[]>(new Array(15).fill(false));
   const o0 = useSharedValue(0), o1 = useSharedValue(0), o2 = useSharedValue(0), o3 = useSharedValue(0), o4 = useSharedValue(0);
@@ -137,7 +140,7 @@ export const SlotReels = memo(forwardRef<ReelsHandle, {
   }), [stops, rowH, offsets, settle, strips]);
 
   const picture = useDerivedValue(() => {
-    const imgs = images;
+    const imgs = imagesSV.value;
     const list = strips.value;
     const wins = hl.value;
     const beat = pulse.value;
@@ -183,7 +186,7 @@ export const SlotReels = memo(forwardRef<ReelsHandle, {
         canvas.restore();
       }
     });
-  }, [images, cell, rowH, height]);
+  }, [cell, rowH, height]);
 
   return (
     <View style={[styles.frame, { padding: PAD }]}>
