@@ -5,3 +5,4 @@ dist/
 apps/pipeline/data/
 apps/pipeline/public/
 *.tsbuildinfo
+store/play/release/
