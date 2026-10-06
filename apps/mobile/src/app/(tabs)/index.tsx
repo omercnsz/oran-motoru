@@ -176,7 +176,7 @@ export default function MaclarScreen() {
             {days.map(([day, matches], d) => (
               <View key={day} style={styles.day}>
                 <View style={styles.dayHead}>
-                  <AText style={styles.dayText}>{day}</AText>
+                  <AText style={styles.dayText}>{formatDay(matches[0].kickoff)}</AText>
                   <View style={styles.dayLine} />
                 </View>
                 {matches.map((m, i) => (

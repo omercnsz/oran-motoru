@@ -61,7 +61,7 @@ const es: Messages = {
     title: 'Tu cupón',
     subtitle: 'No estás apostando este dinero de verdad. La cantidad va a tu hucha.',
     empty: 'Tu cupón está vacío. Elige cuotas en Partidos.',
-    bar: 'Cupón · %{count} partidos',
+    bar: 'Cupón · partidos: %{count}',
     barOdds: 'Cuota %{odds}',
     remove: 'Quitar del cupón',
     live: 'En vivo',

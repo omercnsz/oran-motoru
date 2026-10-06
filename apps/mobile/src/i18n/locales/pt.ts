@@ -62,7 +62,7 @@ const pt: Messages = {
     title: 'Seu bilhete',
     subtitle: 'Você não está apostando este dinheiro de verdade. O valor vai para o seu cofrinho.',
     empty: 'Seu bilhete está vazio. Escolha odds em Jogos.',
-    bar: 'Bilhete · %{count} jogos',
+    bar: 'Bilhete · jogos: %{count}',
     barOdds: 'Odd %{odds}',
     remove: 'Remover do bilhete',
     live: 'Ao vivo',

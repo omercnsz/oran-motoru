@@ -61,7 +61,7 @@ const en = {
     title: 'Your coupon',
     subtitle: "You're not really staking this money. The amount goes into your piggy bank.",
     empty: 'Your coupon is empty. Pick odds from Matches.',
-    bar: 'Coupon · %{count} matches',
+    bar: 'Coupon · matches: %{count}',
     barOdds: 'Odds %{odds}',
     remove: 'Remove from coupon',
     live: 'Live',
