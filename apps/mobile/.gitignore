@@ -45,3 +45,6 @@ example
 # Expo kendi derlemesinde üretilir (Continuous Native Generation); elle düzenlenmez
 /ios
 /android
+
+# Yerel iOS arşivi ve App Store dışa aktarımı (xcodebuild archive/exportArchive)
+/build
