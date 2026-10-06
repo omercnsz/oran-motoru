@@ -111,6 +111,8 @@ const zh: Messages = {
     houseEdge: '庄家优势 %{edge}：长期来看，每 100 个筹码会返还 %{rtp} 个。',
     refill: '筹码用完了。观看一段短广告即可获得 %{amount} 个筹码。筹码永不出售。',
     refillButton: '看广告 · +%{amount}',
+    refillFree: '你的筹码用完了。点击即可免费获得 %{amount} 个筹码。筹码从不出售。',
+    refillFreeButton: '领取筹码 · +%{amount}',
     refillNoAd: '暂时没有广告；筹码仍已到账。',
     refillClosed: '广告被提前关闭，因此没有发放筹码。',
   },

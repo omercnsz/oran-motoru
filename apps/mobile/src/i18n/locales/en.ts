@@ -154,6 +154,8 @@ const en = {
     houseEdge: 'House edge %{edge}: in the long run, %{rtp} of every 100 tokens come back.',
     refill: "You're out of tokens. Watch a short ad to get %{amount} tokens. Tokens are never sold.",
     refillButton: 'Watch ad · +%{amount}',
+    refillFree: "You're out of tokens. Tap to get %{amount} free tokens. Tokens are never sold.",
+    refillFreeButton: 'Get tokens · +%{amount}',
     refillNoAd: 'No ad available right now; your tokens were added anyway.',
     refillClosed: 'The ad was closed early, so no tokens were added.',
   },

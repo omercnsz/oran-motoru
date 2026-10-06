@@ -3,7 +3,9 @@
 // - Kişiselleştirilmemiş reklam: bahis eğilimli kullanıcıların profillenip hedeflenmesini istemiyoruz.
 // - Kumar, kripto ve kredi reklamları AdMob konsolundan engellenir (kodla yapılamaz).
 // - Ödüllü reklam sadece oyun jetonu bitince (jeton satılmaz).
-// AdMob hesabı açılana kadar Google'ın test kimlikleri kullanılır: gösterilen reklamlar örnektir, gelir yoktur.
+// Geliştirmede Google'ın test kimlikleri kullanılır. Yayın derlemesinde gerçek kimlikler (.env) yoksa reklam hiç yoktur:
+// SDK başlatılmaz, izin formu gösterilmez, afiş yer kaplamaz, jeton dolumu reklamsız çalışır.
+// Reklamı açarken app.json'daki AD_ID engelini de kaldırın (Play'de reklam kimliği beyanı).
 import mobileAds, {
   AdEventType, AdsConsent, AdsConsentPrivacyOptionsRequirementStatus, MaxAdContentRating, RewardedAd, RewardedAdEventType, TestIds,
 } from 'react-native-google-mobile-ads';
@@ -16,6 +18,9 @@ const realBanner = Platform.select({
   android: process.env.EXPO_PUBLIC_ADMOB_BANNER_ANDROID,
 });
 export const BANNER_ID = !__DEV__ && realBanner ? realBanner : TestIds.ADAPTIVE_BANNER;
+
+/** Reklam açık mı: geliştirmede hep (test reklamı), yayında sadece gerçek kimlik tanımlıysa */
+export const ADS_ENABLED = __DEV__ || !!realBanner;
 
 const realRewarded = Platform.select({
   ios: process.env.EXPO_PUBLIC_ADMOB_REWARDED_IOS,
@@ -39,7 +44,7 @@ let started = false;
 
 /** Uygulama açılınca bir kez: gerekirse izin formu, sonra reklam SDK'sı */
 export async function startAds(): Promise<void> {
-  if (started) return;
+  if (started || !ADS_ENABLED) return;
   started = true;
   try {
     // İzin formu AdMob konsolunda "Privacy & messaging" ayarlanınca, sadece gereken ülkelerde gösterilir

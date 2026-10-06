@@ -111,6 +111,8 @@ const fr: Messages = {
     houseEdge: 'Avantage de la maison %{edge} : à long terme, %{rtp} jetons sur 100 reviennent.',
     refill: "Tu n'as plus de jetons. Regarde une courte pub pour recevoir %{amount} jetons. Les jetons ne sont jamais vendus.",
     refillButton: 'Voir une pub · +%{amount}',
+    refillFree: 'Tu n’as plus de jetons. Touche pour recevoir %{amount} jetons gratuits. Les jetons ne sont jamais vendus.',
+    refillFreeButton: 'Recevoir des jetons · +%{amount}',
     refillNoAd: "Aucune pub disponible pour l'instant ; tes jetons ont quand même été ajoutés.",
     refillClosed: 'La pub a été fermée trop tôt, aucun jeton ajouté.',
   },

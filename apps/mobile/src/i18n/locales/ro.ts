@@ -111,6 +111,8 @@ const ro: Messages = {
     houseEdge: 'Avantajul casei %{edge}: pe termen lung, din fiecare 100 de jetoane revin %{rtp}.',
     refill: 'Ai rămas fără jetoane. Urmărește o reclamă scurtă și primești %{amount} de jetoane. Jetoanele nu se vând niciodată.',
     refillButton: 'Vezi reclama · +%{amount}',
+    refillFree: 'Ai rămas fără jetoane. Atinge pentru a primi %{amount} jetoane gratuite. Jetoanele nu se vând niciodată.',
+    refillFreeButton: 'Primește jetoane · +%{amount}',
     refillNoAd: 'Nu există reclamă acum; jetoanele au fost adăugate oricum.',
     refillClosed: 'Reclama a fost închisă prea devreme, așa că nu s-au adăugat jetoane.',
   },

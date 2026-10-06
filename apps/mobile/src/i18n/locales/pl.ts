@@ -111,6 +111,8 @@ const pl: Messages = {
     houseEdge: 'Przewaga kasyna %{edge}: w długim okresie ze 100 żetonów wraca %{rtp}.',
     refill: 'Skończyły ci się żetony. Obejrzyj krótką reklamę i odbierz %{amount} żetonów. Żetony nigdy nie są sprzedawane.',
     refillButton: 'Obejrzyj reklamę · +%{amount}',
+    refillFree: 'Skończyły ci się żetony. Dotknij, aby dostać %{amount} darmowych żetonów. Żetony nigdy nie są sprzedawane.',
+    refillFreeButton: 'Odbierz żetony · +%{amount}',
     refillNoAd: 'Teraz nie ma reklamy; żetony i tak zostały dodane.',
     refillClosed: 'Reklama została zamknięta za wcześnie, więc nie dodano żetonów.',
   },

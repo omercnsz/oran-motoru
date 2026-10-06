@@ -154,6 +154,8 @@ const es: Messages = {
     houseEdge: 'Ventaja de la casa %{edge}: a largo plazo vuelven %{rtp} de cada 100 fichas.',
     refill: 'Te quedaste sin fichas. Mira un anuncio corto y recibe %{amount} fichas. Las fichas nunca se venden.',
     refillButton: 'Ver anuncio · +%{amount}',
+    refillFree: 'Te quedaste sin fichas. Toca para recibir %{amount} fichas gratis. Las fichas nunca se venden.',
+    refillFreeButton: 'Recibir fichas · +%{amount}',
     refillNoAd: 'Ahora no hay anuncios; tus fichas se añadieron igualmente.',
     refillClosed: 'El anuncio se cerró antes de tiempo, así que no se añadieron fichas.',
   },

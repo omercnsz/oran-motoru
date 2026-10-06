@@ -154,6 +154,8 @@ const tr: Messages = {
     houseEdge: 'Kasa avantajı %{edge}: uzun vadede her 100 jetonun %{rtp} tanesi geri döner.',
     refill: 'Jetonun bitti. Kısa bir reklam izle, %{amount} jeton al. Jeton asla satılmaz.',
     refillButton: 'Reklam izle · +%{amount}',
+    refillFree: 'Jetonun bitti. Dokun, %{amount} ücretsiz jeton al. Jeton asla satılmaz.',
+    refillFreeButton: 'Jeton al · +%{amount}',
     refillNoAd: 'Şu an reklam yok; jetonların yine de yüklendi.',
     refillClosed: 'Reklam erken kapatıldığı için jeton yüklenmedi.',
   },

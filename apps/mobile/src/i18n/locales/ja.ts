@@ -110,6 +110,8 @@ const ja: Messages = {
     houseEdge: 'ハウスエッジ %{edge}：長期的には100チップのうち %{rtp} が戻ります。',
     refill: 'チップがなくなりました。短い広告を見ると %{amount} チップがもらえます。チップは販売していません。',
     refillButton: '広告を見る · +%{amount}',
+    refillFree: 'チップがなくなりました。タップすると %{amount} チップを無料でもらえます。チップは販売していません。',
+    refillFreeButton: 'チップをもらう · +%{amount}',
     refillNoAd: '今は広告がありません。チップはそのまま追加しました。',
     refillClosed: '広告が途中で閉じられたため、チップは追加されませんでした。',
   },

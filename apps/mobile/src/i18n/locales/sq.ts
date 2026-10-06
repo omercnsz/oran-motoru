@@ -111,6 +111,8 @@ const sq: Messages = {
     houseEdge: 'Avantazhi i shtëpisë %{edge}: në afat të gjatë, nga çdo 100 monedha kthehen %{rtp}.',
     refill: 'T’i mbaruan monedhat. Shiko një reklamë të shkurtër dhe merr %{amount} monedha. Monedhat nuk shiten kurrë.',
     refillButton: 'Shiko reklamën · +%{amount}',
+    refillFree: 'Të mbaruan monedhat. Prek për të marrë %{amount} monedha falas. Monedhat nuk shiten kurrë.',
+    refillFreeButton: 'Merr monedha · +%{amount}',
     refillNoAd: 'Tani nuk ka reklamë; monedhat u shtuan gjithsesi.',
     refillClosed: 'Reklama u mbyll herët, ndaj nuk u shtuan monedha.',
   },

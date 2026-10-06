@@ -111,6 +111,8 @@ const sl: Messages = {
     houseEdge: 'Prednost igralnice %{edge}: dolgoročno se od vsakih 100 žetonov vrne %{rtp}.',
     refill: 'Žetoni so ti pošli. Oglej si kratek oglas in dobi %{amount} žetonov. Žetonov nikoli ne prodajamo.',
     refillButton: 'Oglej si oglas · +%{amount}',
+    refillFree: 'Zmanjkalo ti je žetonov. Tapni in dobi %{amount} brezplačnih žetonov. Žetonov nikoli ne prodajamo.',
+    refillFreeButton: 'Dobi žetone · +%{amount}',
     refillNoAd: 'Trenutno ni oglasa; žetoni so bili vseeno dodani.',
     refillClosed: 'Oglas je bil zaprt prezgodaj, zato žetoni niso bili dodani.',
   },

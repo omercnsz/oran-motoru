@@ -146,3 +146,13 @@ npx eas-cli@latest build --profile preview --platform android   # bulutta Androi
 ```
 
 `ios/` ve `android/` klasörleri derleme sırasında `app.json`'dan üretilir; elle düzenlenmez ve git'e girmez.
+
+## Google Play yayını
+
+Hazırlık dosyaları `store/play/` klasöründe: mağaza metinleri ve form cevapları (`listing.md`), 512 px simge, tanıtım görselleri (İngilizce/Türkçe) ve ekran görüntüleri (1080×2160). Tanıtım görseli `apps/mobile/scripts/store-graphic.swift` ile üretilir.
+
+- Paket adı `com.app.stashodds` (değiştirilemez). Sürüm numarası `app.json` → `version` ve `android.versionCode`; her yüklemede versionCode artırılmalı.
+- İlk sürüm reklamsız: yayın derlemesinde `.env`'de gerçek AdMob kimlikleri yoksa reklam SDK'sı hiç başlatılmaz, jeton dolumu tek dokunuşla olur. Reklam kimliği (AD_ID) ve tam zamanlı alarm izinleri `app.json` → `blockedPermissions` ile kaldırıldı (Play politikası: tam zamanlı alarm sadece alarm/takvim uygulamalarına).
+- İmza: `plugins/release-signing.js`. Yükleme anahtarı depoda değil, `~/.gradle/gradle.properties` içindeki `STASHODDS_UPLOAD_*` değerleriyle bulunur. Anahtar yoksa `bundleRelease` hata verir; deneme APK'sı (`assembleRelease`) hata ayıklama anahtarıyla imzalanır.
+- Play paketi: `cd apps/mobile/android && ./gradlew bundleRelease` → `app/build/outputs/bundle/release/app-release.aab` (Android Studio JDK'sı ve `NODE_ENV=production` ile).
+- Kişisel hesap: üretime geçmeden önce en az 12 test kullanıcısıyla 14 gün kapalı test şart.

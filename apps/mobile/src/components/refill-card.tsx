@@ -1,9 +1,10 @@
 // Jeton bitince: kısa bir ödüllü reklamla jeton yüklenir. Jeton satılmaz. Reklam yoksa kullanıcı cezalandırılmaz.
+// Reklamsız sürümde jeton tek dokunuşla yüklenir.
 // Oyun ekranlarında ve Oyunlar sekmesinde görünür (arena teması).
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { showRewarded } from '@/ads';
+import { ADS_ENABLED, showRewarded } from '@/ads';
 import { AText, Coin, Glass, NeonButton } from '@/components/arena/kit';
 import { Arena, glow } from '@/constants/arena';
 import { REFILL_TOKENS, refillTokens } from '@/db/games';
@@ -19,7 +20,7 @@ export function RefillCard() {
   async function watch() {
     setBusy(true);
     setNote(null);
-    const result = await showRewarded();
+    const result = ADS_ENABLED ? await showRewarded() : 'earned';
     if (result === 'closed') setNote(t('games.refillClosed'));
     else {
       refillTokens();
@@ -34,10 +35,10 @@ export function RefillCard() {
     <Glass strong style={styles.card}>
       <View style={styles.row}>
         <Coin size={34} />
-        <AText style={styles.text}>{t('games.refill', { amount })}</AText>
+        <AText style={styles.text}>{t(ADS_ENABLED ? 'games.refill' : 'games.refillFree', { amount })}</AText>
       </View>
       {busy ? <ActivityIndicator color={Arena.gold} /> : (
-        <NeonButton tone="gold" sound={null} onPress={() => void watch()} label={t('games.refillButton', { amount })} />
+        <NeonButton tone="gold" sound={null} onPress={() => void watch()} label={t(ADS_ENABLED ? 'games.refillButton' : 'games.refillFreeButton', { amount })} />
       )}
       {note ? <AText dim style={styles.note}>{note}</AText> : null}
     </Glass>

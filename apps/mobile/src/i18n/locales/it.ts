@@ -111,6 +111,8 @@ const it: Messages = {
     houseEdge: 'Vantaggio del banco %{edge}: nel lungo periodo tornano %{rtp} gettoni ogni 100.',
     refill: 'Hai finito i gettoni. Guarda una breve pubblicità e ricevi %{amount} gettoni. I gettoni non si vendono mai.',
     refillButton: 'Guarda pubblicità · +%{amount}',
+    refillFree: 'Hai finito i gettoni. Tocca per ricevere %{amount} gettoni gratis. I gettoni non sono mai in vendita.',
+    refillFreeButton: 'Ricevi gettoni · +%{amount}',
     refillNoAd: 'Nessuna pubblicità disponibile ora; i gettoni sono stati aggiunti comunque.',
     refillClosed: 'La pubblicità è stata chiusa prima della fine, quindi niente gettoni.',
   },

@@ -111,6 +111,8 @@ const bs: Messages = {
     houseEdge: 'Prednost kuće %{edge}: dugoročno se od svakih 100 žetona vrati %{rtp}.',
     refill: 'Žetoni su ti potrošeni. Pogledaj kratku reklamu i dobij %{amount} žetona. Žetoni se nikad ne prodaju.',
     refillButton: 'Pogledaj reklamu · +%{amount}',
+    refillFree: 'Nestalo ti je žetona. Dodirni da dobiješ %{amount} besplatnih žetona. Žetoni se nikada ne prodaju.',
+    refillFreeButton: 'Uzmi žetone · +%{amount}',
     refillNoAd: 'Trenutno nema reklame; žetoni su ipak dodani.',
     refillClosed: 'Reklama je zatvorena prije kraja, pa žetoni nisu dodani.',
   },

@@ -12,7 +12,7 @@ import { TeamBadge, teamAbbr, teamColors } from '@/components/sport/team-badge';
 import { Arena, FontFamily, glow } from '@/constants/arena';
 import { useOddsMany } from '@/data/api';
 import { activeMatches, useLive } from '@/data/live';
-import { useT } from '@/i18n';
+import { localization, useT } from '@/i18n';
 import { haptic } from '@/lib/haptics';
 import { clockLabel, dayKey, formatShort, formatTime } from '@/lib/format';
 import { fold, type LeagueInfo } from '@/lib/leagues';
@@ -40,7 +40,8 @@ export function ProbabilityBar({ match, labels = true }: { match: UpcomingMatch;
   if (!p) return null;
   const home = teamColors(match.home, match.homeStyle).fill;
   const away = teamColors(match.away, match.awayStyle).fill;
-  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  // Dile göre yüzde biçimi ("%58" / "58%")
+  const pct = (x: number) => new Intl.NumberFormat(localization().locale, { style: 'percent', maximumFractionDigits: 0 }).format(x);
   return (
     <View style={styles.prob} accessibilityLabel={`${match.home} ${pct(p[0])}, X ${pct(p[1])}, ${match.away} ${pct(p[2])}`}>
       <View style={styles.probBar}>

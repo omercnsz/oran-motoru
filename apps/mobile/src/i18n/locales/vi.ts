@@ -111,6 +111,8 @@ const vi: Messages = {
     houseEdge: 'Lợi thế nhà cái %{edge}: về lâu dài, cứ 100 chip thì %{rtp} chip quay lại.',
     refill: 'Bạn đã hết chip. Xem một quảng cáo ngắn để nhận %{amount} chip. Chip không bao giờ được bán.',
     refillButton: 'Xem quảng cáo · +%{amount}',
+    refillFree: 'Bạn đã hết chip. Chạm để nhận %{amount} chip miễn phí. Chip không bao giờ được bán.',
+    refillFreeButton: 'Nhận chip · +%{amount}',
     refillNoAd: 'Hiện không có quảng cáo; chip của bạn vẫn được cộng.',
     refillClosed: 'Quảng cáo bị đóng sớm nên không được cộng chip.',
   },

@@ -111,6 +111,8 @@ const id: Messages = {
     houseEdge: 'Keunggulan bandar %{edge}: dalam jangka panjang, %{rtp} dari setiap 100 chip kembali.',
     refill: 'Chip-mu habis. Tonton iklan singkat untuk mendapat %{amount} chip. Chip tidak pernah dijual.',
     refillButton: 'Tonton iklan · +%{amount}',
+    refillFree: 'Token kamu habis. Ketuk untuk mendapat %{amount} token gratis. Token tidak pernah dijual.',
+    refillFreeButton: 'Ambil token · +%{amount}',
     refillNoAd: 'Saat ini tidak ada iklan; chip-mu tetap ditambahkan.',
     refillClosed: 'Iklan ditutup terlalu cepat, jadi chip tidak ditambahkan.',
   },

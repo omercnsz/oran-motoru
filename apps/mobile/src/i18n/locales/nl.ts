@@ -111,6 +111,8 @@ const nl: Messages = {
     houseEdge: 'Huisvoordeel %{edge}: op lange termijn komen %{rtp} van elke 100 fiches terug.',
     refill: 'Je fiches zijn op. Bekijk een korte advertentie en krijg %{amount} fiches. Fiches worden nooit verkocht.',
     refillButton: 'Advertentie bekijken · +%{amount}',
+    refillFree: 'Je fiches zijn op. Tik om %{amount} gratis fiches te krijgen. Fiches worden nooit verkocht.',
+    refillFreeButton: 'Fiches krijgen · +%{amount}',
     refillNoAd: 'Er is nu geen advertentie; je fiches zijn toch toegevoegd.',
     refillClosed: 'De advertentie werd te vroeg gesloten, dus er zijn geen fiches toegevoegd.',
   },

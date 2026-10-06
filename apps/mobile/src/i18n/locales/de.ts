@@ -111,6 +111,8 @@ const de: Messages = {
     houseEdge: 'Hausvorteil %{edge}: Auf lange Sicht kommen von je 100 Chips %{rtp} zurück.',
     refill: 'Deine Chips sind aufgebraucht. Sieh dir eine kurze Werbung an und erhalte %{amount} Chips. Chips werden nie verkauft.',
     refillButton: 'Werbung ansehen · +%{amount}',
+    refillFree: 'Deine Chips sind aufgebraucht. Tippe, um %{amount} kostenlose Chips zu erhalten. Chips werden nie verkauft.',
+    refillFreeButton: 'Chips holen · +%{amount}',
     refillNoAd: 'Gerade ist keine Werbung verfügbar; deine Chips wurden trotzdem gutgeschrieben.',
     refillClosed: 'Die Werbung wurde vorzeitig geschlossen, daher gab es keine Chips.',
   },

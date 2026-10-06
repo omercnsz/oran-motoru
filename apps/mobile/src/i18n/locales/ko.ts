@@ -110,6 +110,8 @@ const ko: Messages = {
     houseEdge: '하우스 엣지 %{edge}: 장기적으로 100칩당 %{rtp}칩이 돌아옵니다.',
     refill: '칩이 다 떨어졌습니다. 짧은 광고를 보고 %{amount}칩을 받으세요. 칩은 절대 판매하지 않습니다.',
     refillButton: '광고 보기 · +%{amount}',
+    refillFree: '칩이 다 떨어졌습니다. 탭하면 무료 칩 %{amount}개를 받습니다. 칩은 판매하지 않습니다.',
+    refillFreeButton: '칩 받기 · +%{amount}',
     refillNoAd: '지금은 광고가 없습니다. 그래도 칩을 지급했습니다.',
     refillClosed: '광고가 중간에 닫혀 칩이 지급되지 않았습니다.',
   },

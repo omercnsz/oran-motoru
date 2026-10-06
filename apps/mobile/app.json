@@ -5,11 +5,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "oran",
+    "scheme": "stashodds",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/oran.icon",
-      "bundleIdentifier": "com.omercnsz.oran",
+      "bundleIdentifier": "com.app.stashodds",
       "supportsTablet": false
     },
     "android": {
@@ -20,15 +20,20 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.omercnsz.oran",
-      "permissions": [
-        "android.permission.SCHEDULE_EXACT_ALARM"
-      ],
+      "package": "com.app.stashodds",
+      "permissions": [],
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.SYSTEM_ALERT_WINDOW"
-      ]
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.USE_EXACT_ALARM",
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.ACCESS_ADSERVICES_AD_ID",
+        "android.permission.ACCESS_ADSERVICES_ATTRIBUTION",
+        "android.permission.ACCESS_ADSERVICES_TOPICS"
+      ],
+      "versionCode": 1
     },
     "web": {
       "output": "static",
@@ -168,7 +173,8 @@
             ]
           }
         }
-      ]
+      ],
+      "./plugins/release-signing.js"
     ],
     "experiments": {
       "typedRoutes": true,
