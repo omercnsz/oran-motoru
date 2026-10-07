@@ -1,9 +1,11 @@
 // Oyun sesleri: kısa efektler, döngüler (crash motoru, dönen makara) ve oyunlarda arka plan müziği.
 // Sesler scripts/sounds.mts ile kodla üretilir. Telefon sessizdeyse çalmaz; başka uygulamanın müziğini durdurmaz.
 // Sık çalan efektler (tık, çivi, para) birden fazla oynatıcıyla üst üste binebilir.
+import { Asset } from 'expo-asset';
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import { AppState } from 'react-native';
 
+import StashSfx from '../../modules/stash-sfx/src/StashSfxModule';
 import { useFeedback } from '@/state/feedback';
 
 const SOURCES = {
@@ -52,10 +54,23 @@ function configure() {
   setAudioModeAsync({ playsInSilentMode: false, interruptionMode: 'mixWithOthers' }).catch(() => {});
 }
 
-// Her oynatıcının durumu JS'te tutulur: her çalışta yerel tarafa soru sormak (currentTime, playbackRate)
-// ana iş parçacığını meşgul ediyordu. Ek oynatıcılar ilk ihtiyaçta oluşturulur.
+// Kısa efektler yerel modülle çalınır (modules/stash-sfx: iOS AVAudioPlayer, Android SoundPool), çalma arka planda olur.
+// expo-audio her efekt için ağır bir oynatıcı kullanıyor ve iOS'ta ana iş parçacığında başa sarıp oynatıyordu:
+// efektler sıklaşınca (çiviler, rulet tıkları) oyunlar kasıyordu. Modül yoksa (Expo Go) expo-audio'ya dönülür.
+const loading = new Set<Sfx>();
+function loadNative(name: Sfx) {
+  if (!StashSfx || loading.has(name)) return;
+  loading.add(name);
+  configure();
+  const native = StashSfx;
+  Asset.fromModule(SOURCES[name]).downloadAsync()
+    .then((asset) => native.load(name, asset.localUri ?? asset.uri, POLYPHONY[name] ?? 1))
+    .catch(() => loading.delete(name));
+}
+
+// Yedek yol (expo-audio): her oynatıcının durumu JS'te tutulur, ek oynatıcılar ilk ihtiyaçta oluşturulur
 interface Voice { player: AudioPlayer; rate: number; volume: number; played: boolean }
-const pools = new Map<Sfx, { voices: Voice[]; next: number; last: number }>();
+const pools = new Map<Sfx, { voices: Voice[]; next: number }>();
 function voice(name: Sfx) {
   configure();
   return { player: createAudioPlayer(SOURCES[name]), rate: 1, volume: 1, played: false };
@@ -63,28 +78,37 @@ function voice(name: Sfx) {
 function pool(name: Sfx) {
   let p = pools.get(name);
   if (!p) {
-    p = { voices: [voice(name)], next: 0, last: 0 };
+    p = { voices: [voice(name)], next: 0 };
     pools.set(name, p);
   }
   return p;
 }
 
-/** Aynı ses bundan daha sık çalınmaz (çiviler, tıklar üst üste binince hem kulağa hem işlemciye yük) */
+/** Aynı ses bundan daha sık çalınmaz (çiviler, tıklar üst üste binince kulağa da iyi gelmiyor) */
 const MIN_GAP_MS = 35;
+const lastPlayed = new Map<Sfx, number>();
 
 /** Ekran açılınca kullanılacak sesleri önceden yükler (ilk çalışta gecikme olmasın) */
 export function preload(names: Sfx[]) {
-  for (const n of names) pool(n);
+  for (const n of names) {
+    if (StashSfx) loadNative(n);
+    else pool(n);
+  }
 }
 
 /** Efekt çalar. rate: perde ve hız (1 normal) */
 export function sfx(name: Sfx, { volume = 1, rate = 1 }: { volume?: number; rate?: number } = {}) {
   if (!useFeedback.getState().sound) return;
+  const now = Date.now();
+  if (now - (lastPlayed.get(name) ?? 0) < MIN_GAP_MS) return;
+  lastPlayed.set(name, now);
   try {
+    if (StashSfx) {
+      loadNative(name);
+      StashSfx.play(name, volume, rate);
+      return;
+    }
     const p = pool(name);
-    const now = Date.now();
-    if (now - p.last < MIN_GAP_MS) return;
-    p.last = now;
     if (p.next >= p.voices.length) p.voices.push(voice(name));
     const v = p.voices[p.next];
     p.next = (p.next + 1) % (POLYPHONY[name] ?? 1);

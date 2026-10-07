@@ -10,7 +10,7 @@
     "ios": {
       "icon": "./assets/oran.icon",
       "bundleIdentifier": "com.app.stashodds",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "appleTeamId": "Q9U6F6XC58",
       "supportsTablet": false,
       "infoPlist": {
@@ -180,7 +180,8 @@
           }
         }
       ],
-      "./plugins/release-signing.js"
+      "./plugins/release-signing.js",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,

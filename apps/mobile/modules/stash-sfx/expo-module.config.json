@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["StashSfxModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.stashsfx.StashSfxModule"]
+  }
+}
