@@ -172,13 +172,17 @@ export function useCountUp(target: number, ms = 650) {
   useEffect(() => {
     const start = Date.now(), a = from.current;
     if (a === target) return;
-    let raf = 0;
+    let raf = 0, painted = 0;
     const step = () => {
-      const k = Math.min(1, (Date.now() - start) / ms);
-      const eased = 1 - (1 - k) ** 3;
-      const v = Math.round(a + (target - a) * eased);
-      setShown(v);
-      from.current = v;
+      const now = Date.now();
+      const k = Math.min(1, (now - start) / ms);
+      // ~30 güncelleme/sn yeter; 120 Hz ekranda her karede yeniden çizim kasıyordu
+      if (k >= 1 || now - painted >= 33) {
+        painted = now;
+        const v = Math.round(a + (target - a) * (1 - (1 - k) ** 3));
+        setShown(v);
+        from.current = v;
+      }
       if (k < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);

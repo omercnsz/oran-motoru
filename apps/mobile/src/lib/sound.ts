@@ -52,16 +52,25 @@ function configure() {
   setAudioModeAsync({ playsInSilentMode: false, interruptionMode: 'mixWithOthers' }).catch(() => {});
 }
 
-const pools = new Map<Sfx, { players: AudioPlayer[]; next: number }>();
+// Her oynatıcının durumu JS'te tutulur: her çalışta yerel tarafa soru sormak (currentTime, playbackRate)
+// ana iş parçacığını meşgul ediyordu. Ek oynatıcılar ilk ihtiyaçta oluşturulur.
+interface Voice { player: AudioPlayer; rate: number; volume: number; played: boolean }
+const pools = new Map<Sfx, { voices: Voice[]; next: number; last: number }>();
+function voice(name: Sfx) {
+  configure();
+  return { player: createAudioPlayer(SOURCES[name]), rate: 1, volume: 1, played: false };
+}
 function pool(name: Sfx) {
   let p = pools.get(name);
   if (!p) {
-    configure();
-    p = { players: Array.from({ length: POLYPHONY[name] ?? 1 }, () => createAudioPlayer(SOURCES[name])), next: 0 };
+    p = { voices: [voice(name)], next: 0, last: 0 };
     pools.set(name, p);
   }
   return p;
 }
+
+/** Aynı ses bundan daha sık çalınmaz (çiviler, tıklar üst üste binince hem kulağa hem işlemciye yük) */
+const MIN_GAP_MS = 35;
 
 /** Ekran açılınca kullanılacak sesleri önceden yükler (ilk çalışta gecikme olmasın) */
 export function preload(names: Sfx[]) {
@@ -73,15 +82,24 @@ export function sfx(name: Sfx, { volume = 1, rate = 1 }: { volume?: number; rate
   if (!useFeedback.getState().sound) return;
   try {
     const p = pool(name);
-    const player = p.players[p.next];
-    p.next = (p.next + 1) % p.players.length;
-    player.volume = volume;
-    if (rate !== 1 || player.playbackRate !== 1) {
-      player.shouldCorrectPitch = false;
-      player.setPlaybackRate(rate);
+    const now = Date.now();
+    if (now - p.last < MIN_GAP_MS) return;
+    p.last = now;
+    if (p.next >= p.voices.length) p.voices.push(voice(name));
+    const v = p.voices[p.next];
+    p.next = (p.next + 1) % (POLYPHONY[name] ?? 1);
+    if (v.volume !== volume) {
+      v.volume = volume;
+      v.player.volume = volume;
     }
-    if (player.currentTime > 0) void player.seekTo(0);
-    player.play();
+    if (v.rate !== rate) {
+      v.rate = rate;
+      v.player.shouldCorrectPitch = false;
+      v.player.setPlaybackRate(rate);
+    }
+    if (v.played) void v.player.seekTo(0);
+    v.played = true;
+    v.player.play();
   } catch {
     // Ses çalınamazsa oyun etkilenmez
   }

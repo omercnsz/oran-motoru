@@ -57,7 +57,8 @@ function Bulb({ i, t, mode, color }: { i: number; t: SharedValue<number>; mode: 
     }
     return { opacity: on };
   });
-  return <Animated.View style={[styles.bulb, { backgroundColor: color, boxShadow: glow(color, 6, 0.9) }, style]} />;
+  // Gölgesiz: 32 ampulün her karede bulanık gölgeyle yeniden çizilmesi iOS'ta oyunu kastırıyordu
+  return <Animated.View style={[styles.bulb, { backgroundColor: color }, style]} />;
 }
 
 /** LED gösterge: küçük etiket ve sayan değer */

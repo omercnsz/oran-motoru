@@ -10,11 +10,12 @@
     "ios": {
       "icon": "./assets/oran.icon",
       "bundleIdentifier": "com.app.stashodds",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "appleTeamId": "Q9U6F6XC58",
       "supportsTablet": false,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CADisableMinimumFrameDurationOnPhone": false
       }
     },
     "android": {

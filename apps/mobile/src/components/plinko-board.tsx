@@ -101,19 +101,24 @@ export const PlinkoBoard = memo(forwardRef<PlinkoHandle, { width: number; rows: 
     const landedStyle = useAnimatedStyle(() => ({ transform: [{ translateY: 6 * bounce.value }] }));
     return (
       <View>
-        <Canvas style={{ width, height: g.height }}>
-          <Path path={pegs} color={Arena.cyan} opacity={0.35}>
-            <BlurMask blur={3} style="normal" />
-          </Path>
-          <Path path={pegs} color="#E6F2FF" />
-          <Group opacity={visible}>
-            <Circle cx={bx} cy={by} r={g.ballR * 2.2} color={Arena.gold} opacity={glowOpacity}>
-              <BlurMask blur={8} style="normal" />
-            </Circle>
-            <Circle cx={bx} cy={by} r={g.ballR} color={Arena.gold} />
-            <Circle cx={bx} cy={by} r={g.ballR * 0.45} color="#FFF4C7" />
-          </Group>
-        </Canvas>
+        {/* Çiviler ayrı tuvalde: top düşerken her karede yeniden çizilmesinler (bulanık parıltı pahalı) */}
+        <View style={{ width, height: g.height }}>
+          <Canvas style={StyleSheet.absoluteFill}>
+            <Path path={pegs} color={Arena.cyan} opacity={0.35}>
+              <BlurMask blur={3} style="normal" />
+            </Path>
+            <Path path={pegs} color="#E6F2FF" />
+          </Canvas>
+          <Canvas style={StyleSheet.absoluteFill}>
+            <Group opacity={visible}>
+              <Circle cx={bx} cy={by} r={g.ballR * 2.2} color={Arena.gold} opacity={glowOpacity}>
+                <BlurMask blur={8} style="normal" />
+              </Circle>
+              <Circle cx={bx} cy={by} r={g.ballR} color={Arena.gold} />
+              <Circle cx={bx} cy={by} r={g.ballR * 0.45} color="#FFF4C7" />
+            </Group>
+          </Canvas>
+        </View>
         <View style={[styles.buckets, { paddingHorizontal: g.s / 2 }]}>
           {table.map((m, k) => {
             const color = bucketColor(m);

@@ -59,7 +59,13 @@ function buildCurve(ms: number, width: number, closed: boolean) {
 /** Çarpan büyüdükçe renk: camgöbeği → neon yeşil → altın → mor */
 const colorFor = (m: number) => (m < 1.5 ? Arena.cyan : m < 3 ? Arena.neon : m < 10 ? Arena.gold : Arena.violet);
 
-interface Running { id: string; outcome: number; target: number | null; bet: number; startedAt: number; step: number }
+interface Running {
+  id: string; outcome: number; target: number | null; bet: number; startedAt: number; step: number;
+  /** Çarpan yazısının son güncellendiği an ve motor sesinin son hızı */
+  painted: number; rate: number;
+}
+/** Çarpan yazısı en fazla bu sıklıkta güncellenir (~30 kare/sn) */
+const PAINT_MS = 33;
 type Phase =
   | { kind: 'idle' }
   | { kind: 'running'; bet: number }
@@ -152,8 +158,18 @@ export default function CrashScreen() {
     if (r.target !== null && r.target <= r.outcome && m >= r.target) return end(r.target);
     if (m > r.outcome) return end(null);
     elapsed.value = ms;
-    setMultiplier(m);
-    engine.current?.setRate(1 + Math.min(1.5, Math.log(m) * 0.6));
+    // Eğri UI iş parçacığında her karede çizilir; yazı ve motor sesi daha seyrek güncellenir
+    // (120 Hz ekranda her karede React çizimi ve ses çağrısı oyunu kastırıyordu)
+    const now = performance.now();
+    if (now - r.painted >= PAINT_MS) {
+      r.painted = now;
+      setMultiplier(m);
+    }
+    const rate = 1 + Math.min(1.5, Math.log(m) * 0.6);
+    if (Math.abs(rate - r.rate) >= 0.03) {
+      r.rate = rate;
+      engine.current?.setRate(rate);
+    }
     // Her tam çarpanda (2×, 3×, …) tık ve titreşim
     const step = Math.floor(m);
     if (step > r.step) {
@@ -181,7 +197,7 @@ export default function CrashScreen() {
     const now = new Date();
     reality.begin(now);
     const { id, outcome } = startCrashRound(units, target, now);
-    running.current = { id, outcome, target, bet: units, startedAt: performance.now(), step: 1 };
+    running.current = { id, outcome, target, bet: units, startedAt: performance.now(), step: 1, painted: 0, rate: 1 };
     elapsed.value = 0;
     setMultiplier(1);
     setPhase({ kind: 'running', bet: units });

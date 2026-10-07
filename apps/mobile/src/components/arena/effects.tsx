@@ -206,10 +206,15 @@ export function WinBanner({ win, onDone }: { win: { tier: Tier; payout: number; 
     shine.value = withRepeat(withSequence(withTiming(1, { duration: 600 }), withTiming(0, { duration: 600 })), -1);
     const ms = win.tier === 'mega' ? 1800 : win.tier === 'big' ? 1100 : 600;
     const start = Date.now();
-    let raf = 0;
+    let raf = 0, painted = 0;
     const step = () => {
-      const k = Math.min(1, (Date.now() - start) / ms);
-      setShown(Math.round(win.payout * (1 - (1 - k) ** 3)));
+      const now = Date.now();
+      const k = Math.min(1, (now - start) / ms);
+      // ~30 güncelleme/sn (bkz. useCountUp)
+      if (k >= 1 || now - painted >= 33) {
+        painted = now;
+        setShown(Math.round(win.payout * (1 - (1 - k) ** 3)));
+      }
       if (k < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);

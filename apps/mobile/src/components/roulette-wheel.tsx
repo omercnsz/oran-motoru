@@ -2,10 +2,10 @@
 // düşer. Sonuç dönüş başlamadan belli; animasyon sadece onu gösterir, "kıl payı" etkisi için yavaşlatma ya da sapma yok.
 import { WHEEL_ORDER, colorOf } from '@oran/games-math';
 import {
-  BlurMask, Canvas, Circle, Group, matchFont, Path, RadialGradient, Skia, SweepGradient, Text, vec,
+  BlurMask, Canvas, Circle, createPicture, Group, matchFont, PaintStyle, Picture, RadialGradient, Skia, SweepGradient, TileMode, vec,
 } from '@shopify/react-native-skia';
 import { forwardRef, memo, useImperativeHandle, useMemo } from 'react';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Easing, useDerivedValue, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
 export const POCKET_COLORS = { green: '#0FA35A', red: '#D62F45', black: '#171A22' } as const;
@@ -89,6 +89,49 @@ export const RouletteWheel = memo(forwardRef<WheelHandle, { size: number }>(func
     return p.detach();
   }, [c, inner, rim]);
 
+  // Dönen çark bir kez tek resme kaydedilir; dönüşte her karede sadece bu resim döndürülür.
+  // (37 dilim + 37 yazı + degradeleri her karede ayrı ayrı çizmek telefonda çarkı kastırıyordu)
+  const wheel = useMemo(() => createPicture((canvas) => {
+    const fill = Skia.Paint();
+    fill.setAntiAlias(true);
+    for (const s of sectors) {
+      fill.setColor(Skia.Color(s.color));
+      canvas.drawPath(s.path, fill);
+    }
+    const fret = Skia.Paint();
+    fret.setAntiAlias(true);
+    fret.setColor(Skia.Color('#E7C46B'));
+    fret.setStyle(PaintStyle.Stroke);
+    fret.setStrokeWidth(1.4);
+    canvas.drawPath(frets, fret);
+    const label = Skia.Paint();
+    label.setAntiAlias(true);
+    label.setColor(Skia.Color('#ffffff'));
+    for (const s of sectors) {
+      canvas.save();
+      canvas.translate(c, c);
+      canvas.rotate((s.angle * 180) / Math.PI, 0, 0);
+      canvas.drawText(s.label, s.x, s.y, label, font);
+      canvas.restore();
+    }
+    fill.setColor(Skia.Color('#C99A3C'));
+    canvas.drawCircle(c, c, inner, fill);
+    const hub = Skia.Paint();
+    hub.setAntiAlias(true);
+    hub.setShader(Skia.Shader.MakeRadialGradient(
+      vec(c - inner * 0.3, c - inner * 0.3), inner * 1.4, [Skia.Color('#6B4524'), Skia.Color('#2B1A0C')], null, TileMode.Clamp,
+    ));
+    canvas.drawCircle(c, c, inner - 2.5, hub);
+    fill.setColor(Skia.Color('#E7C46B'));
+    canvas.drawPath(turret, fill);
+    const knob = Skia.Paint();
+    knob.setAntiAlias(true);
+    knob.setShader(Skia.Shader.MakeRadialGradient(
+      vec(c - rim * 0.02, c - rim * 0.02), rim * 0.08, [Skia.Color('#FFF1C1'), Skia.Color('#C99A3C')], null, TileMode.Clamp,
+    ));
+    canvas.drawCircle(c, c, rim * 0.07, knob);
+  }), [sectors, frets, turret, font, c, inner, rim]);
+
   const transform = useDerivedValue(() => [{ rotate: (rotation.value * Math.PI) / 180 }]);
   const bx = useDerivedValue(() => c + ballR.value * Math.sin((ballAngle.value * Math.PI) / 180));
   const by = useDerivedValue(() => c - ballR.value * Math.cos((ballAngle.value * Math.PI) / 180));
@@ -96,38 +139,28 @@ export const RouletteWheel = memo(forwardRef<WheelHandle, { size: number }>(func
   const hy = useDerivedValue(() => by.value - ballSize * 0.32);
 
   return (
-    <Canvas style={{ width: size, height: size }}>
-      {/* Dış altın kenar ve topun yolu */}
-      <Circle cx={c} cy={c} r={rim}>
-        <SweepGradient c={vec(c, c)} colors={['#F7D57A', '#9C6B1E', '#FFE7A3', '#8A5A12', '#F7D57A']} />
-      </Circle>
-      <Circle cx={c} cy={c} r={rim * 0.965}>
-        <RadialGradient c={vec(c, c)} r={rim} colors={['#2A1A0E', '#140C06']} />
-      </Circle>
-      <Circle cx={c} cy={c} r={outer + 2} color="#C99A3C" />
-      <Group origin={{ x: c, y: c }} transform={transform}>
-        {sectors.map((s) => <Path key={s.n} path={s.path} color={s.color} />)}
-        <Path path={frets} color="#E7C46B" style="stroke" strokeWidth={1.4} />
-        {sectors.map((s) => (
-          <Group key={`t${s.n}`} transform={[{ translateX: c }, { translateY: c }, { rotate: s.angle }]}>
-            <Text x={s.x} y={s.y} text={s.label} font={font} color="#ffffff" />
-          </Group>
-        ))}
-        <Circle cx={c} cy={c} r={inner} color="#C99A3C" />
-        <Circle cx={c} cy={c} r={inner - 2.5}>
-          <RadialGradient c={vec(c - inner * 0.3, c - inner * 0.3)} r={inner * 1.4} colors={['#6B4524', '#2B1A0C']} />
+    <View style={{ width: size, height: size }}>
+      {/* Dış altın kenar ve topun yolu: hiç değişmez, ayrı tuvalde bir kez çizilir */}
+      <Canvas style={StyleSheet.absoluteFill}>
+        <Circle cx={c} cy={c} r={rim}>
+          <SweepGradient c={vec(c, c)} colors={['#F7D57A', '#9C6B1E', '#FFE7A3', '#8A5A12', '#F7D57A']} />
         </Circle>
-        <Path path={turret} color="#E7C46B" />
-        <Circle cx={c} cy={c} r={rim * 0.07}>
-          <RadialGradient c={vec(c - rim * 0.02, c - rim * 0.02)} r={rim * 0.08} colors={['#FFF1C1', '#C99A3C']} />
+        <Circle cx={c} cy={c} r={rim * 0.965}>
+          <RadialGradient c={vec(c, c)} r={rim} colors={['#2A1A0E', '#140C06']} />
         </Circle>
-      </Group>
-      {/* Top: gölgesi ve parlak yüzü */}
-      <Circle cx={bx} cy={by} r={ballSize * 1.5} color="#000000" opacity={0.35}>
-        <BlurMask blur={4} style="normal" />
-      </Circle>
-      <Circle cx={bx} cy={by} r={ballSize} color="#DDE3EE" />
-      <Circle cx={hx} cy={hy} r={ballSize * 0.45} color="#ffffff" />
-    </Canvas>
+        <Circle cx={c} cy={c} r={outer + 2} color="#C99A3C" />
+      </Canvas>
+      <Canvas style={StyleSheet.absoluteFill}>
+        <Group origin={{ x: c, y: c }} transform={transform}>
+          <Picture picture={wheel} />
+        </Group>
+        {/* Top: gölgesi ve parlak yüzü */}
+        <Circle cx={bx} cy={by} r={ballSize * 1.5} color="#000000" opacity={0.35}>
+          <BlurMask blur={4} style="normal" />
+        </Circle>
+        <Circle cx={bx} cy={by} r={ballSize} color="#DDE3EE" />
+        <Circle cx={hx} cy={hy} r={ballSize * 0.45} color="#ffffff" />
+      </Canvas>
+    </View>
   );
 }));
