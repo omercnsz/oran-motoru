@@ -2,7 +2,7 @@
   "expo": {
     "name": "StashOdds",
     "slug": "oran",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "stashodds",
@@ -39,7 +39,7 @@
         "android.permission.ACCESS_ADSERVICES_ATTRIBUTION",
         "android.permission.ACCESS_ADSERVICES_TOPICS"
       ],
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "output": "static",
