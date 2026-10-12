@@ -8,7 +8,7 @@ Bekleyen işler ve fikirler. Biten madde silinir; kararlar ve ayrıntılar ilgil
 - [ ] **App Store**: Apple sanal kumar içeren uygulamaları bireysel hesaptan kabul etmiyor (2.3.6, 8 Ekim 2026). App Review'a istisna/dönüşüm sorusu soruldu, cevap bekleniyor.
   - [ ] Şirket kur (Türkiye Ltd., Karadağ DOO ya da Estonya OÜ; vergi durumuna göre mali müşavirle karar), D-U-N-S al, Apple'dan bireysel hesabın kurumsala dönüştürülmesini iste. Şirket adı "Life Track System" olursa satıcı adı da bu olur.
   - [ ] Kurumsal hesap onaylanınca 1.0.1 (build 3) ya da güncel sürümü yeniden incelemeye gönder.
-- [ ] İsteğe bağlı: R8/ProGuard eşleme (mapping) dosyasını Play'e yükle (çökme raporları okunaklı olsun).
+- [ ] İsteğe bağlı: R8'i aç (`android.enableMinifyInReleaseBuilds`, uygulama küçülür), bütün ekranları yeniden dene ve her sürümde mapping dosyasını Play'e yükle. Şu an R8 kapalı: kod karartılmadığı için çökme raporları zaten okunaklı, Play'in "kod gösterme dosyası yok" uyarısı zararsız.
 
 ## Özellikler
 
