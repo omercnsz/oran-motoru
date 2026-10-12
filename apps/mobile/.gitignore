@@ -48,3 +48,6 @@ example
 
 # Yerel iOS arşivi ve App Store dışa aktarımı (xcodebuild archive/exportArchive)
 /build
+
+# Yerel ses modülünün Android derleme çıktısı
+/modules/stash-sfx/android/build

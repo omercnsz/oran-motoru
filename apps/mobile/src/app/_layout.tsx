@@ -1,12 +1,14 @@
 import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
-import { ActivityIndicator, AppState, Platform, StyleSheet, useColorScheme, View } from 'react-native';
+import { ActivityIndicator, AppState, Platform, StyleSheet, View } from 'react-native';
 
 import migrations from '../../drizzle/migrations';
 import { ThemedText } from '@/components/themed-text';
 import { db } from '@/db/client';
 import { arenaHeader } from '@/components/arena/kit';
+import { Intro } from '@/components/intro';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useT } from '@/i18n';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1 } } });
@@ -48,6 +50,7 @@ export default function RootLayout() {
             <Stack.Screen name="rapor" options={{ title: t('report.title'), headerBackButtonDisplayMode: 'minimal' }} />
             <Stack.Screen name="ayarlar" options={{ title: t('nav.settings'), headerBackButtonDisplayMode: 'minimal' }} />
           </Stack>
+          <Intro />
         </QueryClientProvider>
       )}
     </ThemeProvider>

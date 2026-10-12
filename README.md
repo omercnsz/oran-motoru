@@ -122,6 +122,12 @@ Kurallar (`apps/mobile/src/ads.ts`):
 4. **Privacy & messaging**: AB/İngiltere için GDPR izin mesajını oluşturun. Uygulama izin formunu kendisi gösterir; Ayarlar'da "Reklam gizlilik tercihleri" bu ülkelerde görünür.
 5. `app-ads.txt`: mağazada yazan geliştirici sitesinin kök adresinde olmalı (ör. `omercnsz.github.io/app-ads.txt`, bunun için ayrı bir `omercnsz.github.io` deposu gerekir).
 
+## Tanıtım, görünüm ve Hakkında
+
+- İlk açılışta üç sayfalık kısa bir tanıtım çıkar (`apps/mobile/src/components/intro.tsx`): sanal parayla kupon, kumbara, jetonlu oyunlar ve 18+ notu. Atlanabilir; Ayarlar → Hakkında → "StashOdds nasıl çalışır?" ile yeniden açılır.
+- Görünüm (Ayarlar): telefonla aynı, açık ya da koyu (`apps/mobile/src/state/appearance.ts`). Sadece sade bölümleri (Kumbara, Rapor, Ayarlar) değiştirir; maçlar, kuponlar ve oyunlar her zaman koyu arena temasındadır.
+- Ayarlar → Hakkında: mağazada değerlendirme sayfası, paylaşma, gizlilik politikası, destek sayfası ve sürüm. Değerlendirme sadece kullanıcı isteyince açılır; mağazaların kendi puan penceresi otomatik çıkmaz (`apps/mobile/src/lib/links.ts`).
+
 ## İkon ve açılış ekranı
 
 Tasarım: futbol topu desenli bir madeni para kumbaranın yarığına düşüyor. Ölçüler ve renkler tek yerde, `apps/mobile/scripts/icons.mts` içinde. `npm run icons -w @oran/mobile` (macOS) şunları üretir: SVG kaynakları (`assets/brand`), iOS 26 ikonu (`assets/oran.icon`, Icon Composer biçimi), Android ve genel PNG'ler (`assets/images`). PNG'ler macOS'un kendi SVG işleyicisiyle çizilir, ek araç gerekmez. İkon değişince uygulamanın yerel derlemesi yeniden alınır.

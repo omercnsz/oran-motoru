@@ -2,7 +2,7 @@
   "expo": {
     "name": "StashOdds",
     "slug": "oran",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "stashodds",
@@ -10,7 +10,7 @@
     "ios": {
       "icon": "./assets/oran.icon",
       "bundleIdentifier": "com.app.stashodds",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "appleTeamId": "Q9U6F6XC58",
       "supportsTablet": false,
       "infoPlist": {
@@ -39,7 +39,7 @@
         "android.permission.ACCESS_ADSERVICES_ATTRIBUTION",
         "android.permission.ACCESS_ADSERVICES_TOPICS"
       ],
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "output": "static",
