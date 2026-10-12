@@ -4,37 +4,51 @@ Bu dosya Play Console'a girilecek her şeyi içerir. Görseller aynı klasörde:
 `icon-512.png`, `feature-graphic-en.png`, `feature-graphic-tr.png`, `screenshots/`.
 
 - Paket adı: `com.app.stashodds` (ilk yüklemeden sonra değişmez)
-- Sürüm: 1.0.0 (versionCode 1)
+- Sürüm: 1.0.3 (versionCode 4)
 - Gizlilik politikası: https://omercnsz.github.io/oran-motoru/privacy.html
 
 ---
 
 ## Mağaza sayfası – English (en-US, varsayılan dil)
 
+Play'de yayında olan tek dil budur. 1.0.3 ile güncellendi (test kullanıcılarının ASO önerisi: anahtar kelimeler doğal metin içinde, marka/lig adı yok).
+
 **App name (30):** StashOdds: Play-Money Odds
 
-**Short description (80):** Real matches, real odds, play money. What you'd have bet goes to your stash.
+**Short description (80):** Football odds & casino games with play money. Your real stake goes to savings.
 
 **Full description:**
 
-StashOdds lets you enjoy football odds and casino games without risking a single real coin.
+StashOdds is a free football betting simulator and casino game app that uses play money only. Pick real matches, build coupons and see what would have happened, without risking a single real coin. The amount you would have staked goes into your piggy bank, so you can watch the money you kept add up.
 
-HOW IT WORKS
-• Pick real matches from 63 leagues and cups worldwide and build coupons. Odds come from our own model, built on real results.
-• You never stake real money. The amount you would have bet goes into your stash, a piggy bank on your phone.
-• When the match ends, you see exactly what would have happened if you had played with real money.
+WHY STASHODDS
+• Want to bet less but still enjoy the match? Keep the excitement and keep your money.
+• See the house edge for yourself: every coupon and every game shows what real money would have done.
+• No account, no purchases and no ads in this version. Everything stays on your phone.
 
-CASINO GAMES WITH PLAY TOKENS
+FOOTBALL ODDS AND COUPONS
+• Real fixtures from 63 leagues and cups worldwide. Odds come from our own model, built on real results.
+• Markets: match result, double chance, over/under, both teams to score, handicap and correct score.
+• Live scores and live odds while matches are in play.
+• Optional kickoff reminders for matches on your coupons.
+
+PIGGY BANK AND REPORT
+• Every stake you would have placed is saved in your piggy bank.
+• When a match ends, see the result as if you had played with real money.
+• A clear report puts football and casino results side by side: this month, last month and all time.
+
+FREE CASINO GAMES WITH PLAY TOKENS
 Crash, European roulette, a football-themed slot machine, Mines, Plinko and Blackjack. Tokens are free and refill when you run out. They are never sold and can't be cashed out.
 
 HONEST BY DESIGN
-• Every game shows its real house edge next to your actual return.
-• Each result is drawn with a secure random number before the round starts and is stored, so outcomes can't be tweaked.
+• Each game shows its real house edge next to your actual return.
+• Results are drawn with a secure random number before each round and stored, so outcomes can't be tweaked.
 • No auto-play and no near-miss tricks. A reality check tells you how long you've been playing and your net result.
-• A clear report shows your result across sports and games. A line that keeps going down is the house edge at work.
 
-PRIVATE
-No account, no purchases and no ads in this version. Your coupons and savings stay on your phone.
+EASY TO USE
+• A short walkthrough on first launch explains how everything works.
+• 27 languages, your local currency, and decimal, fractional or American odds.
+• Light and dark appearance.
 
 StashOdds is for adults (18+). It is not a betting site and offers no real-money gambling or prizes. If gambling is causing you problems, help is available: the app shows a helpline for your country.
 
